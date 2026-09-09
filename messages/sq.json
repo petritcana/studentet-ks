@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "home": "Shtëpia",
+    "materials": "Materialet",
+    "campus": "Kampusi",
+    "me": "Unë",
+    "compose": "Posto",
+    "messages": "Mesazhe",
+    "jobs": "Punë dhe praktika",
+    "settings": "Cilësimet",
+    "moderation": "Moderimi",
+    "questions": "Pyetje",
+    "events": "Evente",
+    "groups": "Grupe",
+    "saved": "Ruajtjet",
+    "profile": "Profili im",
+    "signOut": "Dil"
+  },
+  "search": {
+    "placeholder": "Kërko njerëz, lëndë, materiale, evente",
+    "label": "Kërko",
+    "hint": "Shkruaj të paktën dy shkronja. Kërkon njëkohësisht te njerëzit, lëndët, materialet, postimet, eventet dhe punët.",
+    "empty": "S'gjetëm asgjë. Provo emrin e lëndës si në silabus, ose emrin e profesorit.",
+    "groups": {
+      "people": "Njerëz",
+      "courses": "Lëndë",
+      "materials": "Materiale",
+      "posts": "Postime",
+      "events": "Evente",
+      "jobs": "Punë dhe praktika"
+    }
+  },
+  "notifications": {
+    "title": "Njoftimet",
+    "description": "Vetëm ato që kanë të bëjnë me ty. Pa zhurmë.",
+    "empty": "Ende asgjë e re",
+    "emptyHint": "Kur dikush të ndjek, të përgjigjet ose ngarkon material për lëndët e tua, do ta shohësh këtu.",
+    "followBack": "Ndiqe edhe ti"
+  },
+  "actions": {
+    "follow": "Ndiqe",
+    "following": "E ndjek",
+    "friends": "Shokë",
+    "save": "Ruaje",
+    "saved": "E ruajtur",
+    "share": "Ndaje",
+    "report": "Raporto",
+    "delete": "Fshije",
+    "cancel": "Anulo",
+    "back": "Prapa",
+    "continue": "Vazhdo",
+    "send": "Dërgo",
+    "upload": "Ngarko",
+    "retry": "Provo prapë"
+  },
+  "feed": {
+    "tabs": { "forYou": "Për ty", "generation": "Gjenerata", "following": "Ndjek" },
+    "hints": {
+      "forYou": "Renditur për ty",
+      "generation": "Fakulteti dhe viti yt, kronologjik",
+      "following": "Vetëm ata që i ndjek, kronologjik"
+    },
+    "empty": "Këtu është ende qetë",
+    "emptyHint": "Ndiq disa nga gjenerata jote dhe do të gjallërohet."
+  },
+  "theme": { "label": "Tema e pamjes", "light": "Dritë", "system": "Sistemi", "dark": "Errësirë" },
+  "language": { "label": "Gjuha", "sq": "Shqip", "en": "Anglisht" },
+  "errors": {
+    "generic": "Diçka nuk shkoi. Provo prapë.",
+    "notFound": "Kjo faqe nuk ekziston",
+    "notFoundHint": "Ndoshta linku është i vjetër, ose përmbajtja u fshi nga autori.",
+    "offline": "S'ka lidhje me internetin"
+  }
+}

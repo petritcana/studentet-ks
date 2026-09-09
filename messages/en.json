@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "home": "Home",
+    "materials": "Materials",
+    "campus": "Campus",
+    "me": "Me",
+    "compose": "Post",
+    "messages": "Messages",
+    "jobs": "Jobs and internships",
+    "settings": "Settings",
+    "moderation": "Moderation",
+    "questions": "Questions",
+    "events": "Events",
+    "groups": "Groups",
+    "saved": "Saved",
+    "profile": "My profile",
+    "signOut": "Sign out"
+  },
+  "search": {
+    "placeholder": "Search people, courses, materials, events",
+    "label": "Search",
+    "hint": "Type at least two letters. Searches people, courses, materials, posts, events and jobs at once.",
+    "empty": "Nothing found. Try the course name as written in the syllabus, or the professor.",
+    "groups": {
+      "people": "People",
+      "courses": "Courses",
+      "materials": "Materials",
+      "posts": "Posts",
+      "events": "Events",
+      "jobs": "Jobs and internships"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Only what concerns you. No noise.",
+    "empty": "Nothing new yet",
+    "emptyHint": "When someone follows you, answers you, or uploads material for your courses, it shows up here.",
+    "followBack": "Follow back"
+  },
+  "actions": {
+    "follow": "Follow",
+    "following": "Following",
+    "friends": "Friends",
+    "save": "Save",
+    "saved": "Saved",
+    "share": "Share",
+    "report": "Report",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "back": "Back",
+    "continue": "Continue",
+    "send": "Send",
+    "upload": "Upload",
+    "retry": "Try again"
+  },
+  "feed": {
+    "tabs": { "forYou": "For you", "generation": "Your year", "following": "Following" },
+    "hints": {
+      "forYou": "Ranked for you",
+      "generation": "Your faculty and year, chronological",
+      "following": "Only people you follow, chronological"
+    },
+    "empty": "It is still quiet here",
+    "emptyHint": "Follow a few people from your year and this fills up."
+  },
+  "theme": { "label": "Appearance", "light": "Light", "system": "System", "dark": "Dark" },
+  "language": { "label": "Language", "sq": "Albanian", "en": "English" },
+  "errors": {
+    "generic": "Something went wrong. Try again.",
+    "notFound": "This page does not exist",
+    "notFoundHint": "The link may be old, or the content was deleted by its author.",
+    "offline": "No internet connection"
+  }
+}

@@ -1,55 +1,71 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { Lock } from "lucide-react";
+import type { FeedTab } from "@/lib/queries/feed";
 import { cn } from "@/lib/utils";
 
-const TABS = [
-  { key: "per-ty", label: "forYou", hint: "forYou" },
-  { key: "gjenerata", label: "generation", hint: "generation" },
-  { key: "ndjek", label: "following", hint: "following" },
-] as const;
+/**
+ * Filtrat e feed-it, si pilula me ngjyrën e vet.
+ *
+ * Secili filtër ka një theks: limoni për ata që ndjek, gurkali për fakultetin,
+ * qelibari për universitetin, vjollca për Kosovën. Shpjegimi i filtrit rri te
+ * `title`, jo si rresht nën pilula.
+ */
+const TABS: { tab: FeedTab; label: string; hint: string; pro?: boolean }[] = [
+  {
+    tab: "ndjek",
+    label: "tabFollowing",
+    hint: "hintFollowing",
+  },
+  {
+    tab: "fakulteti",
+    label: "tabFaculty",
+    hint: "hintFaculty",
+  },
+  {
+    tab: "universiteti",
+    label: "tabUniversity",
+    hint: "hintUniversity",
+  },
+  {
+    tab: "global",
+    label: "tabGlobal",
+    hint: "hintGlobal",
+    pro: false,
+  },
+];
 
-export function FeedTabs({ active }: { active: string }) {
-  const pathname = usePathname();
-  const params = useSearchParams();
+export function FeedTabs({ active, isPro }: { active: FeedTab; isPro: boolean }) {
   const t = useTranslations("feed");
-  const current = TABS.find((tab) => tab.key === active) ?? TABS[0];
 
   return (
-    <div className="flex flex-col gap-2">
-      <div
-        role="tablist"
-        aria-label="Rrjedhat e feed-it"
-        className="flex items-center gap-1 overflow-x-auto rounded-full border border-border bg-bg p-1 scrollbar-thin"
-      >
-        {TABS.map((tab) => {
-          const next = new URLSearchParams(params.toString());
-          next.set("tab", tab.key);
-          const isActive = tab.key === active;
+    <nav
+      aria-label={t("tabsLabel")}
+      className="-mx-4 flex items-center gap-2 overflow-x-auto scrollbar-none px-4 py-1 sm:mx-0 sm:px-0"
+    >
+      {TABS.map((item) => {
+        const isActive = item.tab === active;
+        const locked = Boolean(item.pro) && !isPro;
 
-          return (
-            <Link
-              key={tab.key}
-              href={`${pathname}?${next.toString()}`}
-              role="tab"
-              aria-selected={isActive}
-              scroll={false}
-              className={cn(
-                "inline-flex h-9 shrink-0 items-center rounded-full px-4 text-sm font-medium",
-                "transition-colors duration-150 ease-brand",
-                isActive
-                  ? "bg-surface text-text shadow-soft"
-                  : "text-text-muted hover:text-text",
-              )}
-            >
-              {t(`tabs.${tab.label}`)}
-            </Link>
-          );
-        })}
-      </div>
-      <p className="px-1 text-xs text-text-muted">{t(`hints.${current.hint}`)}</p>
-    </div>
+        return (
+          <Link
+            key={item.tab}
+            href={`/feed?tab=${item.tab}`}
+            aria-current={isActive ? "page" : undefined}
+            title={t(item.hint)}
+            data-tab={item.tab}
+            className={cn(
+              "feed-tab group relative inline-flex h-10 shrink-0 items-center gap-2 rounded-control px-4 text-[13px] font-semibold sm:text-[14.5px]",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500",
+            )}
+          >
+            {t(item.label)}
+            {locked ? <Lock className="size-3 shrink-0 text-text-muted/80" aria-hidden /> : null}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }

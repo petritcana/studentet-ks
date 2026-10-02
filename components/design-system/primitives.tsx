@@ -42,12 +42,7 @@ export function Demo({
         <h3 className="text-sm font-semibold text-text">{label}</h3>
         {note ? <p className="text-xs text-text-muted">{note}</p> : null}
       </div>
-      <div
-        className={cn(
-          !bare && "rounded-lg border border-border bg-surface p-4 sm:p-5",
-          className,
-        )}
-      >
+      <div className={cn(!bare && "rounded-lg border border-border bg-surface p-4 sm:p-5", className)}>
         {children}
       </div>
     </div>

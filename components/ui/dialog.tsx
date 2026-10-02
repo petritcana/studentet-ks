@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -18,8 +19,7 @@ export const DialogOverlay = React.forwardRef<
     <DialogPrimitive.Overlay
       ref={ref}
       className={cn(
-        "fixed inset-0 z-50 bg-stone-950/50 backdrop-blur-[2px]",
-        "data-[state=open]:animate-fade-in",
+        "fixed inset-0 z-50 bg-stone-950/50 backdrop-blur-[2px] data-[state=open]:animate-fade-in",
         className,
       )}
       {...props}
@@ -29,10 +29,10 @@ export const DialogOverlay = React.forwardRef<
 
 export const DialogContent = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
-    hideClose?: boolean;
-  }
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { hideClose?: boolean }
 >(function DialogContent({ className, children, hideClose, ...props }, ref) {
+  const t = useTranslations("common");
+
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -41,7 +41,7 @@ export const DialogContent = React.forwardRef<
         className={cn(
           "fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2",
           "max-h-[calc(100dvh-2rem)] overflow-y-auto scrollbar-thin",
-          "rounded-xl border border-border bg-surface shadow-lifted",
+          "rounded-card border border-border bg-surface-solid shadow-lifted",
           "focus:outline-none data-[state=open]:animate-rise",
           className,
         )}
@@ -57,7 +57,7 @@ export const DialogContent = React.forwardRef<
             )}
           >
             <X className="size-4" />
-            <span className="sr-only">Mbylle</span>
+            <span className="sr-only">{t("close")}</span>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>

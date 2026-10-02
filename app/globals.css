@@ -1,130 +1,543 @@
 @import "tailwindcss";
 
-/* Dark mode drejtohet nga atributi data-theme (next-themes), me fallback te sistemi. */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+/* Tri tema nga atributi data-theme (next-themes): «blue» (Sistemi, parazgjedhja),
+   «dark» (e zezë) dhe «light» (e bardhë). Blu dhe e zeza ndajnë variantin `dark:`. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, [data-theme="blue"], [data-theme="blue"] *));
 
 /* ---------------------------------------------------------------------------
-   1. Tokenat e papërpunuar. E vetmja vend ku shkruhen ngjyra hex.
+   1. Tokenat e papërpunuar. I vetmi vend ku shkruhen ngjyra hex.
+
+   Rregull: ngjyrat bazë janë për mbushje, pika dhe kufij, ku mjafton 3:1.
+   Çdo ngjyrë që shkon te tipografia ka variantin `-text`, i zgjedhur që të
+   kalojë 4.5:1 mbi sfondin e temës përkatëse.
    --------------------------------------------------------------------------- */
 
 :root {
-  --brand-500: #4f46e5; /* indigo elektrik */
-  --brand-600: #4338ca;
-  --brand-50: #eef2ff;
-
-  --accent-500: #f97316; /* portokall i ngrohtë, përdoret rrallë */
-  --accent-50: #fff7ed;
-
-  --success: #10b981;
-  --success-50: #ecfdf5;
-  --warning: #f59e0b;
-  --warning-50: #fffbeb;
-  --danger: #ef4444;
-  --danger-50: #fef2f2;
-
-  /*
-   * Variantet e mësipërme janë për mbushje, pika dhe kufij, ku mjafton 3:1.
-   * Për tekst të vogël duhet 4.5:1, prandaj çdo ngjyrë semantike ka edhe një
-   * version të errësuar që përdoret vetëm te tipografia dhe ikonat e vogla.
-   */
+  /* «E çelët», sipas referencës së pronarit: sfond gri-kaltër i butë, karta të
+     bardha me hije të lehtë, veprimet kryesore blu marine. Blu («Sistemi») dhe e
+     errëta përkufizohen më poshtë. */
+  --brand-500: #1d5fe0;
+  --brand-600: #1749b8;
+  --brand-50: #e8f0fe;
   --brand-contrast: #ffffff;
-  --accent-text: #c2410c;
+
+  --accent-500: #b7791f;
+  --accent-50: #fff8e6;
+  --accent-text: #92400e;
+
+  --success: #059669;
+  --success-50: #ecfdf5;
   --success-text: #047857;
-  --warning-text: #b45309;
-  --danger-text: #dc2626;
+  --warning: #d97706;
+  --warning-50: #fff8e6;
+  --warning-text: #92400e;
+  --danger: #dc2626;
+  --danger-50: #fef2f2;
+  --danger-text: #b91c1c;
   --danger-solid: #dc2626;
 
-  --bg: #fafaf9; /* jo e bardhë e pastër, e ngrohtë */
+  /* Pro: ari i ngrohtë, me tekst të errët mbi të. */
+  --pro-from: #ffd166;
+  --pro-to: #ffb020;
+  --pro-contrast: #2a1d00;
+
+  --bg: #eef2f8;
   --surface: #ffffff;
-  --surface-2: #f5f5f4;
-  --border: #e7e5e4;
-  --text: #1c1917;
-  --text-muted: #78716c;
+  --surface-2: #f1f4f9;
+  --surface-solid: #ffffff;
+  --border: #e2e7f0;
+  --border-strong: #cbd3e1;
+  --text: #0b1a36;
+  --text-muted: #46577a;
+  --text-dim: #5a6a8a;
 
-  /* Ngjyrat e identitetit të fakulteteve */
-  --faculty-economics: #d97706; /* amber */
-  --faculty-medicine: #2563eb; /* e kaltër */
-  --faculty-law: #7c3aed; /* vjollcë */
-  --faculty-science: #059669; /* e gjelbër */
-  --faculty-philology: #db2777; /* rozë */
-  --faculty-arts: #c026d3; /* magenta */
+  --primary: #1e3a6e;
+  --primary-hover: #172f5c;
+  --on-primary: #ffffff;
+  --primary-soft: rgb(30 58 110 / 0.1);
+  --primary-grad: linear-gradient(180deg, #26487f, #1a3466);
+  --sunset: linear-gradient(160deg, #2f8cff, #7c6cf5, #f5a524);
+  --sunset-pro: linear-gradient(90deg, #ffd166, #ffb020);
+  --sunset-title: linear-gradient(90deg, #1d5fe0, #1749b8);
+  --warning-line: rgb(217 119 6 / 0.3);
+  --like: #e11d48;
+  --like-soft: rgb(225 29 72 / 0.1);
+  --trip: #6d28d9;
+  --event: #1f6fd1;
+  --online: #16a34a;
+  --cat-violet: #6d28d9;
+  --cat-violet-bg: rgb(124 58 237 / 0.1);
+  --cat-amber: #b45309;
+  --cat-amber-bg: rgb(245 158 11 / 0.14);
+  --cat-teal: #1d5fe0;
+  --cat-teal-bg: rgb(29 95 224 / 0.1);
+  /* Zëri aktiv i shtyllës: kartë e bardhë mbi sfondin gri, si te referenca. */
+  --nav-active: linear-gradient(#ffffff, #ffffff);
+  --nav-active-ring: rgb(15 36 81 / 0.08);
+  --nav-active-icon: #1e3a6e;
+  --header: rgb(255 255 255 / 0.92);
+  --banner: linear-gradient(90deg, #02408a, #022a5e);
+  --banner-ink: #d3e2ff;
+  --banner-name: #ffd166;
+  --tab-active: #1e3a6e;
+  --on-tab-active: #ffffff;
+  --brand-word: #1e3a6e;
+  /* Fushat e hyrjes dhe regjistrimit (52px): një ton më i thellë se kartat. */
+  --field: #ffffff;
+  --field-hover: #f7f8fa;
+  --field-line: #d9dde4;
+  --field-line-strong: #bcc3cf;
+  --google-bg: #ffffff;
+  --google-ink: #1f2430;
+  /* Balonat e mia te biseda: blu e thellë, me tekst të bardhë (5:1 e më shumë). */
+  --bubble-mine: linear-gradient(135deg, #2563eb, #1d4ed8);
+  --ai-badge: #ffc15e;
+  --on-ai-badge: #2a1d00;
+  /* «E çelët»: sfond i qetë, pa drita pas faqes. */
+  --bgfx: none;
+  --blur: blur(16px) saturate(140%);
+  --shadow-card: 0 1px 2px rgb(11 26 54 / 0.04), 0 8px 24px rgb(15 36 81 / 0.06);
+  --shadow-primary: 0 10px 24px rgb(15 36 81 / 0.28);
+  --glow-brand: 0 0 0 1px rgb(29 95 224 / 0.15), 0 0 16px 2px rgb(29 95 224 / 0.3);
+  --glow-ai: 0 0 0 1px rgb(29 95 224 / 0.25), 0 0 26px 4px rgb(29 95 224 / 0.35);
+  --story-shade: linear-gradient(transparent 50%, rgb(0 0 0 / 0.7));
+  --story-glass: rgb(0 0 0 / 0.5);
+  --story-ink: #ffffff;
+  --image-a: linear-gradient(135deg, #1d5fe0, #00b4d8);
+  --image-b: linear-gradient(135deg, #6d5dfc, #ff6b8b);
 
-  --shadow-color-soft: 28 25 23;
-  --shadow-color-brand: 79 70 229;
+  /* Theksi i profilit Pro. Çifti mbushje / tekst, si te fakultetet. */
+  --p-brand: #1d5fe0;
+  --p-brand-text: #1749b8;
+  --p-amber: #f59e0b;
+  --p-amber-text: #b45309;
+  --p-emerald: #059669;
+  --p-emerald-text: #047857;
+  --p-sky: #0284c7;
+  --p-sky-text: #0369a1;
+  --p-violet: #7c3aed;
+  --p-violet-text: #6d28d9;
+  --p-rose: #e11d48;
+  --p-rose-text: #be123c;
+
+  /* Identiteti i 14 fakulteteve. Çifti mbushje / tekst. */
+  --f-economics: #f59e0b;
+  --f-economics-text: #a34a07;
+  --f-medicine: #0284c7;
+  --f-medicine-text: #0369a1;
+  --f-law: #7c3aed;
+  --f-law-text: #6d28d9;
+  --f-science: #059669;
+  --f-science-text: #047857;
+  --f-philology: #db2777;
+  --f-philology-text: #be185d;
+  --f-arts: #c026d3;
+  --f-arts-text: #a21caf;
+  --f-electrical: #0891b2;
+  --f-electrical-text: #0e7490;
+  --f-architecture: #78716c;
+  --f-architecture-text: #57534e;
+  --f-agriculture: #65a30d;
+  --f-agriculture-text: #45700d;
+  --f-education: #e11d48;
+  --f-education-text: #be123c;
+  --f-philosophy: #9333ea;
+  --f-philosophy-text: #7e22ce;
+  --f-mechanical: #475569;
+  --f-mechanical-text: #334155;
+  --f-sport: #0d9488;
+  --f-sport-text: #0f766e;
+  --f-mining: #ea580c;
+  --f-mining-text: #9a3412;
+
+  --shadow-color-soft: 11 26 54;
+  --shadow-color-brand: 29 95 224;
 
   color-scheme: light;
+  --count: #e6ebf3;
+  --on-count: #0b1a36;
 }
 
-:root:not([data-theme="light"]) {
+/* Vlerat e errësirës, të përsëritura te media query dhe te atributi, që tema të
+   jetë e saktë edhe para se JavaScript-i të ngarkohet. */
+:root:not([data-theme]) {
   @media (prefers-color-scheme: dark) {
-    --bg: #0c0a09;
-    --surface: #1c1917;
-    --surface-2: #292524;
-    --border: #44403c;
-    --text: #fafaf9;
-    --text-muted: #a8a29e;
-    --brand-500: #818cf8;
-    --brand-600: #a5b4fc;
-    --brand-50: #1e1b4b;
-    --accent-500: #fb923c;
-    --accent-50: #431407;
-    --success-50: #022c22;
-    --warning-50: #451a03;
-    --danger-50: #450a0a;
-    --brand-contrast: #1c1917;
-    --accent-text: #fb923c;
-    --success-text: #34d399;
-    --warning-text: #fbbf24;
-    --danger-text: #f87171;
-    --danger-solid: #dc2626;
+  --brand-500: #8ab8ff;
+  --brand-600: #b3d0ff;
+  --brand-50: rgb(138 184 255 / 0.18);
+  --brand-contrast: #10244d;
 
-    --faculty-economics: #fbbf24;
-    --faculty-medicine: #60a5fa;
-    --faculty-law: #a78bfa;
-    --faculty-science: #34d399;
-    --faculty-philology: #f472b6;
-    --faculty-arts: #e879f9;
+  --accent-500: #ffc15e;
+  --accent-50: rgb(255 193 94 / 0.12);
+  --accent-text: #ffc15e;
 
-    --shadow-color-soft: 0 0 0;
-    --shadow-color-brand: 129 140 248;
+  --success: #22c55e;
+  --success-50: rgb(34 197 94 / 0.13);
+  --success-text: #4ade80;
+  --warning: #ffc15e;
+  --warning-50: rgb(255 193 94 / 0.12);
+  --warning-text: #ffc15e;
+  --warning-line: rgb(255 193 94 / 0.32);
+  --danger-50: rgb(248 113 113 / 0.12);
+  --danger-text: #f87171;
 
-    color-scheme: dark;
+  /* Pro: ari, me tekst të errët që kalon 4.5:1 në të dy skajet. */
+  --pro-from: #ffd166;
+  --pro-to: #ffb020;
+  --pro-contrast: #2a1d00;
+
+  /* Sfondi i thellë blu i logos, me karta prej xhami të ftohtë. */
+  --bg: #0f2451;
+  --surface: rgb(255 255 255 / 0.065);
+  --surface-2: rgb(255 255 255 / 0.1);
+  --surface-solid: #152e61;
+  --border: rgb(190 210 255 / 0.18);
+  --border-strong: rgb(190 210 255 / 0.3);
+  --text: #ffffff;
+  --text-muted: #d2dcf2;
+  --text-dim: #afc0e2;
+
+  --primary: #f5f8ff;
+  --primary-hover: #ffffff;
+  --on-primary: #0f2451;
+  --primary-soft: rgb(255 255 255 / 0.12);
+  --primary-grad: linear-gradient(180deg, #ffffff, #e2e9f7);
+  --sunset: linear-gradient(160deg, #5ab0ff, #8b7bff, #ffc15e);
+  --sunset-pro: linear-gradient(90deg, #ffd166, #ffb020);
+  --sunset-title: linear-gradient(90deg, #8cc0ff, #5aa2ff);
+  --like: #ff6b8b;
+  --like-soft: rgb(255 107 139 / 0.13);
+  --trip: #b3a6ff;
+  --event: #7cc0ff;
+  --online: #22c55e;
+  --cat-violet: #b3a6ff;
+  --cat-violet-bg: rgb(139 123 255 / 0.15);
+  --cat-amber: #ffc15e;
+  --cat-amber-bg: rgb(255 193 94 / 0.13);
+  --cat-teal: #7cc0ff;
+  --cat-teal-bg: rgb(90 162 255 / 0.14);
+  --nav-active: rgb(255 255 255 / 0.11);
+  --nav-active-ring: rgb(255 255 255 / 0.16);
+  --nav-active-icon: #ffffff;
+  --header: rgb(15 36 81 / 0.86);
+  --banner: linear-gradient(90deg, #143270, #0f2760);
+  --banner-ink: #d3e2ff;
+  --banner-name: #ffd166;
+  --tab-active: #f5f8ff;
+  --on-tab-active: #0f2451;
+  --brand-word: #a9cbff;
+  --field: #17336a;
+  --field-hover: #1c3b77;
+  --field-line: #30508d;
+  --field-line-strong: #4768a8;
+  --google-bg: #ffffff;
+  --google-ink: #1f2430;
+  /* Balonat e mia te biseda: blu e thellë, me tekst të bardhë (5:1 e më shumë). */
+  --bubble-mine: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  --ai-badge: #ffc15e;
+  --on-ai-badge: #2a1d00;
+  --bgfx: radial-gradient(1100px 620px at 10% -10%, rgb(40 96 205 / 0.5), transparent),
+    radial-gradient(900px 560px at 100% 10%, rgb(30 82 195 / 0.38), transparent),
+    radial-gradient(900px 560px at 50% 115%, rgb(24 66 165 / 0.45), transparent);
+  --blur: blur(24px) saturate(140%);
+  --shadow-card: 0 18px 44px rgb(6 16 42 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.08);
+  --shadow-primary: 0 8px 24px rgb(5 15 40 / 0.35);
+  --glow-brand: 0 0 0 1px rgb(255 255 255 / 0.18), 0 0 20px 3px rgb(29 95 224 / 0.55);
+  --glow-ai: 0 0 0 1px rgb(140 190 255 / 0.45), 0 0 30px 5px rgb(29 95 224 / 0.6);
+  --story-shade: linear-gradient(transparent 50%, rgb(0 0 0 / 0.7));
+  --story-glass: rgb(0 0 0 / 0.55);
+  --story-ink: #ffffff;
+  --image-a: linear-gradient(135deg, #1d5fe0, #00b4d8);
+  --image-b: linear-gradient(135deg, #6d5dfc, #ff6b8b);
+
+  --p-brand: #5aa2ff;
+  --p-brand-text: #8cc0ff;
+  --p-amber: #f59e0b;
+  --p-amber-text: #fbbf24;
+  --p-emerald: #10b981;
+  --p-emerald-text: #34d399;
+  --p-sky: #0ea5e9;
+  --p-sky-text: #38bdf8;
+  --p-violet: #8b5cf6;
+  --p-violet-text: #c4b5fd;
+  --p-rose: #f43f5e;
+  --p-rose-text: #fda4af;
+
+  --f-economics-text: #fbbf24;
+  --f-medicine-text: #38bdf8;
+  --f-law-text: #c4b5fd;
+  --f-science-text: #2dd4bf;
+  --f-philology-text: #f9a8d4;
+  --f-arts-text: #f0abfc;
+  --f-electrical-text: #22d3ee;
+  --f-architecture-text: #d6d3d1;
+  --f-agriculture-text: #a3e635;
+  --f-education-text: #fda4af;
+  --f-philosophy-text: #d8b4fe;
+  --f-mechanical-text: #cbd5e1;
+  --f-sport-text: #2dd4bf;
+  --f-mining-text: #fb923c;
+
+  --shadow-color-soft: 6 16 42;
+  --shadow-color-brand: 29 95 224;
+
+  color-scheme: dark;
+  --count: #ffffff;
+  --on-count: #0f2451;
   }
 }
 
+[data-theme="blue"],
 [data-theme="dark"] {
-  --bg: #0c0a09;
-  --surface: #1c1917;
-  --surface-2: #292524;
-  --border: #44403c;
-  --text: #fafaf9;
-  --text-muted: #a8a29e;
-  --brand-500: #818cf8;
-  --brand-600: #a5b4fc;
-  --brand-50: #1e1b4b;
-  --accent-500: #fb923c;
-  --accent-50: #431407;
-  --success-50: #022c22;
-  --warning-50: #451a03;
-  --danger-50: #450a0a;
-  --brand-contrast: #1c1917;
-  --accent-text: #fb923c;
-  --success-text: #34d399;
-  --warning-text: #fbbf24;
+  --brand-500: #8ab8ff;
+  --brand-600: #b3d0ff;
+  --brand-50: rgb(138 184 255 / 0.18);
+  --brand-contrast: #10244d;
+
+  --accent-500: #ffc15e;
+  --accent-50: rgb(255 193 94 / 0.12);
+  --accent-text: #ffc15e;
+
+  --success: #22c55e;
+  --success-50: rgb(34 197 94 / 0.13);
+  --success-text: #4ade80;
+  --warning: #ffc15e;
+  --warning-50: rgb(255 193 94 / 0.12);
+  --warning-text: #ffc15e;
+  --warning-line: rgb(255 193 94 / 0.32);
+  --danger-50: rgb(248 113 113 / 0.12);
   --danger-text: #f87171;
-  --danger-solid: #dc2626;
 
-  --faculty-economics: #fbbf24;
-  --faculty-medicine: #60a5fa;
-  --faculty-law: #a78bfa;
-  --faculty-science: #34d399;
-  --faculty-philology: #f472b6;
-  --faculty-arts: #e879f9;
+  /* Pro: ari, me tekst të errët që kalon 4.5:1 në të dy skajet. */
+  --pro-from: #ffd166;
+  --pro-to: #ffb020;
+  --pro-contrast: #2a1d00;
 
-  --shadow-color-soft: 0 0 0;
-  --shadow-color-brand: 129 140 248;
+  /* Sfondi i thellë blu i logos, me karta prej xhami të ftohtë. */
+  --bg: #0f2451;
+  --surface: rgb(255 255 255 / 0.065);
+  --surface-2: rgb(255 255 255 / 0.1);
+  --surface-solid: #152e61;
+  --border: rgb(190 210 255 / 0.18);
+  --border-strong: rgb(190 210 255 / 0.3);
+  --text: #ffffff;
+  --text-muted: #d2dcf2;
+  --text-dim: #afc0e2;
+
+  --primary: #f5f8ff;
+  --primary-hover: #ffffff;
+  --on-primary: #0f2451;
+  --primary-soft: rgb(255 255 255 / 0.12);
+  --primary-grad: linear-gradient(180deg, #ffffff, #e2e9f7);
+  --sunset: linear-gradient(160deg, #5ab0ff, #8b7bff, #ffc15e);
+  --sunset-pro: linear-gradient(90deg, #ffd166, #ffb020);
+  --sunset-title: linear-gradient(90deg, #8cc0ff, #5aa2ff);
+  --like: #ff6b8b;
+  --like-soft: rgb(255 107 139 / 0.13);
+  --trip: #b3a6ff;
+  --event: #7cc0ff;
+  --online: #22c55e;
+  --cat-violet: #b3a6ff;
+  --cat-violet-bg: rgb(139 123 255 / 0.15);
+  --cat-amber: #ffc15e;
+  --cat-amber-bg: rgb(255 193 94 / 0.13);
+  --cat-teal: #7cc0ff;
+  --cat-teal-bg: rgb(90 162 255 / 0.14);
+  --nav-active: rgb(255 255 255 / 0.11);
+  --nav-active-ring: rgb(255 255 255 / 0.16);
+  --nav-active-icon: #ffffff;
+  --header: rgb(15 36 81 / 0.86);
+  --banner: linear-gradient(90deg, #143270, #0f2760);
+  --banner-ink: #d3e2ff;
+  --banner-name: #ffd166;
+  --tab-active: #f5f8ff;
+  --on-tab-active: #0f2451;
+  --brand-word: #a9cbff;
+  --field: #17336a;
+  --field-hover: #1c3b77;
+  --field-line: #30508d;
+  --field-line-strong: #4768a8;
+  --google-bg: #ffffff;
+  --google-ink: #1f2430;
+  /* Balonat e mia te biseda: blu e thellë, me tekst të bardhë (5:1 e më shumë). */
+  --bubble-mine: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  --ai-badge: #ffc15e;
+  --on-ai-badge: #2a1d00;
+  --bgfx: radial-gradient(1100px 620px at 10% -10%, rgb(40 96 205 / 0.5), transparent),
+    radial-gradient(900px 560px at 100% 10%, rgb(30 82 195 / 0.38), transparent),
+    radial-gradient(900px 560px at 50% 115%, rgb(24 66 165 / 0.45), transparent);
+  --blur: blur(24px) saturate(140%);
+  --shadow-card: 0 18px 44px rgb(6 16 42 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.08);
+  --shadow-primary: 0 8px 24px rgb(5 15 40 / 0.35);
+  --glow-brand: 0 0 0 1px rgb(255 255 255 / 0.18), 0 0 20px 3px rgb(29 95 224 / 0.55);
+  --glow-ai: 0 0 0 1px rgb(140 190 255 / 0.45), 0 0 30px 5px rgb(29 95 224 / 0.6);
+  --story-shade: linear-gradient(transparent 50%, rgb(0 0 0 / 0.7));
+  --story-glass: rgb(0 0 0 / 0.55);
+  --story-ink: #ffffff;
+  --image-a: linear-gradient(135deg, #1d5fe0, #00b4d8);
+  --image-b: linear-gradient(135deg, #6d5dfc, #ff6b8b);
+
+  --p-brand: #5aa2ff;
+  --p-brand-text: #8cc0ff;
+  --p-amber: #f59e0b;
+  --p-amber-text: #fbbf24;
+  --p-emerald: #10b981;
+  --p-emerald-text: #34d399;
+  --p-sky: #0ea5e9;
+  --p-sky-text: #38bdf8;
+  --p-violet: #8b5cf6;
+  --p-violet-text: #c4b5fd;
+  --p-rose: #f43f5e;
+  --p-rose-text: #fda4af;
+
+  --f-economics-text: #fbbf24;
+  --f-medicine-text: #38bdf8;
+  --f-law-text: #c4b5fd;
+  --f-science-text: #2dd4bf;
+  --f-philology-text: #f9a8d4;
+  --f-arts-text: #f0abfc;
+  --f-electrical-text: #22d3ee;
+  --f-architecture-text: #d6d3d1;
+  --f-agriculture-text: #a3e635;
+  --f-education-text: #fda4af;
+  --f-philosophy-text: #d8b4fe;
+  --f-mechanical-text: #cbd5e1;
+  --f-sport-text: #2dd4bf;
+  --f-mining-text: #fb923c;
+
+  --shadow-color-soft: 6 16 42;
+  --shadow-color-brand: 29 95 224;
 
   color-scheme: dark;
+  /* Numrat te shtylla: pilulë e bardhë me tekst blu, lexohet me një shikim. */
+  --count: #ffffff;
+  --on-count: #0f2451;
+}
+
+/* «E errët», sipas referencës: pothuaj e zezë, karta pak më të çelëta me kufi të
+   hollë, veprimet kryesore të bardha. Theksi blu dhe ngjyrat e roleve mbeten nga
+   blloku i përbashkët; ndryshojnë sfondi, sipërfaqet, tekstet dhe numrat. */
+:root[data-theme="dark"] {
+  --bg: #0b0d12;
+  --surface: rgb(255 255 255 / 0.04);
+  --surface-2: rgb(255 255 255 / 0.075);
+  --surface-solid: #15181e;
+  --border: rgb(255 255 255 / 0.09);
+  --border-strong: rgb(255 255 255 / 0.18);
+  --text: #ffffff;
+  --text-muted: #c9ced8;
+  --text-dim: #9aa1ae;
+
+  --primary: #f5f6f8;
+  --primary-hover: #ffffff;
+  --on-primary: #0b0d12;
+  --primary-soft: rgb(255 255 255 / 0.1);
+  --primary-grad: linear-gradient(180deg, #ffffff, #e6e8ec);
+  --brand-contrast: #0b0d12;
+  --nav-active: linear-gradient(rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.06));
+  --nav-active-ring: rgb(255 255 255 / 0.1);
+  --nav-active-icon: #ffffff;
+  --header: rgb(11 13 18 / 0.9);
+  --banner: linear-gradient(90deg, #14171d, #0b0d12);
+  --tab-active: #f5f6f8;
+  --on-tab-active: #0b0d12;
+  --field: #14171d;
+  --field-hover: #1a1d24;
+  --field-line: #2a2f38;
+  --field-line-strong: #3d434f;
+  --bgfx: none;
+  --shadow-card: 0 18px 44px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / 0.04);
+  --shadow-primary: 0 8px 24px rgb(0 0 0 / 0.5);
+  --shadow-color-soft: 0 0 0;
+  --count: #262a33;
+  --on-count: #f1f3f6;
+}
+
+/* ---------------------------------------------------------------------------
+   Dizajnet e profilit, vetëm Pro (`PROFILE_THEMES` te `lib/pro.ts`).
+   Mbështjellësi i profilit merr `data-profile-theme`: kopertina, theksi dhe
+   tinti i kartave ndryshojnë vetëm brenda tij. Theksi ka vlerë tjetër në errësirë,
+   që teksti të lexohet njësoj mirë në të dy temat.
+   --------------------------------------------------------------------------- */
+
+[data-profile-theme="aurora"] {
+  --pt-fill: #14b8a6;
+  --pt-accent: #0f766e;
+  --pt-cover: linear-gradient(120deg, #0ea5e9 0%, #8b5cf6 55%, #14b8a6 100%);
+}
+[data-profile-theme="sunset"] {
+  --pt-fill: #f97316;
+  --pt-accent: #c2410c;
+  --pt-cover: linear-gradient(120deg, #f97316 0%, #ec4899 55%, #8b5cf6 100%);
+}
+[data-profile-theme="forest"] {
+  --pt-fill: #10b981;
+  --pt-accent: #047857;
+  --pt-cover: linear-gradient(120deg, #064e3b 0%, #10b981 55%, #a3e635 100%);
+}
+[data-profile-theme="midnight"] {
+  --pt-fill: #8b5cf6;
+  --pt-accent: #6d28d9;
+  --pt-cover: linear-gradient(120deg, #1e1b4b 0%, #4c1d95 50%, #7c3aed 100%);
+}
+[data-profile-theme="gold"] {
+  --pt-fill: #f59e0b;
+  --pt-accent: #a16207;
+  --pt-cover: linear-gradient(120deg, #1c1917 0%, #78350f 50%, #f59e0b 100%);
+}
+
+[data-theme="blue"] [data-profile-theme="aurora"],
+[data-theme="dark"] [data-profile-theme="aurora"] {
+  --pt-accent: #5eead4;
+}
+[data-theme="blue"] [data-profile-theme="sunset"],
+[data-theme="dark"] [data-profile-theme="sunset"] {
+  --pt-accent: #fdba74;
+}
+[data-theme="blue"] [data-profile-theme="forest"],
+[data-theme="dark"] [data-profile-theme="forest"] {
+  --pt-accent: #6ee7b7;
+}
+[data-theme="blue"] [data-profile-theme="midnight"],
+[data-theme="dark"] [data-profile-theme="midnight"] {
+  --pt-accent: #c4b5fd;
+}
+[data-theme="blue"] [data-profile-theme="gold"],
+[data-theme="dark"] [data-profile-theme="gold"] {
+  --pt-accent: #fcd34d;
+}
+
+:root:not([data-theme]) {
+  @media (prefers-color-scheme: dark) {
+    [data-profile-theme="aurora"] {
+      --pt-accent: #5eead4;
+    }
+    [data-profile-theme="sunset"] {
+      --pt-accent: #fdba74;
+    }
+    [data-profile-theme="forest"] {
+      --pt-accent: #6ee7b7;
+    }
+    [data-profile-theme="midnight"] {
+      --pt-accent: #c4b5fd;
+    }
+    [data-profile-theme="gold"] {
+      --pt-accent: #fcd34d;
+    }
+  }
+}
+
+/* Çfarë ndryshon brenda profilit me dizajn. */
+[data-profile-theme] {
+  --brand-500: var(--pt-accent);
+  --brand-600: var(--pt-accent);
+  --brand-word: var(--pt-accent);
+  --nav-active-icon: var(--pt-accent);
+  --brand-50: color-mix(in oklab, var(--pt-fill) 18%, transparent);
+  --pro-accent-fill: var(--pt-fill);
+  --pro-accent-text: var(--pt-accent);
+  --surface: color-mix(in oklab, var(--pt-fill) 9%, var(--surface-2));
+  --border: color-mix(in oklab, var(--pt-fill) 35%, var(--border-strong));
 }
 
 /* ---------------------------------------------------------------------------
@@ -136,37 +549,82 @@
   --color-brand-50: var(--brand-50);
   --color-brand-500: var(--brand-500);
   --color-brand-600: var(--brand-600);
+  --color-brand-contrast: var(--brand-contrast);
+
   --color-accent-50: var(--accent-50);
   --color-accent-500: var(--accent-500);
+  --color-accent-text: var(--accent-text);
 
   --color-success: var(--success);
   --color-success-50: var(--success-50);
+  --color-success-text: var(--success-text);
   --color-warning: var(--warning);
   --color-warning-50: var(--warning-50);
+  --color-warning-text: var(--warning-text);
   --color-danger: var(--danger);
   --color-danger-50: var(--danger-50);
-  --color-danger-solid: var(--danger-solid);
-  --color-brand-contrast: var(--brand-contrast);
-  --color-accent-text: var(--accent-text);
-  --color-success-text: var(--success-text);
-  --color-warning-text: var(--warning-text);
   --color-danger-text: var(--danger-text);
+  --color-danger-solid: var(--danger-solid);
+
+  --color-pro-from: var(--pro-from);
+  --color-pro-to: var(--pro-to);
+  --color-pro-contrast: var(--pro-contrast);
 
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-solid: var(--surface-solid);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-text: var(--text);
   --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-dim);
 
-  --color-faculty-economics: var(--faculty-economics);
-  --color-faculty-medicine: var(--faculty-medicine);
-  --color-faculty-law: var(--faculty-law);
-  --color-faculty-science: var(--faculty-science);
-  --color-faculty-philology: var(--faculty-philology);
-  --color-faculty-arts: var(--faculty-arts);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
+  --color-count: var(--count);
+  --color-on-count: var(--on-count);
+  --color-primary-soft: var(--primary-soft);
+  --color-warning-line: var(--warning-line);
+  --color-like: var(--like);
+  --color-like-soft: var(--like-soft);
+  --color-trip: var(--trip);
+  --color-event: var(--event);
+  --color-banner-ink: var(--banner-ink);
+  --color-banner-name: var(--banner-name);
+  --color-nav-active-icon: var(--nav-active-icon);
+  --color-brand-word: var(--brand-word);
+  --color-field: var(--field);
+  --color-field-hover: var(--field-hover);
+  --color-field-line: var(--field-line);
+  --color-field-line-strong: var(--field-line-strong);
+  --color-google-bg: var(--google-bg);
+  --color-google-ink: var(--google-ink);
+  --color-ai-badge: var(--ai-badge);
+  --color-on-ai-badge: var(--on-ai-badge);
+  --color-online: var(--online);
+  --color-cat-violet: var(--cat-violet);
+  --color-cat-violet-bg: var(--cat-violet-bg);
+  --color-cat-amber: var(--cat-amber);
+  --color-cat-amber-bg: var(--cat-amber-bg);
+  --color-cat-teal: var(--cat-teal);
+  --color-cat-teal-bg: var(--cat-teal-bg);
+  --color-header: var(--header);
+  --color-tab-active: var(--tab-active);
+  --color-on-tab-active: var(--on-tab-active);
+  --color-story-glass: var(--story-glass);
+  --color-story-ink: var(--story-ink);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-faculty: var(--faculty-fill, var(--brand-500));
+  --color-faculty-text: var(--faculty-text, var(--brand-500));
+
+  /* Theksi i profilit Pro. Bie te ngjyra e brendit kur nuk është zgjedhur asgjë. */
+  --color-accentpro: var(--pro-accent-fill, var(--brand-500));
+  --color-accentpro-text: var(--pro-accent-text, var(--brand-500));
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), var(--font-jakarta), ui-sans-serif, sans-serif;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 
@@ -196,57 +654,68 @@
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-2xl: 32px;
+  /* Forma e «Blu»: kartat 22, kontrollet (butona, fusha, zëra navigimi, tabs) 14. */
+  --radius-card: 22px;
+  --radius-control: 14px;
 
   /* Hije të buta me ngjyrë brand, kurrë të zeza. */
   --shadow-soft: 0 1px 2px rgb(var(--shadow-color-soft) / 0.04),
     0 8px 24px rgb(var(--shadow-color-brand) / 0.06);
   --shadow-lifted: 0 1px 2px rgb(var(--shadow-color-soft) / 0.05),
     0 16px 40px rgb(var(--shadow-color-brand) / 0.12);
-  --shadow-inset: inset 0 1px 0 rgb(255 255 255 / 0.04);
+  --shadow-glass: var(--shadow-card);
+  --shadow-cta: var(--shadow-primary);
+  --shadow-glow-brand: var(--glow-brand);
+  --shadow-glow-ai: var(--glow-ai);
 
   --ease-brand: cubic-bezier(0.32, 0.72, 0, 1);
 
   --animate-shimmer: shimmer 1.5s ease-in-out infinite;
+  --animate-nav-progress: nav-progress 12s var(--ease-brand) both;
   --animate-rise: rise 400ms var(--ease-brand) both;
+  --animate-bubble: bubble-in 150ms ease-out both;
+  --animate-typing: typing-dot 1.2s ease-in-out infinite;
   --animate-fade-in: fade-in 250ms var(--ease-brand) both;
   --animate-slide-up: slide-up 250ms var(--ease-brand) both;
-  --animate-slide-right: slide-right 250ms var(--ease-brand) both;
-  --animate-slide-left: slide-left 250ms var(--ease-brand) both;
   --animate-slide-down: slide-down 250ms var(--ease-brand) both;
+  --animate-slide-left: slide-left 250ms var(--ease-brand) both;
+  --animate-slide-right: slide-right 250ms var(--ease-brand) both;
+  /* Hyrja e faqes. `backwards` e heq transformimin pasi mbaron, që elementët
+     `fixed` dhe `sticky` brenda faqes të mos humbasin pikën e tyre të referimit. */
+  --animate-page: page-in 250ms var(--ease-brand) backwards;
+  /* Pëlqimi: zemra fryhet dhe kthehet, një herë. */
+  --animate-pop: pop 400ms var(--ease-brand);
 
-  @keyframes slide-up {
+  /* Shiriti i navigimit: nis shpejt, ngadalësohet, kurrë nuk e arrin fundin
+     derisa faqja të vijë vërtet. */
+  @keyframes nav-progress {
+    0% { transform: scaleX(0); }
+    12% { transform: scaleX(0.35); }
+    40% { transform: scaleX(0.65); }
+    100% { transform: scaleX(0.92); }
+  }
+
+  /* Balona e re te biseda: hyn shpejt, me pak ngritje. */
+  @keyframes bubble-in {
     from {
-      transform: translateY(100%);
+      opacity: 0;
+      transform: translateY(4px);
     }
     to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Tri pikat e «po shkruan». */
+  @keyframes typing-dot {
+    0%, 60%, 100% {
+      opacity: 0.35;
       transform: translateY(0);
     }
-  }
-
-  @keyframes slide-down {
-    from {
-      transform: translateY(-100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slide-right {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes slide-left {
-    from {
-      transform: translateX(100%);
-    }
-    to {
-      transform: translateX(0);
+    30% {
+      opacity: 1;
+      transform: translateY(-3px);
     }
   }
 
@@ -270,12 +739,71 @@
     }
   }
 
+  @keyframes page-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+    }
+    35% {
+      transform: scale(1.28);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
   @keyframes fade-in {
     from {
       opacity: 0;
     }
     to {
       opacity: 1;
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-down {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-left {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-right {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
     }
   }
 }
@@ -292,6 +820,9 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* Vendi i shiritit rezervohet gjithmonë: faqja nuk kërcen anash kur një
+       faqe e shkurtër ndërrohet me një të gjatë. */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -308,6 +839,7 @@
   h2,
   h3,
   h4 {
+    font-family: var(--font-display);
     line-height: 1.1;
     text-wrap: balance;
     letter-spacing: -0.02em;
@@ -317,10 +849,17 @@
     text-wrap: pretty;
   }
 
-  /* Numrat lexohen si kolonë, jo si tekst. */
+  /* Numrat lexohen si kolonë: shifra me gjerësi të njëjtë, në shkronjën e tekstit.
+     Mono mbetet vetëm për shkurtoret e tastierës dhe kodin. */
   .tabular {
-    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Lista e një <select> vendas merr ngjyrat e temës: pa këtë, në errësirë dilte e bardhë. */
+  select option,
+  select optgroup {
+    background-color: var(--surface-solid);
+    color: var(--text);
   }
 
   :focus-visible {
@@ -333,7 +872,7 @@
     background-color: color-mix(in oklab, var(--brand-500) 22%, transparent);
   }
 
-  /* Gjatësia maksimale e rreshtit 68 karaktere. */
+  /* Gjatësia maksimale e rreshtit: 68 karaktere. */
   .measure {
     max-width: 68ch;
   }
@@ -350,9 +889,29 @@
     animation: var(--animate-shimmer);
   }
 
+  /* Gradienti i Pro-s, i përdorur nga badge dhe nga CTA-të e Pro-s. */
+  .pro-gradient {
+    background-image: linear-gradient(100deg, var(--pro-from) 0%, var(--pro-to) 100%);
+  }
+
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
+  }
+
+  /* Rreshtat që rrëshqasin anash (storiet, filtrat) nuk tregojnë shirit: gishti dhe
+     rrota e dinë vetë ku të shkojnë. */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Skaji i djathtë zbehet, që një çip i prerë të lexohet si «ka edhe», jo si gabim. */
+  .scroll-fade-x {
+    mask-image: linear-gradient(to right, black calc(100% - 40px), transparent);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -364,5 +923,176 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   4. Dizajni «Aurora»: xhami, aurora, perëndimi.
+   --------------------------------------------------------------------------- */
+
+/* Karta prej xhami: kutitë e shtyllave, kompozuesi, postimet. */
+@utility glass {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+}
+
+/* Teksti me gradient: «Nga Studentët.KS» dhe «.KS» te logoja. */
+@utility text-sunset {
+  background-image: var(--sunset-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-sunset-pro {
+  background-image: var(--sunset-pro);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Butonat kryesorë (Posto, Krijo): gradienti blu i referencës. */
+@utility bg-bubble-mine {
+  background-image: var(--bubble-mine);
+}
+
+@utility bg-primary-grad {
+  background-image: var(--primary-grad);
+}
+
+@utility bg-banner {
+  background-image: var(--banner);
+}
+
+@utility bg-sunset {
+  background-image: var(--sunset);
+}
+
+@utility bg-sunset-pro {
+  background-image: var(--sunset-pro);
+}
+
+@utility bg-nav-active {
+  background-image: var(--nav-active);
+  background-color: transparent;
+}
+
+@layer base {
+  /* Sfondi «Blu»: drita të gjera blu, të fiksuara pas gjithçkaje (`--bgfx`). */
+  .aurora {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background-image: var(--bgfx);
+  }
+
+  .aurora > span {
+    display: none;
+  }
+
+  /* Unaza e storjes së pashikuar: vetëm kufiri i gradientit, pa mbushje. */
+  .story-ring::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    padding: 2.5px;
+    background: var(--sunset);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .story-ring[data-seen="true"]::before {
+    background: var(--border-strong);
+  }
+
+  /* Hija e poshtme e kartës së storjes, që emri të lexohet mbi çdo foto. */
+  .story-shade::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--story-shade);
+    pointer-events: none;
+  }
+
+  .bg-image-a {
+    background-image: var(--image-a);
+  }
+
+  .bg-image-b {
+    background-image: var(--image-b);
+  }
+}
+
+/* Filtrat e feed-it: aktivi është pilulë e çelët me tekst të errët, të tjerët tekst i qetë. */
+@layer components {
+  .feed-tab {
+    color: var(--text-muted);
+    transition:
+      background-color 200ms ease-out,
+      color 200ms ease-out;
+  }
+
+  .feed-tab:hover {
+    color: var(--text);
+    background-color: var(--surface-2);
+  }
+
+  .feed-tab[aria-current="page"] {
+    color: var(--on-tab-active);
+    background-color: var(--tab-active);
+  }
+}
+
+/* Pa backdrop-filter, xhami bëhet sipërfaqe e plotë, që teksti të mbetet i lexueshëm. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html {
+    --surface: var(--surface-solid) !important;
+    --header: var(--surface-solid) !important;
+  }
+}
+
+/* Printimi: CV-ja duhet të dalë e lexueshme edhe pa ngjyra dhe pa navigim. */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #ffffff;
+    --text: #000000;
+    --text-muted: #444444;
+    --border: #cccccc;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .no-print,
+  header[class*="sticky"],
+  nav[class*="fixed"],
+  aside {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  a[href]::after {
+    content: "";
+  }
+
+  .print-page {
+    box-shadow: none !important;
+    border: 0 !important;
   }
 }

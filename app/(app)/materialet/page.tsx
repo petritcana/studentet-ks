@@ -1,202 +1,110 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Upload } from "lucide-react";
-import { PageHeader } from "@/components/layout/page-header";
-import { MaterialCard } from "@/components/academic/material-card";
-import { LibraryFilters } from "@/components/academic/library-filters";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { SkeletonMaterial } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { SegmentedNav } from "@/components/shared/segmented-nav";
+import { MaterialFiltersBar } from "@/components/materials/material-filters";
+import { MaterialRow } from "@/components/materials/material-row";
 import { db } from "@/lib/db";
+import { getMaterials } from "@/lib/queries/materials";
 import { requireUser } from "@/lib/session";
-import { facultyTheme } from "@/lib/faculties";
-import { MATERIAL_TYPES, MATERIAL_TYPE_LABELS, type MaterialType } from "@/lib/constants";
-import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Materialet",
-  description: "Biblioteka e lëndëve: skripta, shënime, provime të kaluara dhe detyra.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("material");
+  return { title: t("title"), description: t("subtitle") };
+}
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = {
-  lenda?: string;
-  lloj?: string;
-  vit?: string;
-  q?: string;
-  fakulteti?: string;
-};
-
-export default async function LibraryPage({
+export default async function MaterialsPage({
   searchParams,
 }: {
-  searchParams: Promise<SearchParams>;
+  searchParams: Promise<{ tab?: string; q?: string; lenda?: string; lloji?: string }>;
 }) {
-  const params = await searchParams;
-  const user = await requireUser();
+  const [me, locale, params, t, te] = await Promise.all([
+    requireUser(),
+    getLocale(),
+    searchParams,
+    getTranslations("material"),
+    getTranslations("empty"),
+  ]);
 
-  const [faculties, myCourses] = await Promise.all([
-    db.faculty.findMany({
-      where: { university: { abbr: "UP" } },
-      select: { id: true, name: true, color: true },
+  const scope =
+    params.tab === "krejt" ? "all" : ("faculty" as const);
+
+  const [materials, courses] = await Promise.all([
+    getMaterials(
+      { ...me.access, courseIds: me.courseIds },
+      { q: params.q, courseId: params.lenda, type: params.lloji, scope },
+      locale,
+    ),
+    db.course.findMany({
+      where: { enrollments: { some: { userId: me.id } } },
       orderBy: { name: "asc" },
-    }),
-    db.enrollment.findMany({
-      where: { userId: user.id },
-      select: {
-        course: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-            year: true,
-            _count: { select: { materials: true } },
-          },
-        },
-      },
-      orderBy: { course: { name: "asc" } },
+      select: { id: true, name: true, nameEn: true },
     }),
   ]);
 
   return (
-    <div className="flex flex-col gap-5">
-      <PageHeader
-        title="Materialet"
-        description="Hierarkia është universiteti, fakulteti, lënda, lloji. Çdo material lidhet me lëndën, jo me një folder që humb."
-        action={
-          <Button asChild size="sm">
-            <Link href="/materialet/ngarko">
-              <Upload />
-              Ngarko
-            </Link>
-          </Button>
-        }
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-5">
+      <header className="flex flex-wrap items-start gap-3">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-text">{t("title")}</h1>
+          <p className="measure text-sm text-text-muted">{t("subtitle")}</p>
+        </div>
+        <Button asChild size="sm">
+          <Link href="/materialet/ngarko">
+            <Upload />
+            {t("upload")}
+          </Link>
+        </Button>
+      </header>
+
+      {/*
+        Dy shtrirje, jo tri.
+
+        «Lëndët e mia» kërkonte që studenti të kishte zgjedhur lëndët një nga
+        një, dhe pa atë hap skeda dilte bosh dhe dukej si e prishur. Fakulteti e
+        mbulon të njëjtën nevojë pa kërkuar asgjë paraprakisht.
+      */}
+      <SegmentedNav
+        base="/materialet"
+        active={params.tab ?? "fakulteti"}
+        items={[
+          { value: "fakulteti", label: t("facultyScope") },
+          { value: "krejt", label: t("allScope") },
+        ]}
       />
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-text">Lëndët e mia</h2>
-        {myCourses.length === 0 ? (
-          <EmptyState
-            illustration="materials"
-            compact
-            title="Ende s'ke lëndë të zgjedhura"
-            description="Shto lëndët e semestrit dhe biblioteka fillon të filtrohet vetë për ty."
-            action={
-              <Button asChild variant="outline">
-                <Link href="/cilesimet">Shto lëndët</Link>
-              </Button>
-            }
-          />
-        ) : (
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {myCourses.map(({ course }) => (
-              <Link key={course.id} href={`/lenda/${course.id}`}>
-                <Card interactive className="p-3">
-                  <p className="truncate text-sm font-medium text-text">{course.name}</p>
-                  <p className="mt-0.5 truncate text-xs text-text-muted">
-                    {course.code} · {course._count.materials} materiale
-                  </p>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <LibraryFilters
-        faculties={faculties.map((faculty) => ({
-          id: faculty.id,
-          label: facultyTheme(faculty.color).shortLabel,
-          color: faculty.color,
-        }))}
-        types={MATERIAL_TYPES.map((type) => ({
-          value: type,
-          label: MATERIAL_TYPE_LABELS[type as MaterialType],
+      <MaterialFiltersBar
+        courses={courses.map((course) => ({
+          id: course.id,
+          name: locale === "en" ? course.nameEn : course.name,
         }))}
       />
 
-      <Suspense fallback={<LibrarySkeleton />} key={JSON.stringify(params)}>
-        <MaterialResults params={params} />
-      </Suspense>
+      <p className="text-xs text-text-muted">{t("verifiedFirst")}</p>
+
+      {materials.length === 0 ? (
+        <EmptyState
+          illustration="materials"
+          title={te("course.title")}
+          description={te("course.body")}
+          action={
+            <Button asChild size="sm">
+              <Link href="/materialet/ngarko">{te("course.action")}</Link>
+            </Button>
+          }
+        />
+      ) : (
+        <div className="flex flex-col gap-2">
+          {materials.map((material) => (
+            <MaterialRow key={material.id} material={material} />
+          ))}
+        </div>
+      )}
     </div>
-  );
-}
-
-function LibrarySkeleton() {
-  return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      {Array.from({ length: 6 }).map((_, index) => (
-        <SkeletonMaterial key={index} />
-      ))}
-    </div>
-  );
-}
-
-async function MaterialResults({ params }: { params: SearchParams }) {
-  const materials = await db.material.findMany({
-    where: {
-      isHidden: false,
-      ...(params.lloj ? { type: params.lloj } : {}),
-      ...(params.vit ? { academicYear: { contains: params.vit } } : {}),
-      ...(params.q ? { title: { contains: params.q } } : {}),
-      ...(params.fakulteti
-        ? { course: { department: { facultyId: params.fakulteti } } }
-        : {}),
-      ...(params.lenda ? { courseId: params.lenda } : {}),
-    },
-    orderBy: [{ verificationStatus: "asc" }, { downloads: "desc" }],
-    take: 40,
-    select: {
-      id: true,
-      title: true,
-      type: true,
-      size: true,
-      pages: true,
-      rating: true,
-      ratingCount: true,
-      downloads: true,
-      academicYear: true,
-      professor: true,
-      verificationStatus: true,
-      course: { select: { id: true, name: true } },
-      uploader: {
-        select: { name: true, username: true, avatar: true, isVerified: true },
-      },
-    },
-  });
-
-  if (materials.length === 0) {
-    return (
-      <EmptyState
-        illustration="search"
-        title="S'gjetëm materiale me këto filtra"
-        description="Provo pa filtrin e llojit, ose kërko emrin e lëndës ashtu si shkruhet në silabus."
-        action={
-          <Button asChild variant="outline">
-            <Link href="/materialet">Pastro filtrat</Link>
-          </Button>
-        }
-      />
-    );
-  }
-
-  return (
-    <section className="flex flex-col gap-3">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 className="text-sm font-semibold text-text">
-          Rezultatet ({materials.length})
-        </h2>
-        <Badge variant="neutral">Të verifikuarat dalin të parat</Badge>
-      </div>
-      <div className={cn("grid grid-cols-1 gap-3 sm:grid-cols-2")}>
-        {materials.map((material) => (
-          <MaterialCard key={material.id} material={material} />
-        ))}
-      </div>
-    </section>
   );
 }

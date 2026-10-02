@@ -2,74 +2,72 @@
 
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
-import {
-  explainSimply,
-  makeFlashcards,
-  makeQuiz,
-  summarize,
-  type AiResult,
-  type Flashcard,
-  type QuizQuestion,
-} from "@/lib/ai";
+import { aiLimits } from "@/lib/access";
+import { discardQuestion, finishAsk, prepareAsk, type AskInput } from "@/lib/ai/ask";
+import { getAssistant } from "@/lib/ai/models";
+import type { AiAnswer, AiSource } from "@/lib/ai/provider";
+import { fail, succeed, type ActionState } from "./types";
 
-async function loadMaterial(materialId: string) {
-  await requireUser();
-  const material = await db.material.findUnique({
-    where: { id: materialId },
-    select: {
-      id: true,
-      title: true,
-      type: true,
-      pages: true,
-      professor: true,
-      description: true,
-      isHidden: true,
-      course: { select: { name: true } },
-    },
-  });
-  if (!material || material.isHidden) return null;
+export type AskResult = ActionState & {
+  conversationId?: string;
+  answer?: string;
+  sources?: AiSource[];
+  lockedCount?: number;
+  remaining?: number;
+};
+
+/**
+ * Pyetja drejtuar asistentit, pa rrjedhe.
+ *
+ * Rruga `/api/asistenti` e rrjedh te njejten përgjigje shkronje për shkronje dhe
+ * është ajo që përdor dock-u. Ky veprim mbetet për thirrjet nga serveri dhe si
+ * rrugë rezerve kur rrjedha nuk ndizet.
+ */
+export async function askAssistant(input: AskInput): Promise<AskResult> {
+  const prepared = await prepareAsk(input);
+  if (!prepared.ok) {
+    return { ...fail(prepared.messageKey), remaining: prepared.remaining };
+  }
+
+  let answer: AiAnswer | null = null;
+  try {
+    answer = await getAssistant().provider.answer(prepared.request);
+  } catch {
+    answer = null;
+  }
+  if (!answer) {
+    await discardQuestion(prepared.userMessageId, prepared.conversationId);
+    return fail("assistantDock.unavailable");
+  }
+  await finishAsk(prepared.conversationId, prepared.request.mode, answer);
 
   return {
-    title: material.title,
-    courseName: material.course.name,
-    professor: material.professor,
-    description: material.description,
-    pages: material.pages,
-    type: material.type,
-    href: `/materialet/${material.id}`,
+    ...succeed(),
+    conversationId: prepared.conversationId,
+    answer: answer.content,
+    sources: answer.sources,
+    lockedCount: prepared.lockedCount,
+    remaining: prepared.remaining,
   };
 }
 
-export async function summarizeMaterial(
-  materialId: string,
-): Promise<AiResult<string[]> | null> {
-  const input = await loadMaterial(materialId);
-  return input ? summarize(input) : null;
+export async function deleteConversation(conversationId: string): Promise<ActionState> {
+  const me = await requireUser();
+  await db.aiConversation.deleteMany({ where: { id: conversationId, userId: me.id } });
+  return succeed();
 }
 
-export async function flashcardsForMaterial(
-  materialId: string,
-): Promise<AiResult<Flashcard[]> | null> {
-  const input = await loadMaterial(materialId);
-  return input ? makeFlashcards(input) : null;
-}
+/**
+ * Pastrimi i historikut sipas planit.
+ *
+ * Llogaritë falas e mbajnë historikun shtatë ditë. Kjo nuk është ndëshkim: është
+ * kufiri që e mban koston e ruajtjes të parashikueshme, dhe thuhet hapur në UI.
+ */
+export async function pruneHistory(): Promise<ActionState> {
+  const me = await requireUser();
+  const limits = aiLimits(me.access);
+  const cutoff = new Date(Date.now() - limits.historyDays * 86_400_000);
 
-export async function quizForMaterial(
-  materialId: string,
-): Promise<AiResult<QuizQuestion[]> | null> {
-  const input = await loadMaterial(materialId);
-  return input ? makeQuiz(input) : null;
-}
-
-export async function explainParagraph(
-  materialId: string,
-  paragraph: string,
-): Promise<AiResult<string> | null> {
-  const input = await loadMaterial(materialId);
-  if (!input) return null;
-  return explainSimply(paragraph, {
-    courseName: input.courseName,
-    href: input.href,
-    title: input.title,
-  });
+  await db.aiConversation.deleteMany({ where: { userId: me.id, updatedAt: { lt: cutoff } } });
+  return succeed();
 }

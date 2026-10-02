@@ -1,35 +1,28 @@
 "use client";
 
 import * as React from "react";
-import { ShieldAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { RadioGroup, RadioRow } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { reportContent } from "@/lib/actions/posts";
-import { REPORT_REASONS, REPORT_REASON_LABELS, type ReportReason } from "@/lib/constants";
+import { REPORT_REASONS } from "@/lib/types";
 
-const DESCRIPTIONS: Record<ReportReason, string> = {
-  harassment: "Sulm ndaj një personi ose grupi.",
-  hate: "Gjuhë urrejtjeje mbi baza etnike, fetare, gjinore ose të tjera.",
-  targeting: "Përmend një person me emër në një kanal ku nuk lejohet.",
-  sexual: "Përmbajtje seksuale.",
-  threat: "Kërcënim ndaj sigurisë së dikujt.",
-  spam: "Reklamë, linqe të përsëritura ose tekst i pakuptimtë.",
-  personal_data: "Numër telefoni, adresë ose të dhëna të tjera personale.",
-  copyright: "Material me të drejta autoriale i ngarkuar pa leje.",
-  other: "Diçka tjetër që duhet parë nga një moderator.",
-};
-
+/**
+ * Raportimi, i njëjtë për postime, komente, materiale dhe mesazhe.
+ *
+ * Nuk e ndëshkon kurrë raportuesin dhe nuk e ekspozon publikisht autorin: teksti
+ * flet për shqyrtim, jo për dënim.
+ */
 export function ReportDialog({
   open,
   onOpenChange,
@@ -41,18 +34,21 @@ export function ReportDialog({
   targetId: string;
   targetType: string;
 }) {
-  const [reason, setReason] = React.useState<string>("spam");
+  const t = useTranslations("feed");
+  const tr = useTranslations("reportReason");
+  const tc = useTranslations("common");
+  const [reason, setReason] = React.useState<string>(REPORT_REASONS[0]);
   const [note, setNote] = React.useState("");
   const [pending, startTransition] = React.useTransition();
 
-  function submit() {
+  function send() {
     startTransition(async () => {
       const result = await reportContent({ targetId, targetType, reason, note });
       if (!result.ok) {
-        toast.error(result.message ?? "S'u dërgua dot raporti.");
+        toast.error(tc("retry"));
         return;
       }
-      toast.success(result.message ?? "E morëm raportin.");
+      toast.success(result.messageKey === "feed.reportedHidden" ? t("reportedHidden") : t("reported"));
       onOpenChange(false);
       setNote("");
     });
@@ -60,53 +56,40 @@ export function ReportDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Raporto këtë përmbajtje</DialogTitle>
-          <DialogDescription>
-            E shikojmë brenda 24 orësh. Tri raportime e fshehin automatikisht deri në rishikim.
-          </DialogDescription>
+          <DialogTitle>{t("reportTitle")}</DialogTitle>
+          <DialogDescription>{t("reportBody")}</DialogDescription>
         </DialogHeader>
 
-        <DialogBody className="flex flex-col gap-4">
-          <RadioGroup value={reason} onValueChange={setReason} aria-label="Arsyeja e raportimit">
-            {REPORT_REASONS.map((item) => (
-              <RadioRow
-                key={item}
-                value={item}
-                id={`report-${item}`}
-                label={REPORT_REASON_LABELS[item]}
-                description={DESCRIPTIONS[item]}
-              />
-            ))}
-          </RadioGroup>
-
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="report-note" className="text-sm font-medium text-text">
-              Shënim (opsional)
+        <RadioGroup value={reason} onValueChange={setReason} className="gap-1">
+          {REPORT_REASONS.map((item) => (
+            <label
+              key={item}
+              htmlFor={`reason-${item}`}
+              className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-1.5 text-sm text-text transition-colors hover:bg-surface-2"
+            >
+              <RadioGroupItem id={`reason-${item}`} value={item} />
+              {tr(item)}
             </label>
-            <Textarea
-              id="report-note"
-              value={note}
-              maxLength={500}
-              onChange={(event) => setNote(event.target.value)}
-              placeholder="Çfarë duhet të dijë moderatori?"
-            />
-          </div>
+          ))}
+        </RadioGroup>
 
-          <p className="flex items-start gap-2 rounded-md border border-border bg-surface-2 p-3 text-xs text-text-muted">
-            <ShieldAlert className="mt-0.5 size-4 shrink-0" />
-            Raportimi është anonim ndaj personit të raportuar. Keqpërdorimi i raportimeve
-            kufizohet.
-          </p>
-        </DialogBody>
+        <Textarea
+          value={note}
+          maxLength={500}
+          onChange={(event) => setNote(event.target.value)}
+          placeholder={t("reportNote")}
+          aria-label={t("reportNote")}
+          className="min-h-20"
+        />
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Anulo
+            {tc("cancel")}
           </Button>
-          <Button onClick={submit} loading={pending}>
-            Dërgo raportin
+          <Button onClick={send} loading={pending}>
+            {t("reportSend")}
           </Button>
         </DialogFooter>
       </DialogContent>

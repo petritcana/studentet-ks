@@ -24,7 +24,7 @@ export const Checkbox = React.forwardRef<
       )}
       {...props}
     >
-      <CheckboxPrimitive.Indicator className="flex items-center justify-center text-white">
+      <CheckboxPrimitive.Indicator className="flex items-center justify-center text-brand-contrast">
         {props.checked === "indeterminate" ? (
           <Minus className="size-3.5" strokeWidth={3} />
         ) : (
@@ -60,9 +60,7 @@ export function CheckboxRow({
       <Checkbox id={id} className="mt-0.5" {...props} />
       <span className="flex flex-col gap-0.5">
         <span className="text-sm font-medium text-text">{label}</span>
-        {description ? (
-          <span className="text-xs text-text-muted">{description}</span>
-        ) : null}
+        {description ? <span className="text-xs text-text-muted">{description}</span> : null}
       </span>
     </label>
   );

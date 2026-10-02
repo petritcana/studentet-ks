@@ -2,334 +2,634 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  ArrowRight,
-  BookOpen,
-  Building2,
-  CalendarDays,
-  Check,
-  FileText,
-  MessageCircleQuestion,
-  Search,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { ArrowLeft, ArrowRight, Check, Loader2, Search } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Chip, ChipGroup } from "@/components/ui/chip";
 import { Field } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { StepProgress } from "@/components/ui/progress";
-import { SkeletonPerson } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
-import { FacultyIcon } from "@/components/shared/faculty-icon";
-import { MutualContext } from "@/components/social/mutual-context";
+import { MediaPicker } from "@/components/feed/media-picker";
+import { CityPicker } from "@/components/academic/city-picker";
 import {
-  fetchSuggestions,
-  finishOnboarding,
-  saveCourses,
-  saveFaculty,
-  saveInterests,
-  saveProfile,
-  saveUniversity,
-  saveYear,
-  type OnboardingWin,
-} from "@/lib/actions/onboarding";
-import { followMany } from "@/lib/actions/social";
-import { INTERESTS, KOSOVO_CITIES, STUDY_LEVELS, STUDY_LEVEL_LABELS } from "@/lib/constants";
-import { facultyTheme } from "@/lib/faculties";
-import type { SuggestedPerson } from "@/lib/suggestions";
+  fetchCampuses,
+  fetchFaculties,
+  fetchInstitutions,
+  fetchPrograms,
+  type AcademicInstitution,
+  type AcademicOption,
+  type AcademicProgram,
+} from "@/lib/academic-client";
+import { saveAcademicProfile } from "@/lib/actions/academic";
+import { finishOnboarding, saveProfile } from "@/lib/actions/onboarding";
+import { saveGender, saveProfileImages } from "@/lib/actions/settings";
+import { defaultAvatarFor, isDefaultAvatar, isGender, type Gender } from "@/lib/default-avatar";
+import { GenderPicker } from "@/components/profile/gender-picker";
+import type { MediaRef } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
-export type WizardCourse = {
-  id: string;
-  name: string;
-  code: string;
-  year: number;
-  semester: number;
-  ects: number;
-  professor: string;
-};
-
-export type WizardDepartment = { id: string; name: string; courses: WizardCourse[] };
-
-export type WizardFaculty = {
-  id: string;
-  name: string;
-  color: string;
-  icon: string;
-  departments: WizardDepartment[];
-};
-
-export type WizardUniversity = {
-  id: string;
-  name: string;
-  abbr: string;
-  city: string;
-  faculties: WizardFaculty[];
-};
+/**
+ * Hyrja e studentit, hap pas hapi.
+ *
+ * Hierarkia akademike nuk është e njëjtë për të gjithë, dhe magjistari e ndjek
+ * atë që ekziston vërtet:
+ *
+ *   universitet publik -> universiteti, fakulteti, programi
+ *   kolegj privat      -> kolegji, programi
+ *
+ * Hapi i fakultetit as nuk shfaqet te një kolegj privat, sepse një fakultet i
+ * sajuar do të ndotte çdo kërkim dhe çdo sugjerim njeriu më vonë.
+ *
+ * Njerëzit vijnë pas hapjes së llogarisë, jo para saj: studenti i sheh kur ka
+ * tashmë një profil për t'u treguar.
+ */
 
 export type WizardInitial = {
   step: number;
   name: string;
+  avatar: string | null;
+  gender: string | null;
   bio: string;
   city: string;
   highSchool: string;
   universityId: string | null;
+  /** Institucioni i emailit studentor: nuk ndërrohet, prandaj hapi 2 nuk shfaqet. */
+  lockedUniversityId?: string | null;
+  campusId: string | null;
   facultyId: string | null;
-  departmentId: string | null;
+  studyProgramId: string | null;
+  specializationId: string | null;
   year: number | null;
-  level: string | null;
-  interests: string[];
-  courseIds: string[];
 };
 
-const TOTAL_STEPS = 9;
+const TOTAL_STEPS = 5;
+const YEAR_ROMAN = ["I", "II", "III", "IV", "V", "VI"];
 
-export function OnboardingWizard({
-  universities,
-  initial,
-}: {
-  universities: WizardUniversity[];
-  initial: WizardInitial;
-}) {
+export function OnboardingWizard({ initial }: { initial: WizardInitial }) {
   const router = useRouter();
+  const t = useTranslations("onboarding");
+  const tc = useTranslations("common");
+  const ta = useTranslations("academic");
+
   const [step, setStep] = React.useState(initial.step);
   const [pending, startTransition] = React.useTransition();
 
+  const [institutions, setInstitutions] = React.useState<AcademicInstitution[] | null>(null);
+  const [campuses, setCampuses] = React.useState<AcademicOption[]>([]);
+  const [faculties, setFaculties] = React.useState<AcademicOption[]>([]);
+  // Derisa lista e fakulteteve të mbërrijë, te një universitet publik programet
+  // rrinë të mbyllura: ndryshe rendi thyhet për një çast dhe studenti zgjedh
+  // program para fakultetit.
+  const [facultiesReady, setFacultiesReady] = React.useState(false);
+  const [programs, setPrograms] = React.useState<AcademicProgram[] | null>(null);
+
   const [universityId, setUniversityId] = React.useState(initial.universityId);
+  const [campusId, setCampusId] = React.useState(initial.campusId);
   const [facultyId, setFacultyId] = React.useState(initial.facultyId);
-  const [departmentId, setDepartmentId] = React.useState(initial.departmentId);
+  const [programId, setProgramId] = React.useState(initial.studyProgramId);
+  const [specializationId, setSpecializationId] = React.useState(initial.specializationId);
   const [year, setYear] = React.useState<number | null>(initial.year);
-  const [level, setLevel] = React.useState<string>(initial.level ?? "bachelor");
-  const [courseIds, setCourseIds] = React.useState<string[]>(initial.courseIds);
-  const [interests, setInterests] = React.useState<string[]>(initial.interests);
+
+  const [institutionQuery, setInstitutionQuery] = React.useState("");
+  const [programQuery, setProgramQuery] = React.useState("");
+
+  const [photo, setPhoto] = React.useState<MediaRef[]>([]);
+  const [gender, setGender] = React.useState<Gender | null>(isGender(initial.gender) ? initial.gender : null);
   const [profile, setProfile] = React.useState({
-    name: initial.name,
     bio: initial.bio,
     city: initial.city,
     highSchool: initial.highSchool,
   });
-  const [suggestions, setSuggestions] = React.useState<SuggestedPerson[] | null>(null);
-  const [followed, setFollowed] = React.useState<string[]>([]);
-  const [win, setWin] = React.useState<OnboardingWin | null>(null);
 
-  const university = universities.find((item) => item.id === universityId) ?? null;
-  const faculty = university?.faculties.find((item) => item.id === facultyId) ?? null;
-  const department = faculty?.departments.find((item) => item.id === departmentId) ?? null;
-
-  const suggestedCourses = React.useMemo(() => {
-    if (!faculty) return [];
-    const pool = department ? department.courses : faculty.departments.flatMap((d) => d.courses);
-    return pool
-      .filter((course) => (year ? course.year === year : true))
-      .sort((a, b) => a.semester - b.semester || a.name.localeCompare(b.name, "sq"));
-  }, [faculty, department, year]);
-
-  // Lëndët parazgjidhen nga programi. Studenti vetëm konfirmon.
   React.useEffect(() => {
-    if (step === 5 && courseIds.length === 0 && suggestedCourses.length > 0) {
-      setCourseIds(suggestedCourses.map((course) => course.id));
+    void fetchInstitutions()
+      .then(setInstitutions)
+      .catch(() => setInstitutions([]));
+  }, []);
+
+  const institution = institutions?.find((item) => item.id === universityId) ?? null;
+  const isPublic = institution?.type === "public";
+
+  React.useEffect(() => {
+    if (!universityId) {
+      setCampuses([]);
+      setFaculties([]);
+      setFacultiesReady(false);
+      return;
     }
-  }, [step, courseIds.length, suggestedCourses]);
+
+    setFacultiesReady(false);
+
+    void Promise.all([fetchCampuses(universityId), fetchFaculties(universityId)])
+      .then(([campusItems, facultyItems]) => {
+        setCampuses(campusItems);
+        setFaculties(facultyItems);
+      })
+      .catch(() => {
+        setCampuses([]);
+        setFaculties([]);
+      })
+      .finally(() => setFacultiesReady(true));
+  }, [universityId]);
+
+  // Te universitetet publike programet nuk kërkohen para se të dihet fakulteti.
+  const needsFaculty = isPublic && (!facultiesReady || faculties.length > 0);
+  const canSearchPrograms = Boolean(universityId) && (!needsFaculty || Boolean(facultyId));
 
   React.useEffect(() => {
-    if (step !== 8 || suggestions !== null) return;
-    startTransition(async () => {
-      setSuggestions(await fetchSuggestions(12));
-    });
-  }, [step, suggestions]);
+    if (!canSearchPrograms || !universityId) {
+      setPrograms(null);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      void fetchPrograms({ universityId, campusId, facultyId, query: programQuery })
+        .then(setPrograms)
+        .catch(() => setPrograms([]));
+    }, 180);
+
+    return () => clearTimeout(timer);
+  }, [canSearchPrograms, universityId, campusId, facultyId, programQuery]);
+
+  const chosen = programs?.find((item) => item.id === programId) ?? null;
+  const maxYear = chosen?.years ?? 4;
 
   function go(next: number) {
     setStep(next);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function run(work: () => Promise<{ ok: boolean; message?: string }>, next: number) {
+  function chooseInstitution(id: string) {
+    setUniversityId(id);
+    setCampusId(null);
+    setFacultyId(null);
+    setProgramId(null);
+    setSpecializationId(null);
+    setProgramQuery("");
+  }
+
+  function chooseFaculty(id: string) {
+    setFacultyId(id);
+    setProgramId(null);
+    setSpecializationId(null);
+    setProgramQuery("");
+  }
+
+  /** Ruan programin, drejtimin dhe vitin. Pa to nuk ka rreth akademik. */
+  function saveAcademic(next: number) {
+    if (!programId) {
+      toast.error(t("errorProgram"));
+      return;
+    }
+    if (!year) {
+      toast.error(t("errorYear"));
+      return;
+    }
+
     startTransition(async () => {
-      const result = await work();
+      const result = await saveAcademicProfile({
+        studyProgramId: programId,
+        specializationId,
+        year,
+        cohortYear: new Date().getFullYear(),
+      });
       if (!result.ok) {
-        toast.error(result.message ?? "S'u ruajt dot. Provo prapë.");
+        toast.error(t("errorSave"));
         return;
       }
       go(next);
     });
   }
 
+  /** «Hap llogarinë time»: ruan gjithçka, mbyll hyrjen, çon te njerëzit. */
+  function openAccount(withProfile: boolean) {
+    startTransition(async () => {
+      if (withProfile) {
+        const [saved, images, genderSaved] = await Promise.all([
+          saveProfile(profile),
+          photo[0] ? saveProfileImages({ avatarId: photo[0].id }) : Promise.resolve({ ok: true }),
+          gender !== (isGender(initial.gender) ? initial.gender : null) ? saveGender(gender) : Promise.resolve({ ok: true }),
+        ]);
+        if (!saved.ok || !images.ok || !genderSaved.ok) {
+          toast.error(t("errorSave"));
+          return;
+        }
+      }
+
+      const result = await finishOnboarding();
+      if (!result.ok) {
+        toast.error(t("errorSave"));
+        return;
+      }
+
+      // Njerëzit vijnë te faqja e vet: hyrja mbaron këtu, dhe ai ekran mbijeton
+      // edhe një rifreskim, gjë që një hap brenda magjistarit nuk do ta bënte.
+      router.replace("/mireseerdhe");
+    });
+  }
+
+  const shownInstitutions = (institutions ?? []).filter((item) =>
+    institutionQuery
+      ? `${item.name} ${item.nameEn} ${item.abbr} ${item.city}`
+          .toLowerCase()
+          .includes(institutionQuery.toLowerCase())
+      : true,
+  );
+
+  const avatarPreview = photo[0]
+    ? `/api/media/${photo[0].id}`
+    : isDefaultAvatar(initial.avatar)
+      ? defaultAvatarFor(gender)
+      : initial.avatar;
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12">
       <StepProgress current={step} total={TOTAL_STEPS} />
 
+      {/* Hapi 2: institucioni */}
       {step === 2 ? (
-        <StepUniversity
-          universities={universities}
-          selected={universityId}
-          onSelect={setUniversityId}
-          pending={pending}
-          onNext={() =>
-            universityId
-              ? run(() => saveUniversity(universityId), 3)
-              : toast.error("Zgjidh universitetin për të vazhduar.")
+        <Shell
+          title={t("step2Title")}
+          body={t("step2Body")}
+          footer={
+            <Button
+              size="lg"
+              className="ml-auto"
+              onClick={() => (universityId ? go(3) : toast.error(t("errorUniversity")))}
+            >
+              {tc("continue")}
+              <ArrowRight />
+            </Button>
           }
-        />
+        >
+          <div className="flex flex-col gap-3">
+            <Input
+              icon={<Search />}
+              value={institutionQuery}
+              onChange={(event) => setInstitutionQuery(event.target.value)}
+              placeholder={t("step2Search")}
+              aria-label={t("step2Title")}
+            />
+
+            {institutions === null ? (
+              <Waiting label={ta("loading")} />
+            ) : shownInstitutions.length === 0 ? (
+              <EmptyNote title={t("step2Empty")} />
+            ) : (
+              <div className="flex flex-col gap-2">
+                {shownInstitutions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => chooseInstitution(item.id)}
+                    aria-pressed={universityId === item.id}
+                    data-institution={item.id}
+                    className={cn(
+                      "flex items-center gap-3 rounded-md border p-3 text-left transition-all duration-150 ease-brand",
+                      universityId === item.id
+                        ? "border-brand-500 bg-brand-500/8"
+                        : "border-border bg-surface hover:border-brand-500/40",
+                    )}
+                  >
+                    <span className="grid size-11 shrink-0 place-items-center rounded-md bg-brand-500/12 text-xs font-semibold text-brand-500">
+                      {item.abbr}
+                    </span>
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate text-sm font-medium text-text">{item.name}</span>
+                      <span className="truncate text-xs text-text-muted">
+                        {item.city} · {t(item.type === "public" ? "typePublic" : "typePrivate")}
+                      </span>
+                    </span>
+                    {universityId === item.id ? (
+                      <Check className="size-5 shrink-0 text-brand-500" />
+                    ) : null}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </Shell>
       ) : null}
 
-      {step === 3 && university ? (
-        <StepFaculty
-          university={university}
-          facultyId={facultyId}
-          departmentId={departmentId}
-          onSelectFaculty={(id) => {
-            setFacultyId(id);
-            setDepartmentId(null);
-            setCourseIds([]);
-          }}
-          onSelectDepartment={setDepartmentId}
-          pending={pending}
-          onBack={() => go(2)}
-          onNext={() =>
-            facultyId
-              ? run(() => saveFaculty(facultyId, departmentId), 4)
-              : toast.error("Zgjidh fakultetin për të vazhduar.")
+      {/* Hapi 3: fakulteti (vetëm publik) dhe programi */}
+      {step === 3 && institution ? (
+        <Shell
+          title={needsFaculty ? t("step3TitlePublic") : t("step3TitlePrivate")}
+          body={needsFaculty ? t("step3BodyPublic") : t("step3BodyPrivate")}
+          footer={
+            <>
+              {initial.lockedUniversityId ? null : (
+                <Button variant="ghost" onClick={() => go(2)}>
+                  <ArrowLeft />
+                  {tc("back")}
+                </Button>
+              )}
+              <Button
+                size="lg"
+                className="ml-auto"
+                onClick={() => (programId ? go(4) : toast.error(t("errorProgram")))}
+              >
+                {tc("continue")}
+                <ArrowRight />
+              </Button>
+            </>
           }
-        />
+        >
+          <div className="flex flex-col gap-5">
+            {campuses.length > 1 ? (
+              <Row label={ta("campus")}>
+                {campuses.map((campus) => (
+                  <Chip
+                    key={campus.id}
+                    active={campusId === campus.id}
+                    label={campus.name}
+                    onClick={() => {
+                      setCampusId(campus.id);
+                      setProgramId(null);
+                    }}
+                  />
+                ))}
+              </Row>
+            ) : null}
+
+            {needsFaculty ? (
+              <Row label={ta("faculty")}>
+                {faculties.map((faculty) => (
+                  <Chip
+                    key={faculty.id}
+                    active={facultyId === faculty.id}
+                    label={faculty.name}
+                    mark={{ "data-faculty": faculty.id }}
+                    onClick={() => chooseFaculty(faculty.id)}
+                  />
+                ))}
+              </Row>
+            ) : null}
+
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium text-text">{ta("program")}</p>
+
+              {!canSearchPrograms ? (
+                <EmptyNote title={ta("facultyFirst")} mark="faculty-first" />
+              ) : (
+                <>
+                  <Input
+                    icon={<Search />}
+                    value={programQuery}
+                    onChange={(event) => setProgramQuery(event.target.value)}
+                    placeholder={ta("programSearch")}
+                    aria-label={ta("program")}
+                  />
+
+                  {programs === null ? (
+                    <Waiting label={ta("loading")} />
+                  ) : programs.length === 0 ? (
+                    <EmptyNote title={ta("programEmpty")} />
+                  ) : (
+                    <div className="flex max-h-80 flex-col gap-2 overflow-y-auto scrollbar-thin">
+                      {programs.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            setProgramId(item.id);
+                            setSpecializationId(null);
+                            if (year && year > item.years) setYear(item.years);
+                          }}
+                          aria-pressed={programId === item.id}
+                          data-program={item.id}
+                          className={cn(
+                            "flex items-center gap-3 rounded-md border p-3 text-left transition-colors duration-150 ease-brand",
+                            programId === item.id
+                              ? "border-brand-500 bg-brand-500/8"
+                              : "border-border bg-surface hover:border-brand-500/40",
+                          )}
+                        >
+                          <span className="flex min-w-0 flex-1 flex-col">
+                            <span className="truncate text-sm font-medium text-text">{item.name}</span>
+                            <span className="truncate text-xs text-text-muted">
+                              {item.degreeTitle ?? ta(`level_${item.level}`)}
+                            </span>
+                          </span>
+                          {programId === item.id ? (
+                            <Check className="size-5 shrink-0 text-brand-500" />
+                          ) : null}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </Shell>
       ) : null}
 
-      {step === 4 ? (
-        <StepYear
-          year={year}
-          level={level}
-          onYear={(value) => {
-            setYear(value);
-            setCourseIds([]);
-          }}
-          onLevel={setLevel}
-          pending={pending}
-          onBack={() => go(3)}
-          onNext={() =>
-            year
-              ? run(() => saveYear(year, level), 5)
-              : toast.error("Zgjidh vitin për të vazhduar.")
+      {/* Hapi 4: niveli dhe viti */}
+      {step === 4 && chosen ? (
+        <Shell
+          title={t("step4Title")}
+          body={t("step4Body")}
+          footer={
+            <>
+              <Button variant="ghost" onClick={() => go(3)}>
+                <ArrowLeft />
+                {tc("back")}
+              </Button>
+              <Button size="lg" className="ml-auto" loading={pending} onClick={() => saveAcademic(5)}>
+                {tc("continue")}
+                <ArrowRight />
+              </Button>
+            </>
           }
-        />
+        >
+          <div className="flex flex-col gap-6">
+            {chosen.specializations.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-medium text-text">{ta("specialization")}</p>
+                <p className="text-xs text-text-muted">{ta("specializationHelp")}</p>
+                <div className="flex flex-wrap gap-2">
+                  {chosen.specializations.map((item) => (
+                    <Chip
+                      key={item.id}
+                      active={specializationId === item.id}
+                      label={item.name}
+                      onClick={() => setSpecializationId(item.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium text-text">{t("step4Year")}</p>
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                {Array.from({ length: maxYear }, (_, index) => index + 1).map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setYear(value)}
+                    aria-pressed={year === value}
+                    data-year={value}
+                    className={cn(
+                      "flex flex-col items-center gap-1 rounded-md border p-4 transition-colors duration-150 ease-brand",
+                      year === value
+                        ? "border-brand-500 bg-brand-500/8"
+                        : "border-border bg-surface hover:border-brand-500/40",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "tabular text-xl font-semibold",
+                        year === value ? "text-brand-500" : "text-text",
+                      )}
+                    >
+                      {YEAR_ROMAN[value - 1]}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Shell>
       ) : null}
 
+      {/* Hapi 5: profili */}
       {step === 5 ? (
-        <StepCourses
-          courses={suggestedCourses}
-          selected={courseIds}
-          onToggle={(id) =>
-            setCourseIds((current) =>
-              current.includes(id)
-                ? current.filter((item) => item !== id)
-                : [...current, id],
-            )
+        <Shell
+          title={t("step5Title")}
+          body={t("step5Body")}
+          footer={
+            <>
+              <Button variant="ghost" onClick={() => go(4)}>
+                <ArrowLeft />
+                {tc("back")}
+              </Button>
+              <Button variant="ghost" disabled={pending} onClick={() => openAccount(false)}>
+                {t("skip")}
+              </Button>
+              <Button size="lg" className="ml-auto" loading={pending} onClick={() => openAccount(true)}>
+                {t("finishCta")}
+                <ArrowRight />
+              </Button>
+            </>
           }
-          onAll={() => setCourseIds(suggestedCourses.map((course) => course.id))}
-          pending={pending}
-          onBack={() => go(4)}
-          onNext={() =>
-            courseIds.length > 0
-              ? run(() => saveCourses(courseIds), 6)
-              : toast.error("Zgjidh të paktën një lëndë.")
-          }
-        />
+        >
+          <div className="flex flex-col gap-5">
+            {/*
+              Rishikimi para se llogaria të hapet.
+
+              Studenti i sheh bashkë zgjedhjet akademike, dhe secila kthehet te
+              hapi i vet me një klikim. Pa këtë, gabimi zbulohej vetëm më vonë te
+              cilësimet, kur profili tashmë kishte dalë para të tjerëve.
+            */}
+            <dl className="flex flex-col gap-2 rounded-lg border border-border bg-surface p-4">
+              <ReviewRow
+                label={ta("institution")}
+                value={institution?.name ?? null}
+                action={tc("edit")}
+                onEdit={() => go(2)}
+              />
+              <ReviewRow
+                label={ta("faculty")}
+                value={faculties.find((item) => item.id === facultyId)?.name ?? null}
+                action={tc("edit")}
+                onEdit={() => go(3)}
+              />
+              <ReviewRow
+                label={ta("program")}
+                value={
+                  chosen ? [chosen.name, chosen.degreeTitle].filter(Boolean).join(", ") : null
+                }
+                action={tc("edit")}
+                onEdit={() => go(3)}
+              />
+              <ReviewRow
+                label={ta("specialization")}
+                value={chosen?.specializations.find((item) => item.id === specializationId)?.name ?? null}
+                action={tc("edit")}
+                onEdit={() => go(4)}
+              />
+              <ReviewRow
+                label={ta("year")}
+                value={year ? ta("yearValue", { year }) : null}
+                action={tc("edit")}
+                onEdit={() => go(4)}
+              />
+            </dl>
+
+            <div className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-surface p-4">
+              <Avatar name={initial.name} src={avatarPreview} size="xl" />
+              <div className="flex min-w-0 flex-col gap-2">
+                <p className="truncate text-sm font-semibold text-text">{initial.name}</p>
+                <MediaPicker media={photo} onChange={setPhoto} max={1} />
+              </div>
+            </div>
+
+            <GenderPicker value={gender} onChange={setGender} />
+
+            <Field label={t("step5Name")} htmlFor="ob-name" help={t("step5NameHelp")}>
+              <Input id="ob-name" value={initial.name} readOnly disabled />
+            </Field>
+
+            <Field label={t("step5Bio")} htmlFor="ob-bio" hint={tc("optional")}>
+              <Textarea
+                id="ob-bio"
+                autoGrow
+                maxLength={160}
+                value={profile.bio}
+                placeholder={t("step5BioPlaceholder")}
+                onChange={(event) => setProfile({ ...profile, bio: event.target.value })}
+              />
+            </Field>
+
+            <CityPicker
+              id="ob-city"
+              label={t("step5City")}
+              help={t("step5CityHelp")}
+              value={profile.city}
+              onChange={(city) => setProfile({ ...profile, city })}
+            />
+
+            <Field
+              label={t("step5School")}
+              htmlFor="ob-school"
+              hint={tc("optional")}
+              help={t("step5SchoolHelp")}
+            >
+              <Input
+                id="ob-school"
+                value={profile.highSchool}
+                maxLength={120}
+                onChange={(event) => setProfile({ ...profile, highSchool: event.target.value })}
+              />
+            </Field>
+          </div>
+        </Shell>
       ) : null}
 
-      {step === 6 ? (
-        <StepInterests
-          selected={interests}
-          onToggle={(value) =>
-            setInterests((current) =>
-              current.includes(value)
-                ? current.filter((item) => item !== value)
-                : [...current, value],
-            )
-          }
-          pending={pending}
-          onBack={() => go(5)}
-          onSkip={() => go(7)}
-          onNext={() => run(() => saveInterests(interests), 7)}
-        />
-      ) : null}
-
-      {step === 7 ? (
-        <StepProfile
-          profile={profile}
-          onChange={setProfile}
-          pending={pending}
-          onBack={() => go(6)}
-          onSkip={() => go(8)}
-          onNext={() => run(() => saveProfile(profile), 8)}
-        />
-      ) : null}
-
-      {step === 8 ? (
-        <StepPeople
-          suggestions={suggestions}
-          followed={followed}
-          onFollow={(id) =>
-            setFollowed((current) =>
-              current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
-            )
-          }
-          onFollowAll={() => setSuggestions((current) => {
-            if (current) setFollowed(current.map((person) => person.id));
-            return current;
-          })}
-          pending={pending}
-          onBack={() => go(7)}
-          onNext={() => {
-            if (followed.length < 5) {
-              toast.error("Ndiq të paktën 5 veta. Kjo është ajo që e bën feed-in të gjallë.");
-              return;
-            }
-            startTransition(async () => {
-              await followMany(followed);
-              const result = await finishOnboarding();
-              if (!result.ok) {
-                toast.error(result.message ?? "Diçka mungon ende.");
-                return;
-              }
-              setWin(result.win ?? null);
-              go(9);
-              router.refresh();
-            });
-          }}
-        />
-      ) : null}
-
-      {step === 9 ? <StepWin win={win} onEnter={() => router.replace("/materialet")} /> : null}
     </div>
   );
 }
 
-// --- hapat -----------------------------------------------------------------
-
-function StepShell({
-  eyebrow,
+function Shell({
   title,
-  description,
+  body,
   children,
   footer,
 }: {
-  eyebrow: string;
   title: string;
-  description?: string;
+  body?: string;
   children: React.ReactNode;
   footer: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-1 flex-col gap-6 animate-rise">
+    <div className="flex flex-1 animate-rise flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium uppercase tracking-wide text-brand-500">
-          {eyebrow}
-        </span>
         <h1 className="font-serif text-2xl text-text">{title}</h1>
-        {description ? <p className="measure text-sm text-text-muted">{description}</p> : null}
+        {body ? <p className="measure text-sm text-text-muted">{body}</p> : null}
       </div>
       <div className="flex flex-1 flex-col">{children}</div>
       <div className="flex flex-wrap items-center gap-3 border-t border-border pt-5">{footer}</div>
@@ -337,709 +637,90 @@ function StepShell({
   );
 }
 
-function StepUniversity({
-  universities,
-  selected,
-  onSelect,
-  onNext,
-  pending,
+/** Një rresht i rishikimit. Rreshti bosh nuk shfaqet: s'ka çfarë të rishikohet. */
+function ReviewRow({
+  label,
+  value,
+  action,
+  onEdit,
 }: {
-  universities: WizardUniversity[];
-  selected: string | null;
-  onSelect: (id: string) => void;
-  onNext: () => void;
-  pending: boolean;
+  label: string;
+  value: string | null;
+  action: string;
+  onEdit: () => void;
 }) {
-  const [query, setQuery] = React.useState("");
-  const filtered = universities.filter((item) =>
-    `${item.name} ${item.abbr} ${item.city}`.toLowerCase().includes(query.toLowerCase()),
-  );
+  if (!value) return null;
 
   return (
-    <StepShell
-      eyebrow="Hapi 2"
-      title="Ku studion?"
-      description="Shkruaj emrin ose shkurtesën. Kjo përcakton fakultetet që të shfaqen më pas."
-      footer={
-        <Button size="lg" onClick={onNext} loading={pending} className="ml-auto">
-          Vazhdo
-          <ArrowRight />
-        </Button>
-      }
-    >
-      <div className="flex flex-col gap-3">
-        <Input
-          icon={<Search />}
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Universiteti i Prishtinës, UBT, AAB..."
-          aria-label="Kërko universitetin"
-        />
-
-        <div className="flex flex-col gap-2">
-          {filtered.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => onSelect(item.id)}
-              aria-pressed={selected === item.id}
-              className={cn(
-                "flex items-center gap-3 rounded-md border p-3 text-left",
-                "transition-all duration-150 ease-brand",
-                selected === item.id
-                  ? "border-brand-500 bg-brand-500/8"
-                  : "border-border bg-surface hover:border-brand-500/40",
-              )}
-            >
-              <span className="grid size-11 shrink-0 place-items-center rounded-md bg-brand-500/12 text-sm font-semibold text-brand-500">
-                {item.abbr}
-              </span>
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate text-sm font-medium text-text">{item.name}</span>
-                <span className="truncate text-xs text-text-muted">
-                  {item.city} · {item.faculties.length} fakultete
-                </span>
-              </span>
-              {selected === item.id ? <Check className="size-5 shrink-0 text-brand-500" /> : null}
-            </button>
-          ))}
-
-          {filtered.length === 0 ? (
-            <p className="rounded-md border border-dashed border-border p-4 text-sm text-text-muted">
-              S&apos;gjetëm asnjë universitet me këtë emër. Provo shkurtesën, p.sh. UP.
-            </p>
-          ) : null}
-        </div>
-      </div>
-    </StepShell>
-  );
-}
-
-function StepFaculty({
-  university,
-  facultyId,
-  departmentId,
-  onSelectFaculty,
-  onSelectDepartment,
-  onBack,
-  onNext,
-  pending,
-}: {
-  university: WizardUniversity;
-  facultyId: string | null;
-  departmentId: string | null;
-  onSelectFaculty: (id: string) => void;
-  onSelectDepartment: (id: string) => void;
-  onBack: () => void;
-  onNext: () => void;
-  pending: boolean;
-}) {
-  const faculty = university.faculties.find((item) => item.id === facultyId);
-
-  return (
-    <StepShell
-      eyebrow="Hapi 3"
-      title="Cili fakultet?"
-      description="Ngjyra e fakultetit të ndjek kudo: në badge, në kanale dhe në renditje."
-      footer={
-        <>
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft />
-            Prapa
-          </Button>
-          <Button size="lg" onClick={onNext} loading={pending} className="ml-auto">
-            Vazhdo
-            <ArrowRight />
-          </Button>
-        </>
-      }
-    >
-      <div className="flex flex-col gap-5">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {university.faculties.map((item) => {
-            const theme = facultyTheme(item.color);
-            const active = facultyId === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => onSelectFaculty(item.id)}
-                aria-pressed={active}
-                className={cn(
-                  "flex flex-col items-start gap-2 rounded-md border p-3 text-left",
-                  "transition-all duration-150 ease-brand",
-                  active
-                    ? cn("border-current", theme.bg, theme.border)
-                    : "border-border bg-surface hover:border-brand-500/40",
-                )}
-              >
-                <span className={cn("grid size-9 place-items-center rounded-md", theme.bg, theme.text)}>
-                  <FacultyIcon name={item.icon} className="size-4" />
-                </span>
-                <span className={cn("text-sm font-semibold", active ? theme.text : "text-text")}>
-                  {theme.shortLabel}
-                </span>
-                <span className="line-clamp-2 text-xs text-text-muted">{item.name}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {faculty && faculty.departments.length > 0 ? (
-          <div className="flex flex-col gap-2">
-            <p className="text-sm font-medium text-text">Departamenti</p>
-            <div className="flex flex-col gap-2">
-              {faculty.departments.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => onSelectDepartment(item.id)}
-                  aria-pressed={departmentId === item.id}
-                  className={cn(
-                    "flex items-center justify-between gap-3 rounded-md border p-3 text-left",
-                    "transition-colors duration-150 ease-brand",
-                    departmentId === item.id
-                      ? "border-brand-500 bg-brand-500/8"
-                      : "border-border bg-surface hover:border-brand-500/40",
-                  )}
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm text-text">{item.name}</span>
-                    <span className="block truncate text-xs text-text-muted">
-                      {item.courses.length} lëndë
-                    </span>
-                  </span>
-                  {departmentId === item.id ? (
-                    <Check className="size-5 shrink-0 text-brand-500" />
-                  ) : null}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : null}
-      </div>
-    </StepShell>
-  );
-}
-
-function StepYear({
-  year,
-  level,
-  onYear,
-  onLevel,
-  onBack,
-  onNext,
-  pending,
-}: {
-  year: number | null;
-  level: string;
-  onYear: (value: number) => void;
-  onLevel: (value: string) => void;
-  onBack: () => void;
-  onNext: () => void;
-  pending: boolean;
-}) {
-  return (
-    <StepShell
-      eyebrow="Hapi 4"
-      title="Në cilin vit je?"
-      description="Nga kjo ndërtohet gjenerata jote dhe lista e lëndëve të semestrit."
-      footer={
-        <>
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft />
-            Prapa
-          </Button>
-          <Button size="lg" onClick={onNext} loading={pending} className="ml-auto">
-            Vazhdo
-            <ArrowRight />
-          </Button>
-        </>
-      }
-    >
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <p className="text-sm font-medium text-text">Niveli</p>
-          <div className="grid grid-cols-3 gap-2">
-            {STUDY_LEVELS.map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => onLevel(item)}
-                aria-pressed={level === item}
-                className={cn(
-                  "rounded-md border p-3 text-sm font-medium transition-colors duration-150 ease-brand",
-                  level === item
-                    ? "border-brand-500 bg-brand-500/8 text-brand-500"
-                    : "border-border bg-surface text-text hover:border-brand-500/40",
-                )}
-              >
-                {STUDY_LEVEL_LABELS[item]}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <p className="text-sm font-medium text-text">Viti</p>
-          <div className="grid grid-cols-4 gap-2">
-            {[1, 2, 3, 4].map((value) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => onYear(value)}
-                aria-pressed={year === value}
-                className={cn(
-                  "flex flex-col items-center gap-1 rounded-md border p-4 transition-colors duration-150 ease-brand",
-                  year === value
-                    ? "border-brand-500 bg-brand-500/8"
-                    : "border-border bg-surface hover:border-brand-500/40",
-                )}
-              >
-                <span
-                  className={cn(
-                    "tabular text-xl font-semibold",
-                    year === value ? "text-brand-500" : "text-text",
-                  )}
-                >
-                  {["I", "II", "III", "IV"][value - 1]}
-                </span>
-                <span className="text-xs text-text-muted">viti</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </StepShell>
-  );
-}
-
-function StepCourses({
-  courses,
-  selected,
-  onToggle,
-  onAll,
-  onBack,
-  onNext,
-  pending,
-}: {
-  courses: WizardCourse[];
-  selected: string[];
-  onToggle: (id: string) => void;
-  onAll: () => void;
-  onBack: () => void;
-  onNext: () => void;
-  pending: boolean;
-}) {
-  return (
-    <StepShell
-      eyebrow="Hapi 5"
-      title="Lëndët e këtij semestri"
-      description="I parazgjodhëm nga programi yt. Hiq ato që s'i ke dhe vazhdo. Çdo lëndë të fut edhe në kanalin e saj."
-      footer={
-        <>
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft />
-            Prapa
-          </Button>
-          <span className="tabular text-sm text-text-muted">
-            {selected.length} të zgjedhura
-          </span>
-          <Button size="lg" onClick={onNext} loading={pending} className="ml-auto">
-            Konfirmo lëndët
-            <ArrowRight />
-          </Button>
-        </>
-      }
-    >
-      {courses.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border p-6 text-center">
-          <p className="text-sm text-text">S&apos;gjetëm lëndë për këtë vit në programin tënd.</p>
-          <p className="mt-1 text-sm text-text-muted">
-            Kthehu një hap prapa dhe zgjidh departamentin, ose vazhdo dhe shtoji më vonë.
-          </p>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-3">
-          <button
-            type="button"
-            onClick={onAll}
-            className="self-start text-sm font-medium text-brand-500 hover:underline"
-          >
-            Zgjidhi të gjitha
-          </button>
-          <div className="flex flex-col gap-2">
-            {courses.map((course) => {
-              const active = selected.includes(course.id);
-              return (
-                <button
-                  key={course.id}
-                  type="button"
-                  onClick={() => onToggle(course.id)}
-                  aria-pressed={active}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md border p-3 text-left",
-                    "transition-colors duration-150 ease-brand",
-                    active
-                      ? "border-brand-500 bg-brand-500/8"
-                      : "border-border bg-surface hover:border-brand-500/40",
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "grid size-5 shrink-0 place-items-center rounded-[6px] border",
-                      active ? "border-brand-500 bg-brand-500 text-white" : "border-border",
-                    )}
-                  >
-                    {active ? <Check className="size-3.5" strokeWidth={3} /> : null}
-                  </span>
-                  <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-sm font-medium text-text">{course.name}</span>
-                    <span className="truncate text-xs text-text-muted">
-                      {course.code} · semestri {course.semester} · {course.ects} ECTS ·{" "}
-                      {course.professor}
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </StepShell>
-  );
-}
-
-function StepInterests({
-  selected,
-  onToggle,
-  onBack,
-  onSkip,
-  onNext,
-  pending,
-}: {
-  selected: string[];
-  onToggle: (value: string) => void;
-  onBack: () => void;
-  onSkip: () => void;
-  onNext: () => void;
-  pending: boolean;
-}) {
-  return (
-    <StepShell
-      eyebrow="Hapi 6"
-      title="Çfarë të pëlqen jashtë leksioneve?"
-      description="Kjo ndikon vetëm te rekomandimet e njerëzve dhe eventeve, kurrë te materialet."
-      footer={
-        <>
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft />
-            Prapa
-          </Button>
-          <Button variant="ghost" onClick={onSkip}>
-            Kaloje
-          </Button>
-          <Button size="lg" onClick={onNext} loading={pending} className="ml-auto">
-            Vazhdo
-            <ArrowRight />
-          </Button>
-        </>
-      }
-    >
-      <ChipGroup>
-        {INTERESTS.map((interest) => (
-          <Chip
-            key={interest}
-            selected={selected.includes(interest)}
-            onClick={() => onToggle(interest)}
-          >
-            {interest}
-          </Chip>
-        ))}
-      </ChipGroup>
-    </StepShell>
-  );
-}
-
-function StepProfile({
-  profile,
-  onChange,
-  onBack,
-  onSkip,
-  onNext,
-  pending,
-}: {
-  profile: { name: string; bio: string; city: string; highSchool: string };
-  onChange: (value: { name: string; bio: string; city: string; highSchool: string }) => void;
-  onBack: () => void;
-  onSkip: () => void;
-  onNext: () => void;
-  pending: boolean;
-}) {
-  return (
-    <StepShell
-      eyebrow="Hapi 7"
-      title="Si të njohin të tjerët?"
-      description="Avatari gjenerohet nga inicialet e tua dhe mbetet i njëjti përgjithmonë."
-      footer={
-        <>
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft />
-            Prapa
-          </Button>
-          <Button variant="ghost" onClick={onSkip}>
-            Kaloje
-          </Button>
-          <Button size="lg" onClick={onNext} loading={pending} className="ml-auto">
-            Vazhdo
-            <ArrowRight />
-          </Button>
-        </>
-      }
-    >
-      <div className="flex flex-col gap-5">
-        <div className="flex items-center gap-4 rounded-lg border border-border bg-surface p-4">
-          <Avatar name={profile.name || "Studenti"} size="xl" />
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-text">
-              {profile.name || "Emri yt"}
-            </p>
-            <p className="line-clamp-2 text-xs text-text-muted">
-              {profile.bio || "Bio-ja jote shfaqet këtu."}
-            </p>
-          </div>
-        </div>
-
-        <Field label="Emri dhe mbiemri" htmlFor="ob-name">
-          <Input
-            id="ob-name"
-            value={profile.name}
-            onChange={(event) => onChange({ ...profile, name: event.target.value })}
-          />
-        </Field>
-
-        <Field
-          label="Bio"
-          htmlFor="ob-bio"
-          help={`${profile.bio.length} nga 160 shkronja`}
-        >
-          <Textarea
-            id="ob-bio"
-            autoGrow
-            maxLength={160}
-            value={profile.bio}
-            onChange={(event) => onChange({ ...profile, bio: event.target.value })}
-            placeholder="Ekonomiku, viti II. Ndihmoj me statistikë, kërkoj ndihmë me gjermanisht."
-          />
-        </Field>
-
-        <Field label="Qyteti" htmlFor="ob-city" help="Ndihmon të gjesh njerëz që udhëtojnë si ti.">
-          <Input
-            id="ob-city"
-            list="ob-cities"
-            value={profile.city}
-            onChange={(event) => onChange({ ...profile, city: event.target.value })}
-            placeholder="Prishtinë"
-          />
-          <datalist id="ob-cities">
-            {KOSOVO_CITIES.map((city) => (
-              <option key={city} value={city} />
-            ))}
-          </datalist>
-        </Field>
-
-        <Field
-          label="Shkolla e mesme"
-          htmlFor="ob-school"
-          hint="opsionale"
-          help="Të lidh me ata që erdhën nga e njëjta shkollë."
-        >
-          <Input
-            id="ob-school"
-            value={profile.highSchool}
-            onChange={(event) => onChange({ ...profile, highSchool: event.target.value })}
-            placeholder="Gjimnazi 'Sami Frashëri', Prishtinë"
-          />
-        </Field>
-      </div>
-    </StepShell>
-  );
-}
-
-function StepPeople({
-  suggestions,
-  followed,
-  onFollow,
-  onFollowAll,
-  onBack,
-  onNext,
-  pending,
-}: {
-  suggestions: SuggestedPerson[] | null;
-  followed: string[];
-  onFollow: (id: string) => void;
-  onFollowAll: () => void;
-  onBack: () => void;
-  onNext: () => void;
-  pending: boolean;
-}) {
-  const enough = followed.length >= 5;
-
-  return (
-    <StepShell
-      eyebrow="Hapi 8"
-      title="Njerëz nga gjenerata jote"
-      description="Të renditur sipas lëndëve të përbashkëta, vitit, shokëve të përbashkët dhe qytetit. Ndiq të paktën pesë."
-      footer={
-        <>
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft />
-            Prapa
-          </Button>
-          <span className={cn("tabular text-sm", enough ? "text-success-text" : "text-text-muted")}>
-            {followed.length} nga 5
-          </span>
-          <Button size="lg" onClick={onNext} loading={pending} className="ml-auto">
-            Vazhdo
-            <ArrowRight />
-          </Button>
-        </>
-      }
-    >
-      <div className="flex flex-col gap-4">
-        <Button
-          variant="outline"
-          onClick={onFollowAll}
-          disabled={!suggestions || suggestions.length === 0}
-          className="self-start"
-        >
-          <Users />
-          Ndiq të gjithë
-        </Button>
-
-        {suggestions === null ? (
-          <div className="flex flex-col gap-4">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <SkeletonPerson key={index} />
-            ))}
-          </div>
-        ) : suggestions.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border p-6 text-center">
-            <p className="text-sm text-text">Ende s&apos;ka njerëz nga gjenerata jote këtu.</p>
-            <p className="mt-1 text-sm text-text-muted">
-              Je i pari. Ftoji shokët dhe merr badge-in Pionier i fakultetit.
-            </p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {suggestions.map((person) => {
-              const active = followed.includes(person.id);
-              return (
-                <div
-                  key={person.id}
-                  className="flex items-center gap-3 rounded-md border border-border bg-surface p-3"
-                >
-                  <Avatar name={person.name} src={person.avatar} verified={person.isVerified} />
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-sm font-medium text-text">{person.name}</span>
-                    <MutualContext reasons={person.reasons} />
-                  </div>
-                  <Button
-                    size="sm"
-                    variant={active ? "secondary" : "primary"}
-                    onClick={() => onFollow(person.id)}
-                    aria-pressed={active}
-                    className="min-w-24"
-                  >
-                    {active ? (
-                      <>
-                        <Check />
-                        E ndjek
-                      </>
-                    ) : (
-                      "Ndiqe"
-                    )}
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </StepShell>
-  );
-}
-
-function StepWin({ win, onEnter }: { win: OnboardingWin | null; onEnter: () => void }) {
-  const items = [
-    {
-      icon: CalendarDays,
-      title: win?.nextClass
-        ? `Orari yt është gati`
-        : "Orari yt është gati",
-      body: win?.nextClass
-        ? `${win.nextClass.course} ${win.nextClass.day} në ${win.nextClass.time}, ${win.nextClass.room}.`
-        : `${win?.courseCount ?? 0} lëndë të shtuara në orar.`,
-    },
-    {
-      icon: FileText,
-      title: `${win?.materialCount ?? 0} materiale për lëndët e tua të presin`,
-      body: "Skripta, shënime dhe provime të kaluara, të lidhura me lëndët që zgjodhe.",
-    },
-    {
-      icon: MessageCircleQuestion,
-      title: `${win?.openQuestionCount ?? 0} pyetje presin përgjigje`,
-      body: "Nga gjenerata jote. Nëse e di përgjigjen, dikush po e pret sot.",
-    },
-    {
-      icon: Users,
-      title: `${win?.followingCount ?? 0} njerëz në rrethin tënd`,
-      body: "Feed-i yt nis me ta. Sa më shumë ndjek, aq më i gjallë bëhet.",
-    },
-  ];
-
-  return (
-    <div className="flex flex-1 flex-col gap-6 animate-rise">
-      <div className="flex flex-col gap-2">
-        <Badge variant="brand" className="w-fit">
-          <Sparkles />
-          Gati
-        </Badge>
-        <h1 className="font-serif text-2xl text-text">Ja çfarë të pret tani</h1>
-        <p className="measure text-sm text-text-muted">
-          Nuk të themi urime. Të japim atë për çka erdhe.
-        </p>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        {items.map((item) => (
-          <div
-            key={item.title}
-            className="flex items-start gap-3 rounded-lg border border-border bg-surface p-4"
-          >
-            <span className="grid size-10 shrink-0 place-items-center rounded-md bg-brand-500/12 text-brand-500">
-              <item.icon className="size-5" />
-            </span>
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-text">{item.title}</p>
-              <p className="text-sm text-text-muted">{item.body}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap gap-3 border-t border-border pt-5">
-        <Button size="lg" onClick={onEnter}>
-          <BookOpen />
-          Shpjere te materialet e mia
-        </Button>
-        <Button size="lg" variant="outline" asChild>
-          <a href="/feed">
-            <Building2 />
-            Shiko feed-in
-          </a>
-        </Button>
-      </div>
+    <div className="flex flex-wrap items-baseline gap-2">
+      <dt className="w-28 shrink-0 text-xs text-text-muted">{label}</dt>
+      <dd className="min-w-0 flex-1 truncate text-sm text-text">{value}</dd>
+      <button
+        type="button"
+        onClick={onEdit}
+        className="text-xs font-medium text-brand-500 hover:underline"
+      >
+        {action}
+      </button>
     </div>
+  );
+}
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <fieldset className="flex flex-col gap-2">
+      <legend className="text-sm font-medium text-text">{label}</legend>
+      <div className="flex flex-wrap gap-1.5">{children}</div>
+    </fieldset>
+  );
+}
+
+function Chip({
+  active,
+  label,
+  mark,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  /** Shenjë e qëndrueshme për testet, kur teksti ndryshon me gjuhën. */
+  mark?: Record<string, string>;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      {...mark}
+      className={cn(
+        "rounded-md border px-3 py-1.5 text-sm transition-colors duration-150 ease-brand",
+        active
+          ? "border-brand-500 bg-brand-500/10 text-text"
+          : "border-border bg-surface text-text-muted hover:border-brand-500/40 hover:text-text",
+      )}
+    >
+      {label}
+    </button>
+  );
+}
+
+function Waiting({ label }: { label: string }) {
+  return (
+    <p className="flex items-center gap-2 py-3 text-sm text-text-muted">
+      <Loader2 className="size-4 animate-spin" aria-hidden />
+      {label}
+    </p>
+  );
+}
+
+function EmptyNote({ title, mark }: { title: string; mark?: string }) {
+  return (
+    <p
+      data-note={mark}
+      className="rounded-md border border-dashed border-border p-4 text-sm text-text-muted"
+    >
+      {title}
+    </p>
   );
 }

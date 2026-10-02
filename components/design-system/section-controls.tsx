@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import {
   ArrowRight,
   BookOpen,
@@ -27,128 +28,181 @@ import {
 import { Switch, SwitchRow } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Demo, Row, Section } from "./primitives";
-
-const INTERESTS = [
-  "programim",
-  "dizajn",
-  "muzikë",
-  "sport",
-  "sipërmarrësi",
-  "vullnetarizëm",
-  "gjuhë",
-  "fotografi",
-  "gaming",
-  "letërsi",
-  "aktivizëm",
-];
+import { UserIdentityLine } from "@/components/identity/user-identity-line";
+import { ProBadge } from "@/components/identity/pro-badge";
+import { VerifiedMark } from "@/components/identity/verified-mark";
+import { Avatar } from "@/components/ui/avatar";
+import { FACULTY_CODES } from "@/lib/faculties";
+import { DEMO_PEOPLE, INTEREST_KEYS } from "./demo-data";
+import { Demo, Meta, Row, Section } from "./primitives";
 
 export function SectionControls() {
-  const [interests, setInterests] = React.useState<string[]>(["programim", "letërsi"]);
+  const t = useTranslations("designSystem");
+  const tf = useTranslations("faculty");
+  const tc = useTranslations("common");
+  const ti = useTranslations("identity");
+  const tp = useTranslations("pro");
+
+  const [interests, setInterests] = React.useState<string[]>(["programming", "literature"]);
   const [emailError, setEmailError] = React.useState(true);
-  const [bio, setBio] = React.useState(
-    "Ekonomiku, viti II. Ndihmoj me statistikë, kërkoj ndihmë me gjermanisht.",
-  );
+  const [bio, setBio] = React.useState(t("forms.demo.bioPlaceholder"));
+
+  const person = (index: number) => {
+    const demo = DEMO_PEOPLE[index];
+    return {
+      ...demo,
+      facultyLabel: tf(`${demo.facultyCode}.short`),
+    };
+  };
 
   return (
     <>
-      <Section
-        id="butonat"
-        title="Butonat"
-        intro="Pesë variante. Vetëm një veprim kryesor për ekran. Teksti thotë çfarë ndodh, jo 'Konfirmo'."
-      >
-        <Demo label="Variantet">
-          <Row>
-            <Button>Ndiqe edhe ti</Button>
-            <Button variant="secondary">Ruaje për më vonë</Button>
-            <Button variant="outline">Shiko orarin</Button>
-            <Button variant="ghost">Anulo</Button>
-            <Button variant="danger">
-              <Trash2 />
-              Fshije materialin
-            </Button>
+      <Section id="identiteti" title={t("sections.identity")} intro={t("identity.intro")}>
+        <Demo label={t("identity.sizes")}>
+          <div className="flex flex-col gap-4">
+            {(["sm", "md", "lg"] as const).map((size) => (
+              <div key={size} className="flex items-center gap-4">
+                <Meta>{size}</Meta>
+                <UserIdentityLine user={person(0)} size={size} />
+              </div>
+            ))}
+          </div>
+        </Demo>
+
+        <Demo label={t("identity.states")}>
+          <div className="flex flex-col gap-4">
+            {[1, 0, 2, 3].map((index) => (
+              <UserIdentityLine key={index} user={person(index)} />
+            ))}
+          </div>
+        </Demo>
+
+        <Demo label={t("identity.inline")}>
+          <div className="flex flex-col gap-3">
+            <UserIdentityLine user={person(4)} size="sm" inline showYear={false} />
+            <UserIdentityLine user={person(5)} size="sm" inline showYear={false} />
+          </div>
+        </Demo>
+
+        <Demo label={t("pro.badges")}>
+          <Row className="gap-4">
+            <span className="inline-flex items-center gap-2">
+              <VerifiedMark />
+              <Meta>VerifiedMark</Meta>
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <ProBadge />
+              <Meta>ProBadge</Meta>
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <ProBadge size="sm" />
+              <Meta>ProBadge sm</Meta>
+            </span>
           </Row>
         </Demo>
 
-        <Demo label="Madhësitë" note="32 · 40 · 48 px lartësi">
+        <Demo label={t("identity.avatars")} note={t("identity.avatarsNote")}>
+          <Row className="gap-4">
+            {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
+              <div key={size} className="flex flex-col items-center gap-2">
+                <Avatar name="Erza Krasniqi" size={size} />
+                <Meta>{size}</Meta>
+              </div>
+            ))}
+            <div className="flex flex-col items-center gap-2">
+              <Avatar name="Endrit Rexhepi" size="lg" ring />
+              <Meta>ring</Meta>
+            </div>
+          </Row>
+        </Demo>
+      </Section>
+
+      <Section id="butonat" title={t("sections.buttons")} intro={t("buttons.intro")}>
+        <Demo label={t("buttons.variants")}>
           <Row>
-            <Button size="sm">Ndiqe</Button>
-            <Button size="md">Ndiqe</Button>
-            <Button size="lg">Ndiqe</Button>
+            <Button>{t("buttons.demo.follow")}</Button>
+            <Button variant="secondary">{t("buttons.demo.saveLater")}</Button>
+            <Button variant="outline">{t("buttons.demo.schedule")}</Button>
+            <Button variant="ghost">{t("buttons.demo.cancel")}</Button>
+            <Button variant="danger">
+              <Trash2 />
+              {t("buttons.demo.deleteMaterial")}
+            </Button>
+            <Button variant="pro">{tp("upgrade")}</Button>
+          </Row>
+        </Demo>
+
+        <Demo label={t("buttons.sizes")} note="32 · 40 · 48">
+          <Row>
+            <Button size="sm">{t("buttons.demo.follow")}</Button>
+            <Button size="md">{t("buttons.demo.follow")}</Button>
+            <Button size="lg">{t("buttons.demo.follow")}</Button>
             <Button size="pill" variant="outline">
               <UserPlus />
-              Ndiq gjeneratën time
+              {t("buttons.demo.followGeneration")}
             </Button>
-            <Button size="icon" variant="secondary" aria-label="Shto material">
+            <Button size="icon" variant="secondary" aria-label={t("buttons.demo.addMaterial")}>
               <Plus />
             </Button>
           </Row>
         </Demo>
 
-        <Demo label="Me ikonë dhe gjendje" note="pa spinner, pika në vend të tij">
+        <Demo label={t("buttons.states")} note={t("buttons.statesNote")}>
           <Row>
             <Button>
               <Download />
-              Shkarko skriptën
+              {t("buttons.demo.downloadScript")}
             </Button>
             <Button variant="secondary">
-              Vazhdo
+              {tc("continue")}
               <ArrowRight />
             </Button>
-            <Button loading>Duke ngarkuar</Button>
-            <Button disabled>I paaftësuar</Button>
+            <Button loading>{t("buttons.demo.loading")}</Button>
+            <Button disabled>{t("buttons.demo.disabled")}</Button>
           </Row>
         </Demo>
       </Section>
 
-      <Section
-        id="format"
-        title="Format"
-        intro="Një vendim për ekran. Etiketa mbi fushë, ndihma nën të, gabimi zëvendëson ndihmën dhe gjithmonë ofron zgjidhje."
-      >
+      <Section id="format" title={t("sections.forms")} intro={t("forms.intro")}>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Demo label="Fushat e tekstit">
+          <Demo label={t("forms.textFields")}>
             <div className="flex flex-col gap-4">
               <Field
-                label="Emri i plotë"
+                label={t("forms.demo.nameLabel")}
                 htmlFor="ds-name"
-                help="Ashtu si të thërrasin në fakultet."
+                help={t("forms.demo.nameHelp")}
               >
-                <Input id="ds-name" defaultValue="Erza Bytyqi" />
+                <Input id="ds-name" defaultValue={t("forms.demo.nameValue")} />
               </Field>
 
               <Field
-                label="Email studentor"
+                label={t("forms.demo.emailLabel")}
                 htmlFor="ds-email"
-                hint="e detyrueshme"
-                error={
-                  emailError
-                    ? "Ky email s'duket institucional. Provo atë me @student.uni-pr.edu."
-                    : undefined
-                }
-                help="Emaili institucional të jep badge-in I verifikuar."
+                hint={tc("required")}
+                error={emailError ? t("forms.demo.emailError") : undefined}
+                help={t("forms.demo.emailHelp")}
               >
                 <Input
                   id="ds-email"
                   type="email"
                   invalid={emailError}
-                  defaultValue="erza.bytyqi@gmail.com"
+                  defaultValue="erza.krasniqi@gmail.com"
                   onChange={() => setEmailError(false)}
                 />
               </Field>
 
-              <Field label="Kërko" htmlFor="ds-search">
+              <Field label={t("forms.demo.searchLabel")} htmlFor="ds-search">
                 <Input
                   id="ds-search"
                   icon={<Search />}
-                  placeholder="Lëndë, material, person ose event"
+                  placeholder={t("forms.demo.searchPlaceholder")}
                 />
               </Field>
 
               <Field
-                label="Bio"
+                label={t("forms.demo.bioLabel")}
                 htmlFor="ds-bio"
-                help={`${bio.length} nga 160 shkronja`}
+                help={t("forms.demo.bioCounter", { count: bio.length })}
               >
                 <Textarea
                   id="ds-bio"
@@ -156,72 +210,71 @@ export function SectionControls() {
                   maxLength={160}
                   value={bio}
                   onChange={(event) => setBio(event.target.value)}
-                  placeholder="Ekonomiku, viti II. Ndihmoj me statistikë, kërkoj ndihmë me gjermanisht."
+                  placeholder={t("forms.demo.bioPlaceholder")}
                 />
               </Field>
             </div>
           </Demo>
 
-          <Demo label="Zgjedhja">
+          <Demo label={t("forms.choice")}>
             <div className="flex flex-col gap-4">
-              <Field label="Fakulteti" htmlFor="ds-faculty">
-                <Select defaultValue="ekonomik">
+              <Field label={t("forms.demo.facultyLabel")} htmlFor="ds-faculty">
+                <Select defaultValue="electrical">
                   <SelectTrigger id="ds-faculty">
-                    <SelectValue placeholder="Zgjidh fakultetin" />
+                    <SelectValue placeholder={t("forms.demo.facultyPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectLabel>Universiteti i Prishtinës</SelectLabel>
-                    <SelectItem value="ekonomik">Fakulteti Ekonomik</SelectItem>
-                    <SelectItem value="juridik">Fakulteti Juridik</SelectItem>
-                    <SelectItem value="mjekesi">Fakulteti i Mjekësisë</SelectItem>
-                    <SelectItem value="fshmn">FSHMN</SelectItem>
-                    <SelectItem value="filologjik">Fakulteti i Filologjisë</SelectItem>
-                    <SelectItem value="arte">Fakulteti i Arteve</SelectItem>
+                    <SelectLabel>{t("forms.demo.universityGroup")}</SelectLabel>
+                    {FACULTY_CODES.slice(0, 8).map((code) => (
+                      <SelectItem key={code} value={code}>
+                        {tf(`${code}.name`)}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </Field>
 
-              <Field label="Niveli i studimeve" htmlFor="ds-level">
-                <RadioGroup defaultValue="bachelor" aria-label="Niveli i studimeve">
+              <Field label={t("forms.demo.levelLabel")} htmlFor="ds-level">
+                <RadioGroup defaultValue="bachelor" aria-label={t("forms.demo.levelLabel")}>
                   <RadioRow
                     value="bachelor"
                     id="ds-level-bachelor"
-                    label="Bachelor"
-                    description="Tre ose katër vite, varësisht programit."
+                    label={ti("level.bachelor")}
+                    description={t("forms.demo.levelBachelorDesc")}
                   />
                   <RadioRow
                     value="master"
                     id="ds-level-master"
-                    label="Master"
-                    description="Studime pasuniversitare."
+                    label={ti("level.master")}
+                    description={t("forms.demo.levelMasterDesc")}
                   />
                   <RadioRow
-                    value="doktorature"
+                    value="phd"
                     id="ds-level-phd"
-                    label="Doktoraturë"
-                    description="Kërkim shkencor."
+                    label={ti("level.phd")}
+                    description={t("forms.demo.levelPhdDesc")}
                   />
                 </RadioGroup>
               </Field>
 
-              <Field label="Lëndët e këtij semestri" htmlFor="ds-courses">
+              <Field label={t("forms.demo.coursesLabel")} htmlFor="ds-courses">
                 <div className="flex flex-col gap-2" id="ds-courses">
                   <CheckboxRow
-                    id="ds-course-mikro"
+                    id="ds-course-1"
                     defaultChecked
-                    label="Mikroekonomi"
-                    description="Viti I · semestri 1 · 6 ECTS · Prof. Berisha"
+                    label={t("forms.demo.course1")}
+                    description={t("forms.demo.course1Desc")}
                   />
                   <CheckboxRow
-                    id="ds-course-stat"
+                    id="ds-course-2"
                     defaultChecked
-                    label="Statistikë"
-                    description="Viti I · semestri 1 · 5 ECTS · Prof. Krasniqi"
+                    label={t("forms.demo.course2")}
+                    description={t("forms.demo.course2Desc")}
                   />
                   <CheckboxRow
-                    id="ds-course-kont"
-                    label="Kontabilitet financiar"
-                    description="Viti I · semestri 1 · 6 ECTS · Prof. Hoxha"
+                    id="ds-course-3"
+                    label={t("forms.demo.course3")}
+                    description={t("forms.demo.course3Desc")}
                   />
                 </div>
               </Field>
@@ -229,53 +282,56 @@ export function SectionControls() {
           </Demo>
         </div>
 
-        <Demo label="Interesat" note="ushqejnë rekomandimet sociale, jo ato akademike">
+        <Demo label={t("forms.interests")} note={t("forms.interestsNote")}>
           <ChipGroup>
-            {INTERESTS.map((interest) => (
+            {INTEREST_KEYS.map((key) => (
               <Chip
-                key={interest}
-                selected={interests.includes(interest)}
+                key={key}
+                selected={interests.includes(key)}
                 onClick={() =>
                   setInterests((current) =>
-                    current.includes(interest)
-                      ? current.filter((item) => item !== interest)
-                      : [...current, interest],
+                    current.includes(key)
+                      ? current.filter((item) => item !== key)
+                      : [...current, key],
                   )
                 }
               >
-                {interest}
+                {t(`interests.${key}`)}
               </Chip>
             ))}
           </ChipGroup>
           <p className="mt-3 text-xs text-text-muted">
             {interests.length === 0
-              ? "S'ke zgjedhur ende asnjë. Zgjidh të paktën tre."
-              : `Zgjodhe ${interests.length} nga ${INTERESTS.length}.`}
+              ? t("forms.demo.selectedNone")
+              : t("forms.demo.selectedCount", {
+                  count: interests.length,
+                  total: INTEREST_KEYS.length,
+                })}
           </p>
         </Demo>
 
-        <Demo label="Çelësat" note="ndryshimi ruhet vetë, pa buton 'Ruaj'">
+        <Demo label={t("forms.switches")} note={t("forms.switchesNote")}>
           <div className="flex flex-col gap-3">
             <SwitchRow
               id="ds-switch-seen"
               defaultChecked
-              label="Trego kur i lexoj mesazhet"
-              description="Nëse e fik, as ti nuk e sheh kur t'i lexojnë."
+              label={t("forms.demo.readReceipts")}
+              description={t("forms.demo.readReceiptsDesc")}
             />
             <SwitchRow
               id="ds-switch-push"
-              label="Njoftime në telefon"
-              description="Maksimum dy në ditë. Kurrë pas orës 21:00."
+              label={t("forms.demo.push")}
+              description={t("forms.demo.pushDesc")}
             />
             <Row className="gap-4 pt-1">
               <label htmlFor="ds-switch-bare" className="text-sm text-text">
-                Çelës i vetëm
+                Switch
               </label>
               <Switch id="ds-switch-bare" defaultChecked />
               <span className="ml-4 inline-flex items-center gap-2">
                 <Checkbox id="ds-check-bare" defaultChecked />
                 <label htmlFor="ds-check-bare" className="text-sm text-text">
-                  Kuti e vetme
+                  Checkbox
                 </label>
               </span>
             </Row>
@@ -283,67 +339,52 @@ export function SectionControls() {
         </Demo>
       </Section>
 
-      <Section
-        id="tabs"
-        title="Tabs"
-        intro="Dy forma. Pilulat për ndërrim konteksti brenda një faqeje, vija për seksione brenda një kolone."
-      >
-        <Demo label="Pilula" note="tabs e feed-it">
-          <Tabs defaultValue="per-ty">
+      <Section id="tabs" title={t("sections.tabs")} intro={t("tabs.intro")}>
+        <Demo label={t("tabs.pills")} note={t("tabs.pillsNote")}>
+          <Tabs defaultValue="forYou">
             <TabsList>
-              <TabsTrigger value="per-ty">Për ty</TabsTrigger>
-              <TabsTrigger value="gjenerata">Gjenerata</TabsTrigger>
-              <TabsTrigger value="ndjek">Ndjek</TabsTrigger>
+              <TabsTrigger value="forYou">{t("tabs.feed.forYou")}</TabsTrigger>
+              <TabsTrigger value="generation">{t("tabs.feed.generation")}</TabsTrigger>
+              <TabsTrigger value="faculty">{t("tabs.feed.faculty")}</TabsTrigger>
+              <TabsTrigger value="following">{t("tabs.feed.following")}</TabsTrigger>
             </TabsList>
-            <TabsContent value="per-ty">
-              <p className="text-sm text-text-muted">
-                Renditje algoritmike: afërsi sociale, relevancë akademike, freski, cilësi angazhimi
-                dhe shumëllojshmëri.
-              </p>
+            <TabsContent value="forYou">
+              <p className="text-sm text-text-muted">{t("tabs.feed.forYouBody")}</p>
             </TabsContent>
-            <TabsContent value="gjenerata">
-              <p className="text-sm text-text-muted">
-                Fakulteti dhe viti yt, kronologjik. Këtu e sheh se çfarë po ndodh sot te ti.
-              </p>
+            <TabsContent value="generation">
+              <p className="text-sm text-text-muted">{t("tabs.feed.generationBody")}</p>
             </TabsContent>
-            <TabsContent value="ndjek">
-              <p className="text-sm text-text-muted">
-                Vetëm ata që i ndjek, kronologjik. Pa algoritëm, pa surpriza.
-              </p>
+            <TabsContent value="faculty">
+              <p className="text-sm text-text-muted">{t("tabs.feed.facultyBody")}</p>
+            </TabsContent>
+            <TabsContent value="following">
+              <p className="text-sm text-text-muted">{t("tabs.feed.followingBody")}</p>
             </TabsContent>
           </Tabs>
         </Demo>
 
-        <Demo label="Vijë" note="seksionet e një lënde">
-          <Tabs defaultValue="materialet">
+        <Demo label={t("tabs.underline")} note={t("tabs.underlineNote")}>
+          <Tabs defaultValue="materials">
             <TabsList variant="underline">
-              <TabsTrigger value="materialet">
+              <TabsTrigger value="materials">
                 <BookOpen />
-                Materialet
+                {t("tabs.course.materials")}
               </TabsTrigger>
-              <TabsTrigger value="pyetjet">Pyetjet</TabsTrigger>
-              <TabsTrigger value="provimet">Provimet e kaluara</TabsTrigger>
-              <TabsTrigger value="njerezit">Kush e ndjek</TabsTrigger>
+              <TabsTrigger value="questions">{t("tabs.course.questions")}</TabsTrigger>
+              <TabsTrigger value="exams">{t("tabs.course.exams")}</TabsTrigger>
+              <TabsTrigger value="people">{t("tabs.course.people")}</TabsTrigger>
             </TabsList>
-            <TabsContent value="materialet">
-              <p className="text-sm text-text-muted">
-                84 materiale për Mikroekonomi, 61 të verifikuara nga studentët.
-              </p>
+            <TabsContent value="materials">
+              <p className="text-sm text-text-muted">{t("tabs.course.materialsBody")}</p>
             </TabsContent>
-            <TabsContent value="pyetjet">
-              <p className="text-sm text-text-muted">
-                12 pyetje pa përgjigje. Ti e ke kaluar këtë provim.
-              </p>
+            <TabsContent value="questions">
+              <p className="text-sm text-text-muted">{t("tabs.course.questionsBody")}</p>
             </TabsContent>
-            <TabsContent value="provimet">
-              <p className="text-sm text-text-muted">
-                Afati i qershorit 2023 dhe 2024, me zgjidhje nga gjenerata para teje.
-              </p>
+            <TabsContent value="exams">
+              <p className="text-sm text-text-muted">{t("tabs.course.examsBody")}</p>
             </TabsContent>
-            <TabsContent value="njerezit">
-              <p className="text-sm text-text-muted">
-                218 studentë e ndjekin këtë lëndë këtë semestër.
-              </p>
+            <TabsContent value="people">
+              <p className="text-sm text-text-muted">{t("tabs.course.peopleBody")}</p>
             </TabsContent>
           </Tabs>
         </Demo>

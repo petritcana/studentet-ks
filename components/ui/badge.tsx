@@ -14,6 +14,8 @@ const badgeVariants = cva(
         warning: "border-warning/25 bg-warning/10 text-warning-text",
         danger: "border-danger/25 bg-danger/10 text-danger-text",
         solid: "border-transparent bg-brand-500 text-brand-contrast",
+        /** Ngjyra vjen nga --faculty-* te stili inline i prindit. */
+        faculty: "border-faculty/30 bg-faculty/10 text-faculty-text",
       },
     },
     defaultVariants: { variant: "neutral" },

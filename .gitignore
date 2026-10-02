@@ -15,6 +15,7 @@
 
 # next.js
 /.next/
+/.next-dev/
 /out/
 
 # production
@@ -43,3 +44,25 @@ next-env.d.ts
 .env
 prisma/dev.db
 prisma/dev.db-journal
+
+.env
+.env*.local
+
+prisma/dev.db
+prisma/dev.db-journal
+
+# Fotot e rishikimit vizual, gjenerohen me npm run shots
+shots/
+
+# Shembulli i mjedisit ndahet me ekipin; .env i vërtetë kurrë.
+!.env.example
+
+# Skedarët e ngarkuar (foto, video, dokumente verifikimi). Rrinë vetëm në makinën ku u ngarkuan.
+.data/
+prisma/postgres/
+
+# Local Netlify folder
+.netlify
+
+.vercel
+.env*

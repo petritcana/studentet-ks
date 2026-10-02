@@ -1,15 +1,21 @@
 export type ActionState = {
   ok: boolean;
-  message?: string;
+  /** Çelës përkthimi, jo tekst i gatshëm. Përkthimi bëhet te komponenti. */
+  messageKey?: string;
   fieldErrors?: Record<string, string>;
+  values?: Record<string, string | number>;
 };
 
 export const IDLE: ActionState = { ok: false };
 
-export function fail(message: string, fieldErrors?: Record<string, string>): ActionState {
-  return { ok: false, message, fieldErrors };
+export function fail(
+  messageKey: string,
+  fieldErrors?: Record<string, string>,
+  values?: Record<string, string | number>,
+): ActionState {
+  return { ok: false, messageKey, fieldErrors, values };
 }
 
-export function succeed(message?: string): ActionState {
-  return { ok: true, message };
+export function succeed(messageKey?: string, values?: Record<string, string | number>): ActionState {
+  return { ok: true, messageKey, values };
 }

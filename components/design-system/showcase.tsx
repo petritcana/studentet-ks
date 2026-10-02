@@ -1,32 +1,35 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
+import { BrandLogo } from "@/components/layout/brand";
+import { LocaleSwitcher } from "@/components/shared/locale-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { cn } from "@/lib/utils";
 import { SectionControls } from "./section-controls";
 import { SectionFoundations } from "./section-foundations";
 import { SectionSurfaces } from "./section-surfaces";
+import { cn } from "@/lib/utils";
 
 const NAV = [
-  { id: "ngjyrat", label: "Ngjyrat" },
-  { id: "kontrasti", label: "Kontrasti" },
-  { id: "tipografia", label: "Tipografia" },
-  { id: "hapesira", label: "Hapësira" },
-  { id: "butonat", label: "Butonat" },
-  { id: "format", label: "Format" },
-  { id: "tabs", label: "Tabs" },
-  { id: "kartat", label: "Kartat" },
-  { id: "avataret", label: "Avatarët" },
-  { id: "badge", label: "Badge" },
-  { id: "mbivendosjet", label: "Mbivendosjet" },
-  { id: "progresi", label: "Progresi" },
-  { id: "skeleton", label: "Skeleton" },
-  { id: "gjendjet-boshe", label: "Gjendjet boshe" },
-  { id: "njoftimet", label: "Njoftimet" },
-];
+  { id: "ngjyrat", key: "colors" },
+  { id: "kontrasti", key: "contrast" },
+  { id: "tipografia", key: "typography" },
+  { id: "hapesira", key: "space" },
+  { id: "identiteti", key: "identity" },
+  { id: "butonat", key: "buttons" },
+  { id: "format", key: "forms" },
+  { id: "tabs", key: "tabs" },
+  { id: "kartat", key: "cards" },
+  { id: "pro", key: "pro" },
+  { id: "mbivendosjet", key: "overlays" },
+  { id: "progresi", key: "feedback" },
+  { id: "skeleton", key: "skeletons" },
+  { id: "gjendjet-boshe", key: "empty" },
+] as const;
 
 /** Tregon gjerësinë aktuale, që të verifikohet sjellja nga 320px deri 1920px. */
 function ViewportMeter() {
+  const t = useTranslations("designSystem");
   const [width, setWidth] = React.useState<number | null>(null);
 
   React.useEffect(() => {
@@ -39,19 +42,20 @@ function ViewportMeter() {
   if (width === null) return null;
 
   const band =
-    width < 480 ? "telefon" : width < 768 ? "telefon i madh" : width < 1024 ? "tablet" : "desktop";
+    width < 480 ? "phone" : width < 768 ? "phoneLarge" : width < 1024 ? "tablet" : "desktop";
 
   return (
     <span className="hidden items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs text-text-muted sm:inline-flex">
       <span className="tabular text-text">{width}px</span>
       <span aria-hidden>·</span>
-      <span>{band}</span>
+      <span>{t(`band.${band}`)}</span>
     </span>
   );
 }
 
 function SectionNav() {
-  const [active, setActive] = React.useState(NAV[0].id);
+  const t = useTranslations("designSystem");
+  const [active, setActive] = React.useState<string>(NAV[0].id);
 
   React.useEffect(() => {
     const observer = new IntersectionObserver(
@@ -72,7 +76,7 @@ function SectionNav() {
   }, []);
 
   return (
-    <nav aria-label="Seksionet e sistemit të dizajnit" className="w-full">
+    <nav aria-label={t("nav")} className="w-full">
       <ul className="flex gap-1 overflow-x-auto pb-1 scrollbar-thin lg:flex-col lg:overflow-visible lg:pb-0">
         {NAV.map((item) => (
           <li key={item.id} className="shrink-0 lg:shrink">
@@ -86,7 +90,7 @@ function SectionNav() {
                   : "text-text-muted hover:bg-surface hover:text-text",
               )}
             >
-              {item.label}
+              {t(`sections.${item.key}`)}
             </a>
           </li>
         ))}
@@ -96,17 +100,22 @@ function SectionNav() {
 }
 
 export function Showcase() {
+  const t = useTranslations("designSystem");
+  const tm = useTranslations("meta");
+
   return (
     <div className="min-h-dvh bg-bg">
       <header className="sticky top-0 z-40 border-b border-border bg-bg/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 sm:px-6">
+          <BrandLogo label={tm("name")} ariaLabel={tm("homeLink")} showText={false} />
           <div className="flex min-w-0 flex-1 items-baseline gap-3">
-            <span className="truncate font-serif text-xl text-text">Sistemi i dizajnit</span>
+            <span className="truncate font-serif text-xl text-text">{t("title")}</span>
             <span className="hidden truncate text-xs text-text-muted md:inline">
-              Studentët.KS · Faza 1
+              {t("eyebrow")}
             </span>
           </div>
           <ViewportMeter />
+          <LocaleSwitcher />
           <ThemeToggle />
         </div>
       </header>
@@ -118,14 +127,8 @@ export function Showcase() {
 
         <main id="permbajtja" className="flex min-w-0 flex-1 flex-col gap-12">
           <div className="flex flex-col gap-3">
-            <h1 className="font-serif text-3xl text-text">
-              Mësim që të lidh, lidhje që të mëson
-            </h1>
-            <p className="measure text-sm text-text-muted">
-              Kjo faqe ekziston që çdo komponent të shihet bashkë, në të dyja temat, në çdo
-              gjerësi. Nuk shkon në prodhim. Nëse diçka duket keq këtu, do të dukej keq edhe në
-              feed.
-            </p>
+            <h1 className="font-serif text-3xl text-text">{t("heading")}</h1>
+            <p className="measure text-sm text-text-muted">{t("intro")}</p>
           </div>
 
           <SectionFoundations />
@@ -133,8 +136,7 @@ export function Showcase() {
           <SectionSurfaces />
 
           <footer className="border-t border-border pt-8 text-xs text-text-muted">
-            Faza 1 e mbyllur: tokenat, tipografia, lëvizja dhe 21 komponentë bazë. Faza tjetër
-            është skema e të dhënave dhe seed-i.
+            {t("footer")}
           </footer>
         </main>
       </div>

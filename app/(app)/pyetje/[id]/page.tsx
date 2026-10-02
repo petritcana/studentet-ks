@@ -1,17 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Eye } from "lucide-react";
-import { PageHeader } from "@/components/layout/page-header";
-import { AnswerPanel } from "@/components/academic/answer-panel";
-import { ReportButton } from "@/components/shared/report-button";
-import { SaveButton } from "@/components/shared/save-button";
-import { Avatar } from "@/components/ui/avatar";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { AnswerThread } from "@/components/questions/answer-thread";
+import { UserIdentityLine } from "@/components/identity/user-identity-line";
 import { db } from "@/lib/db";
+import { toPublicAuthor } from "@/lib/dto";
+import { formatDate } from "@/lib/format";
+import { isTeacher } from "@/lib/permissions";
 import { requireUser } from "@/lib/session";
-import { timeAgoShort } from "@/lib/format";
+
+const AUTHOR_SELECT = {
+  id: true,
+  name: true,
+  username: true,
+  avatar: true,
+  isVerified: true,
+  role: true,
+  year: true,
+  proEarnedUntil: true,
+  university: { select: { abbr: true } },
+  faculty: { select: { name: true, nameEn: true, color: true } },
+  subscriptions: { where: { status: "active" as const }, select: { status: true, expiresAt: true } },
+} as const;
 
 export async function generateMetadata({
   params,
@@ -19,22 +32,15 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const question = await db.question.findUnique({
-    where: { id },
-    select: { title: true },
-  });
-  return { title: question?.title ?? "Pyetja" };
+  const question = await db.question.findUnique({ where: { id }, select: { title: true } });
+  return { title: question?.title ?? "" };
 }
 
 export const dynamic = "force-dynamic";
 
-export default async function QuestionPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const user = await requireUser();
+export default async function QuestionPage({ params }: { params: Promise<{ id: string }> }) {
+  const [{ id }, me, locale] = await Promise.all([params, requireUser(), getLocale()]);
+  const english = locale === "en";
 
   const question = await db.question.findUnique({
     where: { id },
@@ -42,13 +48,11 @@ export default async function QuestionPage({
       id: true,
       title: true,
       text: true,
-      views: true,
       createdAt: true,
-      acceptedAnswerId: true,
-      isHidden: true,
       authorId: true,
-      course: { select: { id: true, name: true, code: true } },
-      author: { select: { name: true, username: true, avatar: true, isVerified: true } },
+      acceptedAnswerId: true,
+      course: { select: { id: true, name: true, nameEn: true } },
+      author: { select: AUTHOR_SELECT },
       answers: {
         where: { isHidden: false },
         select: {
@@ -56,105 +60,66 @@ export default async function QuestionPage({
           text: true,
           votes: true,
           createdAt: true,
-          author: {
-            select: { id: true, name: true, username: true, avatar: true, isVerified: true },
-          },
-          voters: { where: { userId: user.id }, select: { value: true } },
+          author: { select: AUTHOR_SELECT },
+          voters: { where: { userId: me.id }, select: { value: true } },
         },
       },
     },
   });
+  if (!question) notFound();
 
-  if (!question || question.isHidden) notFound();
+  await db.question.update({ where: { id }, data: { views: { increment: 1 } } });
 
-  const [saved, enrolled] = await Promise.all([
-    db.bookmark.findUnique({
-      where: {
-        userId_targetId_targetType: {
-          userId: user.id,
-          targetId: question.id,
-          targetType: "question",
-        },
-      },
-      select: { id: true },
-    }),
-    db.enrollment.findFirst({
-      where: { userId: user.id, courseId: question.course.id },
-      select: { id: true },
-    }),
-  ]);
+  const t = await getTranslations("question");
 
-  await db.question.update({
-    where: { id: question.id },
-    data: { views: { increment: 1 } },
-  });
+  const enrolled = me.courseIds.includes(question.course.id);
 
   return (
-    <div className="flex flex-col gap-5">
-      <PageHeader title="Pyetja" back="/pyetje" />
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5">
+      <Card className="flex flex-col gap-3 p-4 sm:p-5">
+        <Link
+          href={`/lenda/${question.course.id}`}
+          className="w-fit text-xs text-text-muted hover:text-text"
+        >
+          <Badge variant="brand">{english ? question.course.nameEn : question.course.name}</Badge>
+        </Link>
 
-      <Card className="p-4 sm:p-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <Link href={`/lenda/${question.course.id}`}>
-            <Badge variant="brand">{question.course.name}</Badge>
-          </Link>
-          {question.acceptedAnswerId ? (
-            <Badge variant="success">Zgjidhur</Badge>
-          ) : (
-            <Badge variant="warning">Pa përgjigje të pranuar</Badge>
-          )}
-          <span className="tabular inline-flex items-center gap-1 text-xs text-text-muted">
-            <Eye className="size-3" />
-            {question.views}
-          </span>
-        </div>
+        <h1 className="text-pretty text-xl font-semibold tracking-tight text-text">
+          {question.title}
+        </h1>
 
-        <h2 className="mt-3 text-lg font-semibold text-text">{question.title}</h2>
-        <p className="measure mt-2 whitespace-pre-line text-sm text-text">{question.text}</p>
+        <p className="measure whitespace-pre-wrap text-pretty text-sm text-text">{question.text}</p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-          <Link href={`/u/${question.author.username}`} className="flex items-center gap-2">
-            <Avatar
-              name={question.author.name}
-              src={question.author.avatar}
-              size="sm"
-              verified={question.author.isVerified}
-            />
-            <span className="text-sm text-text">{question.author.name}</span>
-          </Link>
+        <div className="flex flex-wrap items-center gap-3 border-t border-border pt-3">
+          <UserIdentityLine
+            user={toPublicAuthor(question.author, locale)}
+            size="sm"
+            className="min-w-0 flex-1"
+          />
           <span className="tabular text-xs text-text-muted">
-            {timeAgoShort(question.createdAt)}
+            {formatDate(question.createdAt, locale)}
           </span>
-          <div className="ml-auto flex items-center gap-1">
-            <SaveButton
-              targetId={question.id}
-              targetType="question"
-              initialSaved={Boolean(saved)}
-              variant="ghost"
-              size="sm"
-            />
-            <ReportButton targetId={question.id} targetType="post" size="sm" />
-          </div>
         </div>
+
+        <p className="text-xs text-text-muted">
+          {enrolled ? t("enrolledHint") : t("notEnrolledHint")}
+        </p>
+        <p className="text-xs text-success-text">{t("neverPaywalled")}</p>
       </Card>
 
-      <AnswerPanel
+      <AnswerThread
         questionId={question.id}
-        acceptedAnswerId={question.acceptedAnswerId}
-        isAuthor={question.authorId === user.id}
-        viewer={{ name: user.name, avatar: user.avatar }}
-        canAnswerHint={
-          enrolled
-            ? "Je në këtë lëndë. Përgjigjja jote peshon."
-            : "S'je regjistruar në këtë lëndë, por nëse e ke kaluar, përgjigjja jote vlen dyfish."
-        }
+        isAuthor={question.authorId === me.id}
+        hasAccepted={Boolean(question.acceptedAnswerId)}
         answers={question.answers.map((answer) => ({
           id: answer.id,
           text: answer.text,
           votes: answer.votes,
           createdAt: answer.createdAt.toISOString(),
           myVote: answer.voters[0]?.value ?? 0,
-          author: answer.author,
+          isAccepted: answer.id === question.acceptedAnswerId,
+          isStaff: isTeacher({ role: answer.author.role }),
+          author: toPublicAuthor(answer.author, locale),
         }))}
       />
     </div>

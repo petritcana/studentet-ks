@@ -1,15 +1,39 @@
-/*
- * Service worker i thjeshtë.
+/**
+ * Sherbetori i punes.
  *
- * Qëllimi është një: materialet e ruajtura të lexohen edhe pa internet, dhe
- * faqja të mos shfaqë ekran gabimi kur lidhja bie. Nuk ruajmë asgjë private në
- * cache dhe nuk prekim asnjë kërkesë te /api.
+ * Ruhen vetem skedaret e ndertimit, te cilet nuk ndryshojne kurre per te njejten
+ * adrese, plus faqja offline. Gjithcka tjeter shkon te rrjeti.
+ *
+ * Arsyeja eshte e hidhur: App Router-i i merr faqet me kerkesa GET drejt te
+ * njejtes adrese (me `_rsc` ose me koken `RSC`), dhe ato nuk jane navigime.
+ * Nje strategji "kopja e pari" i ruante ato pergjigje, prandaj studenti postonte
+ * dicka, kthehej mbrapa dhe shihte feed-in e vjeter. Pergjigjet e faqeve nuk
+ * ruhen me fare.
  */
 
-const CACHE = "studentet-ks-v1";
+const CACHE = "studentet-ks-v3";
 const OFFLINE_URL = "/offline";
+const PRECACHE = [OFFLINE_URL, "/icon-192.png", "/icon-512.png"];
 
-const PRECACHE = [OFFLINE_URL, "/icon-192.png", "/icon-512.png", "/manifest.webmanifest"];
+/** Vetem keto ruhen: skedare me emer qe permban hash-in e ndertimit. */
+function isImmutableAsset(url) {
+  return (
+    url.pathname.startsWith("/_next/static/") ||
+    url.pathname.endsWith(".woff2") ||
+    /^\/(icon-\d+|apple-icon|icon-maskable)\.png$/.test(url.pathname)
+  );
+}
+
+/** Kerkesa e nje faqeje, edhe kur vjen si te dhena per navigim brenda aplikacionit. */
+function isPageRequest(request, url) {
+  return (
+    request.mode === "navigate" ||
+    request.headers.get("RSC") === "1" ||
+    request.headers.has("Next-Router-State-Tree") ||
+    url.searchParams.has("_rsc") ||
+    (request.headers.get("accept") || "").includes("text/html")
+  );
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -32,24 +56,18 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  // Të dhënat e llogarisë nuk ruhen kurrë në cache.
   if (url.pathname.startsWith("/api/")) return;
 
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
-          return response;
-        })
-        .catch(async () => {
-          const cached = await caches.match(request);
-          return cached ?? caches.match(OFFLINE_URL);
-        }),
-    );
+  if (isPageRequest(request, url)) {
+    // Navigimi merret gjithmone nga rrjeti. Pa internet del faqja offline, kurre
+    // nje faqe e vjeter qe duket e fresket.
+    if (request.mode === "navigate") {
+      event.respondWith(fetch(request).catch(() => caches.match(OFFLINE_URL)));
+    }
     return;
   }
+
+  if (!isImmutableAsset(url)) return;
 
   event.respondWith(
     caches.match(request).then((cached) => {
@@ -61,38 +79,6 @@ self.addEventListener("fetch", (event) => {
         }
         return response;
       });
-    }),
-  );
-});
-
-self.addEventListener("push", (event) => {
-  if (!event.data) return;
-  let payload = {};
-  try {
-    payload = event.data.json();
-  } catch {
-    payload = { title: "Studentët.KS", body: event.data.text() };
-  }
-
-  event.waitUntil(
-    self.registration.showNotification(payload.title ?? "Studentët.KS", {
-      body: payload.body ?? "",
-      icon: "/icon-192.png",
-      badge: "/icon-192.png",
-      data: { url: payload.url ?? "/feed" },
-      lang: "sq",
-    }),
-  );
-});
-
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-  const target = event.notification.data?.url ?? "/feed";
-  event.waitUntil(
-    self.clients.matchAll({ type: "window" }).then((clients) => {
-      const existing = clients.find((client) => client.url.includes(self.location.origin));
-      if (existing) return existing.focus().then(() => existing.navigate(target));
-      return self.clients.openWindow(target);
     }),
   );
 });

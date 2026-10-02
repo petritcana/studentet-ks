@@ -1,71 +1,124 @@
 import { NextResponse } from "next/server";
+import { getLocale } from "next-intl/server";
 import { db } from "@/lib/db";
+import { acceptedFollow } from "@/lib/follow";
 import { getCurrentUser } from "@/lib/session";
 
-export async function GET() {
-  const user = await getCurrentUser();
-  if (!user) return NextResponse.json({ error: "Duhet të jesh i kyçur." }, { status: 401 });
+/** Ku çon secili lloj njoftimi. Rrugët nuk përkthehen. */
+function hrefFor(type: string, targetType: string | null, targetId: string | null) {
+  // Njoftimet e garës pa objekt të vetin (fundi i javës, renditja) çojnë te gara.
+  if (targetType === "competition") return "/gara";
+  if (!targetId) return null;
+  if (targetType === "post") return `/postimi/${targetId}`;
+  if (targetType === "material") return `/materialet/${targetId}`;
+  if (targetType === "question") return `/pyetje/${targetId}`;
+  if (targetType === "answer") return `/pyetje/${targetId}`;
+  if (targetType === "event") return `/eventet/${targetId}`;
+  if (targetType === "job") return `/karriera/${targetId}`;
+  if (targetType === "battle") return `/gara/beteja/${targetId}`;
+  if (targetType === "team_event") return `/gara/ngjarje/${targetId}`;
+  if (targetType === "conversation") return `/mesazhe/${targetId}`;
+  if (targetType === "voice_room") return `/zeri/${targetId}`;
+  if (targetType === "feedback") return "/admin/testimi";
+  if (targetType === "profile") return `/u/${targetId}`;
+  if (type.startsWith("pro_") || type === "xp_enough") return "/une/pro";
+  return null;
+}
 
-  const notifications = await db.notification.findMany({
-    where: { userId: user.id },
+function parsePayload(raw: string): Record<string, string | number> {
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Njoftimet e panelit anësor.
+ *
+ * Bashkohen sipas `groupKey`: pesë pëlqime bëhen një rresht, jo pesë. Teksti
+ * ruhet si çelës plus vlera, kurrë i përkthyer, që ndërrimi i gjuhës ta ndryshojë
+ * edhe historikun.
+ */
+export async function GET(request: Request) {
+  const me = await getCurrentUser();
+  if (!me) return NextResponse.json({ items: [] }, { status: 401 });
+
+  const url = new URL(request.url);
+  const category = url.searchParams.get("kategoria");
+  const locale = await getLocale();
+  const english = locale === "en";
+
+  const rows = await db.notification.findMany({
+    where: { userId: me.id, ...(category && category !== "all" ? { category } : {}) },
     orderBy: { createdAt: "desc" },
-    take: 30,
+    take: 40,
     select: {
       id: true,
+      category: true,
       type: true,
-      text: true,
-      context: true,
+      payload: true,
+      groupKey: true,
       isRead: true,
       createdAt: true,
       targetId: true,
+      targetType: true,
       actor: {
         select: {
           id: true,
           name: true,
           username: true,
           avatar: true,
-          isVerified: true,
           year: true,
-          faculty: { select: { name: true, color: true } },
+          faculty: { select: { name: true, nameEn: true } },
         },
       },
     },
   });
 
-  // Cilat prej tyre i ndjek tashmë, që butoni "Ndiqe edhe ti" të mos shfaqet kot.
-  const actorIds = notifications
-    .map((item) => item.actor?.id)
-    .filter((id): id is string => Boolean(id));
+  const actorIds = [...new Set(rows.map((row) => row.actor?.id).filter(Boolean) as string[])];
   const following = await db.follow.findMany({
-    where: { followerId: user.id, followingId: { in: actorIds } },
+    where: { ...acceptedFollow, followerId: me.id, followingId: { in: actorIds } },
     select: { followingId: true },
   });
-  const followingSet = new Set(following.map((item) => item.followingId));
+  const followingIds = new Set(following.map((item) => item.followingId));
 
-  return NextResponse.json({
-    unread: notifications.filter((item) => !item.isRead).length,
-    items: notifications.map((item) => ({
-      id: item.id,
-      type: item.type,
-      text: item.text,
-      context: item.context,
-      isRead: item.isRead,
-      createdAt: item.createdAt.toISOString(),
-      targetId: item.targetId,
-      actor: item.actor
+  // Bashkimi: i njëjti groupKey shfaqet një herë, me numëruesin te payload-i.
+  const seen = new Map<string, number>();
+  const items = [];
+
+  for (const row of rows) {
+    const key = row.groupKey ?? row.id;
+    if (seen.has(key)) {
+      const index = seen.get(key)!;
+      const payload = items[index].payload;
+      payload.grouped = Number(payload.grouped ?? 1) + 1;
+      continue;
+    }
+
+    seen.set(key, items.length);
+    items.push({
+      id: row.id,
+      category: row.category,
+      type: row.type,
+      payload: parsePayload(row.payload),
+      isRead: row.isRead,
+      createdAt: row.createdAt.toISOString(),
+      href: hrefFor(row.type, row.targetType, row.targetId),
+      actor: row.actor
         ? {
-            id: item.actor.id,
-            name: item.actor.name,
-            username: item.actor.username,
-            avatar: item.actor.avatar,
-            isVerified: item.actor.isVerified,
-            faculty: item.actor.faculty
-              ? item.actor.faculty.name.replace("Fakulteti i ", "").replace("Fakulteti ", "")
-              : null,
-            year: item.actor.year,
-            alreadyFollowing: followingSet.has(item.actor.id),
+            id: row.actor.id,
+            name: row.actor.name,
+            username: row.actor.username,
+            avatar: row.actor.avatar,
+            facultyLabel: english ? row.actor.faculty?.nameEn ?? null : row.actor.faculty?.name ?? null,
+            year: row.actor.year,
+            alreadyFollowing: followingIds.has(row.actor.id),
           }
         : null,
-    })),
-  });
+    });
+  }
+
+  return NextResponse.json({ items });
 }

@@ -19,14 +19,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
       type={type}
       aria-invalid={invalid || undefined}
       className={cn(
-        "h-10 w-full rounded-sm border bg-surface px-3 text-sm text-text",
-        "border-border placeholder:text-text-muted",
+        "h-10 w-full rounded-control border border-border bg-surface-2 px-3 text-sm text-text",
+        "placeholder:text-text-muted",
         "transition-colors duration-150 ease-brand",
         "hover:border-text-muted/50",
         "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/25",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "aria-invalid:border-danger aria-invalid:focus:ring-danger/25",
-        "file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-brand-500",
         icon && "pl-9",
         className,
       )}

@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
+import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DialogOverlay } from "./dialog";
@@ -11,39 +12,31 @@ export const Sheet = DialogPrimitive.Root;
 export const SheetTrigger = DialogPrimitive.Trigger;
 export const SheetClose = DialogPrimitive.Close;
 
-const sheetVariants = cva(
-  cn(
-    "fixed z-50 flex flex-col gap-0 border-border bg-surface shadow-lifted",
-    "focus:outline-none",
-  ),
-  {
-    variants: {
-      side: {
-        bottom:
-          "inset-x-0 bottom-0 max-h-[85dvh] rounded-t-xl border-t data-[state=open]:animate-slide-up",
-        left: "inset-y-0 left-0 h-full w-[min(88vw,20rem)] border-r data-[state=open]:animate-slide-right",
-        right:
-          "inset-y-0 right-0 h-full w-[min(88vw,24rem)] border-l data-[state=open]:animate-slide-left",
-        top: "inset-x-0 top-0 max-h-[85dvh] rounded-b-xl border-b data-[state=open]:animate-slide-down",
-      },
+const sheetVariants = cva("fixed z-50 flex flex-col border-border bg-surface-solid shadow-lifted focus:outline-none", {
+  variants: {
+    side: {
+      bottom:
+        "inset-x-0 bottom-0 max-h-[85dvh] rounded-t-xl border-t data-[state=open]:animate-slide-up",
+      top: "inset-x-0 top-0 max-h-[85dvh] rounded-b-xl border-b data-[state=open]:animate-slide-down",
+      left: "inset-y-0 left-0 h-full w-[min(88vw,20rem)] border-r data-[state=open]:animate-slide-right",
+      right:
+        "inset-y-0 right-0 h-full w-[min(88vw,24rem)] border-l data-[state=open]:animate-slide-left",
     },
-    defaultVariants: { side: "bottom" },
   },
-);
+  defaultVariants: { side: "bottom" },
+});
 
 export const SheetContent = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> &
     VariantProps<typeof sheetVariants> & { hideClose?: boolean }
 >(function SheetContent({ className, children, side = "bottom", hideClose, ...props }, ref) {
+  const t = useTranslations("common");
+
   return (
     <DialogPrimitive.Portal>
       <DialogOverlay />
-      <DialogPrimitive.Content
-        ref={ref}
-        className={cn(sheetVariants({ side }), className)}
-        {...props}
-      >
+      <DialogPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
         {side === "bottom" ? (
           <div className="mx-auto mt-3 h-1 w-10 shrink-0 rounded-full bg-border" aria-hidden />
         ) : null}
@@ -57,7 +50,7 @@ export const SheetContent = React.forwardRef<
             )}
           >
             <X className="size-4" />
-            <span className="sr-only">Mbylle</span>
+            <span className="sr-only">{t("close")}</span>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>

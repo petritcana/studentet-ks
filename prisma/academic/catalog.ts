@@ -1,0 +1,4296 @@
+// Katalogu akademik i Kosovës, i gjeneruar nga lista zyrtare e programeve të
+// akredituara e Agjencisë së Kosovës për Akreditim për vitin 2026/27.
+//
+// Burimi: Agjencia e Kosovës për Akreditim, «Programet e akredituara 2026/27».
+// Emrat shqip lexohen nga vetë rreshtat e dokumentit, emrat anglisht nga kolona
+// e dytë. Specializimet shtohen vetëm kur dokumenti i emërton; kur thotë vetëm
+// «me 3 specializime», nuk shpikim emra.
+//
+// Hierarkia ndjek institucionin: universitetet publike kanë fakultete, kolegjet
+// private jo. Fakultetet e universiteteve publike jashtë Prishtinës nuk i jep
+// lista e AKA-së, prandaj janë marrë nga faqet e vetë universiteteve.
+//
+// Mos e ndrysho me dorë: rigjenerohet kur AKA-ja publikon listën e re.
+
+import type { InstitutionSeed } from "./types";
+
+export const ACADEMIC_YEAR = "2026/27";
+export const CATALOG_SOURCE = "Agjencia e Kosovës për Akreditim, lista 2026/27";
+export const CATALOG_VERIFIED_AT = "2026-09-22";
+
+export const INSTITUTIONS: InstitutionSeed[] = [
+  {
+    "slug": "up",
+    "name": "Universiteti i Prishtinës \"Hasan Prishtina\"",
+    "nameEn": "University of Prishtina \"Hasan Prishtina\"",
+    "abbr": "UP",
+    "city": "Prishtinë",
+    "type": "public",
+    "website": "https://uni-pr.edu",
+    "emailDomains": [
+      "student.uni-pr.edu",
+      "uni-pr.edu"
+    ],
+    "campuses": [
+      {
+        "name": "Prishtinë",
+        "nameEn": "Prishtinë",
+        "slug": "prishtine",
+        "city": "Prishtinë"
+      }
+    ],
+    "faculties": [
+      {
+        "slug": "arkitekture",
+        "name": "Fakulteti i Arkitekturës",
+        "nameEn": "Faculty of Architecture",
+        "abbr": "ARK",
+        "color": "architecture",
+        "icon": "building-2"
+      },
+      {
+        "slug": "arte",
+        "name": "Fakulteti i Arteve",
+        "nameEn": "Faculty of Arts",
+        "abbr": "ART",
+        "color": "arts",
+        "icon": "palette"
+      },
+      {
+        "slug": "bujqesi",
+        "name": "Fakulteti i Bujqësisë dhe Veterinarisë",
+        "nameEn": "Faculty of Agriculture and Veterinary",
+        "abbr": "FBV",
+        "color": "agriculture",
+        "icon": "sprout"
+      },
+      {
+        "slug": "edukim",
+        "name": "Fakulteti i Edukimit",
+        "nameEn": "Faculty of Education",
+        "abbr": "EDU",
+        "color": "education",
+        "icon": "graduation-cap"
+      },
+      {
+        "slug": "edukim-fizik",
+        "name": "Fakulteti i Edukimit Fizik dhe i Sportit",
+        "nameEn": "Faculty of Physical Education and Sport",
+        "abbr": "SPORT",
+        "color": "sport",
+        "icon": "dumbbell"
+      },
+      {
+        "slug": "ekonomik",
+        "name": "Fakulteti Ekonomik",
+        "nameEn": "Faculty of Economics",
+        "abbr": "EKO",
+        "color": "economics",
+        "icon": "trending-up"
+      },
+      {
+        "slug": "fiek",
+        "name": "Fakulteti i Inxhinierisë Elektrike dhe Kompjuterike",
+        "nameEn": "Faculty of Electrical and Computer Engineering",
+        "abbr": "FIEK",
+        "color": "electrical",
+        "icon": "cpu"
+      },
+      {
+        "slug": "filologji",
+        "name": "Fakulteti i Filologjisë",
+        "nameEn": "Faculty of Philology",
+        "abbr": "FIL",
+        "color": "philology",
+        "icon": "book-open"
+      },
+      {
+        "slug": "filozofik",
+        "name": "Fakulteti Filozofik",
+        "nameEn": "Faculty of Philosophy",
+        "abbr": "FIZ",
+        "color": "philosophy",
+        "icon": "brain"
+      },
+      {
+        "slug": "fshmn",
+        "name": "Fakulteti i Shkencave Matematike-Natyrore",
+        "nameEn": "Faculty of Mathematics and Natural Sciences",
+        "abbr": "FSHMN",
+        "color": "science",
+        "icon": "flask-conical"
+      },
+      {
+        "slug": "juridik",
+        "name": "Fakulteti Juridik",
+        "nameEn": "Faculty of Law",
+        "abbr": "JUR",
+        "color": "law",
+        "icon": "scale"
+      },
+      {
+        "slug": "mekanike",
+        "name": "Fakulteti i Inxhinierisë Mekanike",
+        "nameEn": "Faculty of Mechanical Engineering",
+        "abbr": "FIM",
+        "color": "mechanical",
+        "icon": "cog"
+      },
+      {
+        "slug": "mjekesi",
+        "name": "Fakulteti i Mjekësisë",
+        "nameEn": "Faculty of Medicine",
+        "abbr": "MJK",
+        "color": "medicine",
+        "icon": "stethoscope"
+      },
+      {
+        "slug": "ndertimore",
+        "name": "Fakulteti i Inxhinierisë Ndërtimore",
+        "nameEn": "Faculty of Civil Engineering",
+        "abbr": "FIN",
+        "color": "architecture",
+        "icon": "building-2"
+      }
+    ],
+    "programs": [
+      {
+        "name": "Antropologji dhe trashëgimi kulturore",
+        "nameEn": "Anthropology and cultural heritage",
+        "slug": "antropologji-dhe-trashegimi-kulturore",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filozofik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Psikologji",
+        "nameEn": "Psychology",
+        "slug": "psikologji",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filozofik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Trashëgimi Kulturore",
+        "nameEn": "Cultural Heritage",
+        "slug": "trashegimi-kulturore",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filozofik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Filozofi",
+        "nameEn": "Philosophy",
+        "slug": "filozofi",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filozofik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Histori",
+        "nameEn": "History",
+        "slug": "histori",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filozofik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Sociologji",
+        "nameEn": "Sociology",
+        "slug": "sociologji",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filozofik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Punë Sociale",
+        "nameEn": "Social Work",
+        "slug": "pune-sociale",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filozofik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Shkencë Politike: a) Marrëdhënie Ndërkombëtare dhe Diplomaci b) Administrim Publik",
+        "nameEn": "Political Science: a) International Relations and Diplomacy b) Public Administration",
+        "slug": "shkence-politike-a-marredhenie-nderkombetare-dhe-diplomaci-b",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filozofik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Psikologji Klinike dhe Komuniteti",
+        "nameEn": "Clinical and community psychology",
+        "slug": "psikologji-klinike-dhe-komuniteti",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filozofik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Psikologji Shkollore dhe Këshillim",
+        "nameEn": "School Psychology and Counseling",
+        "slug": "psikologji-shkollore-dhe-keshillim",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filozofik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Filozofi Politike",
+        "nameEn": "Political Philosophy",
+        "slug": "filozofi-politike",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filozofik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Histori Koha e Re",
+        "nameEn": "History of Modern Time",
+        "slug": "histori-koha-e-re",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filozofik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arkivistika",
+        "nameEn": "Archivistic",
+        "slug": "arkivistika",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filozofik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Sociologji",
+        "nameEn": "Sociology",
+        "slug": "sociologji",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filozofik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Marredhenie Nderkombetare dhe Diplomaci",
+        "nameEn": "International Relations and Diplomacy",
+        "slug": "marredhenie-nderkombetare-dhe-diplomaci",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filozofik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Matematikë",
+        "nameEn": "Mathematics",
+        "slug": "matematike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Biologji molekulare",
+        "nameEn": "Molecular Biology",
+        "slug": "biologji-molekulare",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Biologji",
+        "nameEn": "Biology",
+        "slug": "biologji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Ekologji dhe Mbrojtje e Mjedisit",
+        "nameEn": "Ecology and Environment Protection",
+        "slug": "ekologji-dhe-mbrojtje-e-mjedisit",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Kimi Inxhinierike",
+        "nameEn": "Chemistry of Engineering",
+        "slug": "kimi-inxhinierike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Kimi Ushqimore",
+        "nameEn": "Food Chemistry",
+        "slug": "kimi-ushqimore",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Matematikë Financiare në Banka dhe Sigurime",
+        "nameEn": "Financial Mathematics for Banking and Insurances",
+        "slug": "matematike-financiare-ne-banka-dhe-sigurime",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkencë Kompjuterike",
+        "nameEn": "Computer Sciences",
+        "slug": "shkence-kompjuterike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Fizikë",
+        "nameEn": "Physics",
+        "slug": "fizike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Gjeografi",
+        "nameEn": "Geography",
+        "slug": "gjeografi",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Kimi",
+        "nameEn": "Chemistry",
+        "slug": "kimi",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Biologji (me 2 specializime 1. Botanikë 2. Zoologji)",
+        "nameEn": "Biology (with 2 specializations: 1. Botany, 2. Zoology)",
+        "slug": "biologji-me-2-specializime-1-botanike-2-zoologji",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "specializations": [
+          {
+            "name": "Botanikë",
+            "nameEn": "Botanikë",
+            "slug": "botanike"
+          },
+          {
+            "name": "Zoologji",
+            "nameEn": "Zoologji",
+            "slug": "zoologji"
+          }
+        ],
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Shkencë Kompjuterike",
+        "nameEn": "Computer Sciences",
+        "slug": "shkence-kompjuterike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Matematikë me zbatime",
+        "nameEn": "Mathematics with applications",
+        "slug": "matematike-me-zbatime",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Ekologji dhe Mbrojtje e Mjedisit",
+        "nameEn": "Ecology and Environment Protection",
+        "slug": "ekologji-dhe-mbrojtje-e-mjedisit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkenca e Materialeve",
+        "nameEn": "Material Science",
+        "slug": "shkenca-e-materialeve",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Fizikë",
+        "nameEn": "Physics",
+        "slug": "fizike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Gjeografi",
+        "nameEn": "Geography",
+        "slug": "gjeografi",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Kimi Analitike dhe Kimi Mjedisore",
+        "nameEn": "Analytical Chemistry & Environmental Chemistry",
+        "slug": "kimi-analitike-dhe-kimi-mjedisore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Kimi Organike",
+        "nameEn": "Organic Chemistry",
+        "slug": "kimi-organike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fshmn",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Kimi",
+        "nameEn": "Chemistry",
+        "slug": "kimi",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "fshmn",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Letërsi Shqipe",
+        "nameEn": "Albanian Literature",
+        "slug": "letersi-shqipe",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Gjuhë dhe Letërsi Angleze",
+        "nameEn": "English Language and Literature",
+        "slug": "gjuhe-dhe-letersi-angleze",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Gjuhë dhe Letërsi Frënge",
+        "nameEn": "French Language and Literature",
+        "slug": "gjuhe-dhe-letersi-frenge",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhë dhe Letërsi Gjermane",
+        "nameEn": "German Language and Literature",
+        "slug": "gjuhe-dhe-letersi-gjermane",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gazetari",
+        "nameEn": "Journalism",
+        "slug": "gazetari",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Gjuhë Shqipe",
+        "nameEn": "Albanian Language",
+        "slug": "gjuhe-shqipe",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Orientalistike",
+        "nameEn": "Orientalistics",
+        "slug": "orientalistike",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhe dhe Letersi Turke",
+        "nameEn": "Turkish Language and Literature",
+        "slug": "gjuhe-dhe-letersi-turke",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Ballkanistikë",
+        "nameEn": "Balkanistics",
+        "slug": "ballkanistike",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "filologji",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gazetari dhe Marrëdhënie me Publikun",
+        "nameEn": "​Journalism and Public Relations",
+        "slug": "gazetari-dhe-marredhenie-me-publikun",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhë dhe Letërsi Frënge",
+        "nameEn": "French Language and Literature",
+        "slug": "gjuhe-dhe-letersi-frenge",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Gjuhë dhe Letërsi Turke",
+        "nameEn": "Turkish Language and Literature",
+        "slug": "gjuhe-dhe-letersi-turke",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Gjuhë Shqipe",
+        "nameEn": "Albanian Language",
+        "slug": "gjuhe-shqipe",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Letërsi Shqipe",
+        "nameEn": "Albanian Literature",
+        "slug": "letersi-shqipe",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Studime Kulturore Orientale",
+        "nameEn": "Oriental Cultural Studies",
+        "slug": "studime-kulturore-orientale",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Gjuhë dhe Letërsi Gjermane",
+        "nameEn": "German Language and Literature",
+        "slug": "gjuhe-dhe-letersi-gjermane",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjermanishtja si Gjuhë e Huaj",
+        "nameEn": "German as a Foreign Language",
+        "slug": "gjermanishtja-si-gjuhe-e-huaj",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Letërsi Angleze",
+        "nameEn": "English Literature",
+        "slug": "letersi-angleze",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhë angleze (Program i Integruar i Gjuhësisë)",
+        "nameEn": "English Language (Integrated programme in Linguistics)",
+        "slug": "gjuhe-angleze-program-i-integruar-i-gjuhesise",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhesi",
+        "nameEn": "Linguistics",
+        "slug": "gjuhesi",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "filologji",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Letërsi",
+        "nameEn": "Literature",
+        "slug": "letersi",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "filologji",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Juridik",
+        "nameEn": "Law",
+        "slug": "juridik",
+        "level": "bachelor",
+        "degreeTitle": "LLB",
+        "faculty": "juridik",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "E Drejta Civile dhe Pronësore",
+        "nameEn": "Civil and Property Law",
+        "slug": "e-drejta-civile-dhe-pronesore",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "E Drejta Ndërkombëtare",
+        "nameEn": "International Law",
+        "slug": "e-drejta-nderkombetare",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "E Drejta Kushtetuese Administrative",
+        "nameEn": "Constitutional and Administrative Law",
+        "slug": "e-drejta-kushtetuese-administrative",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "E Drejta Penale",
+        "nameEn": "Penal Law",
+        "slug": "e-drejta-penale",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Të Drejtat e Njeriut, E Drejtë Penale Ndërkombëtare dhe Drejtësi Tranzicionale",
+        "nameEn": "Human Rights, International Criminal Law and Transitional Justice",
+        "slug": "te-drejtat-e-njeriut-e-drejte-penale-nderkombetare-dhe-drejt",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "E Drejta Financiare",
+        "nameEn": "Financial Law",
+        "slug": "e-drejta-financiare",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Kontrata dhe e Drejta Komerciale",
+        "nameEn": "Contracts and Commercial Law",
+        "slug": "kontrata-dhe-e-drejta-komerciale",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Studime të Avancuara Evropiane",
+        "nameEn": "Advanced European Studies",
+        "slug": "studime-te-avancuara-evropiane",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Ekonomi e Aplikuar dhe Menaxhment (në Gjuhën Angleze)",
+        "nameEn": "Applied Economics and Management (in English Language)",
+        "slug": "ekonomi-e-aplikuar-dhe-menaxhment-ne-gjuhen-angleze",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Banka dhe Financa",
+        "nameEn": "Banking and Accounting",
+        "slug": "banka-dhe-financa",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Ekonomiks",
+        "nameEn": "Economics",
+        "slug": "ekonomiks",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Kontabilitet",
+        "nameEn": "Accounting",
+        "slug": "kontabilitet",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Marketing",
+        "nameEn": "Marketing",
+        "slug": "marketing",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Menaxhment",
+        "nameEn": "Management",
+        "slug": "menaxhment",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Banka dhe Financa",
+        "nameEn": "Banking and Accounting",
+        "slug": "banka-dhe-financa",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ekonomik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Ekonomiks",
+        "nameEn": "Economics",
+        "slug": "ekonomiks",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ekonomik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Kontabilitet",
+        "nameEn": "Accounting",
+        "slug": "kontabilitet",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ekonomik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Marketing",
+        "nameEn": "Marketing",
+        "slug": "marketing",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ekonomik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhment",
+        "nameEn": "Management",
+        "slug": "menaxhment",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ekonomik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Gjeodezi",
+        "nameEn": "Geodesy",
+        "slug": "gjeodezi",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ndertimore",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Inxhinieria e Ambientit",
+        "nameEn": "Environmental Engineering",
+        "slug": "inxhinieria-e-ambientit",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ndertimore",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Konstruktiv",
+        "nameEn": "Construction",
+        "slug": "konstruktiv",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ndertimore",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Hidroteknike",
+        "nameEn": "Hydrotechnics",
+        "slug": "hidroteknike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ndertimore",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhimi i Integruar i Resurseve Ujore",
+        "nameEn": "Integrated Water Resource Management",
+        "slug": "menaxhimi-i-integruar-i-resurseve-ujore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ndertimore",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Gjeodezi",
+        "nameEn": "Geodesy",
+        "slug": "gjeodezi",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ndertimore",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Konstruktiv",
+        "nameEn": "Construction",
+        "slug": "konstruktiv",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ndertimore",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Elektroenergjetikë",
+        "nameEn": "Power Systems",
+        "slug": "elektroenergjetike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fiek",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Elektronikё, Automatikё dhe Robotikë",
+        "nameEn": "Electronics, Automation and Robotics",
+        "slug": "elektronik-automatik-dhe-robotike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fiek",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Inxhineri Kompjuterike dhe Softuerike",
+        "nameEn": "Computer and Software Engineering",
+        "slug": "inxhineri-kompjuterike-dhe-softuerike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fiek",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Teknologjitë e Informacionit dhe Komunikimit",
+        "nameEn": "Information and Communication Technologies",
+        "slug": "teknologjite-e-informacionit-dhe-komunikimit",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "fiek",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Elektroenergjetika dhe Menaxhimi i Energjisë",
+        "nameEn": "Power Systems and Energy Management",
+        "slug": "elektroenergjetika-dhe-menaxhimi-i-energjise",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fiek",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Elektronikё, Automatikё dhe Robotikë",
+        "nameEn": "Electronics, Automation and Robotics",
+        "slug": "elektronik-automatik-dhe-robotike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fiek",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Inxhineri Kompjuterike dhe Softuerike",
+        "nameEn": "Computer and Software Engineering",
+        "slug": "inxhineri-kompjuterike-dhe-softuerike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fiek",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Teknologjitë e Informacionit dhe Komunikimit",
+        "nameEn": "Information and Communication Technologies",
+        "slug": "teknologjite-e-informacionit-dhe-komunikimit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "fiek",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Inxhinieri Elektrike dhe Kompjuterike",
+        "nameEn": "Doctoral studies in Electrical and Computer Engineering",
+        "slug": "inxhinieri-elektrike-dhe-kompjuterike",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "fiek",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Prodhimtari dhe Inxhinieri Industriale me Menaxhment",
+        "nameEn": "Manufacturing and Industrial Engineering with Management",
+        "slug": "prodhimtari-dhe-inxhinieri-industriale-me-menaxhment",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "mekanike",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Mekatronikë",
+        "nameEn": "Mechatronics",
+        "slug": "mekatronike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "mekanike",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Termoenergjetika dhe Energjia e Ripërtërishme",
+        "nameEn": "Thermoenergetics and Renewable Energy",
+        "slug": "termoenergjetika-dhe-energjia-e-riperterishme",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "mekanike",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Dizajn Inxhinierik dhe Automjete",
+        "nameEn": "Engineering Design and Vehicles",
+        "slug": "dizajn-inxhinierik-dhe-automjete",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "mekanike",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Komunikacion dhe Transport",
+        "nameEn": "Traffic and Transport",
+        "slug": "komunikacion-dhe-transport",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "mekanike",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Dizajn Inxhinierik dhe Automjete",
+        "nameEn": "Engineering Design and Vehicles",
+        "slug": "dizajn-inxhinierik-dhe-automjete",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "mekanike",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Mekatronikë",
+        "nameEn": "Mechatronics",
+        "slug": "mekatronike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "mekanike",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Komunikacion Rrugor",
+        "nameEn": "Road Traffic",
+        "slug": "komunikacion-rrugor",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "mekanike",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Termoenergjetika dhe Energjia e Ripërtërishme (me 2 specializime)",
+        "nameEn": "Thermoenergetics and Renewable Energy (with 2 specializations)",
+        "slug": "termoenergjetika-dhe-energjia-e-riperterishme-me-2-specializ",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "mekanike",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Infermieri",
+        "nameEn": "Nursing",
+        "slug": "infermieri",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "mjekesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Fizioterapi dhe rehabilitim",
+        "nameEn": "Physiotherapy and Rehabilitation",
+        "slug": "fizioterapi-dhe-rehabilitim",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "mjekesi",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Stomatologji",
+        "nameEn": "Dentistry",
+        "slug": "stomatologji",
+        "level": "integrated",
+        "degreeTitle": "Dr. Dent",
+        "faculty": "mjekesi",
+        "ects": 360,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Mjekësi e Përgjithshme",
+        "nameEn": "General Medicine",
+        "slug": "mjekesi-e-pergjithshme",
+        "level": "integrated",
+        "degreeTitle": "Dr. Med",
+        "faculty": "mjekesi",
+        "ects": 360,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Farmaci",
+        "nameEn": ". Pharmacy MPh.",
+        "slug": "farmaci",
+        "level": "master",
+        "degreeTitle": "MPh",
+        "faculty": "mjekesi",
+        "ects": 300,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Fizioterapi",
+        "nameEn": "Physiotherapy",
+        "slug": "fizioterapi",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "mjekesi",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shëndet Publik",
+        "nameEn": "Public Health",
+        "slug": "shendet-publik",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "mjekesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Mjekësi Paraklinike",
+        "nameEn": "Preclinical Medicine",
+        "slug": "mjekesi-paraklinike",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "mjekesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Mjekësi Klinike",
+        "nameEn": "Clinical Medicine",
+        "slug": "mjekesi-klinike",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "mjekesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Stomatologji",
+        "nameEn": "Stomatology",
+        "slug": "stomatologji",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "mjekesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Bachelor i Muzikës në Performim (me 5 specializime)",
+        "nameEn": "Bachelor of Music in Performance (with 5 specializations)",
+        "slug": "bachelor-i-muzikes-ne-performim-me-5-specializime",
+        "level": "bachelor",
+        "degreeTitle": "BMus",
+        "faculty": "arte",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Artet Vizuale (me 6 specializime)",
+        "nameEn": "Visual Arts (with 6 specializations)",
+        "slug": "artet-vizuale-me-6-specializime",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "arte",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Artet Vizuale (me 6 specializime)",
+        "nameEn": "Visual Arts (with 6 specializations)",
+        "slug": "artet-vizuale-me-6-specializime",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "arte",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Master i Muzikës në Performim (me 5 specializime)",
+        "nameEn": "Master of Music in Performance (with 5 specializations), Mmus",
+        "slug": "master-i-muzikes-ne-performim-me-5-specializime",
+        "level": "master",
+        "degreeTitle": "MMus",
+        "faculty": "arte",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Master i Muzikës në Kompozim (me specializim në Kompozim)",
+        "nameEn": "Master of Music in Composition (with specialization in Composition), Mmus",
+        "slug": "master-i-muzikes-ne-kompozim-me-specializim-ne-kompozim",
+        "level": "master",
+        "degreeTitle": "MMus",
+        "faculty": "arte",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Bachelor i Muzikës (me specializim në Kompozim)",
+        "nameEn": "Bachelor of Music (with specialization in Composition)",
+        "slug": "bachelor-i-muzikes-me-specializim-ne-kompozim",
+        "level": "bachelor",
+        "degreeTitle": "BMus",
+        "faculty": "arte",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Artet Dramatike (me 7 specializime)",
+        "nameEn": "Dramatic Arts (with 7 specializations)",
+        "slug": "artet-dramatike-me-7-specializime",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "arte",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Artet Dramatike (me 7 specializime)",
+        "nameEn": "Dramatic Arts (with 7 specializations)",
+        "slug": "artet-dramatike-me-7-specializime",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "arte",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Master i Muzikes ne Edukim",
+        "nameEn": "Master of Music in Ediucation",
+        "slug": "master-i-muzikes-ne-edukim",
+        "level": "master",
+        "degreeTitle": "MMus",
+        "faculty": "arte",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Ekonomi e Bujqësisë",
+        "nameEn": "Agriculture Economics",
+        "slug": "ekonomi-e-bujqesise",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "bujqesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Prodhim Shtazor",
+        "nameEn": "Animal Production",
+        "slug": "prodhim-shtazor",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "bujqesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Teknologji Ushqimore me Bioteknologji",
+        "nameEn": "Food Technology and Biotechnology",
+        "slug": "teknologji-ushqimore-me-bioteknologji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "bujqesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Prodhim Bimor",
+        "nameEn": "Plant Production",
+        "slug": "prodhim-bimor",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "bujqesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Mjekësi Veterinare",
+        "nameEn": "Veterinary Medicine, DVM",
+        "slug": "mjekesi-veterinare",
+        "level": "integrated",
+        "degreeTitle": "DMV",
+        "faculty": "bujqesi",
+        "ects": 300,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shkenca Bimore",
+        "nameEn": "Plant Sciences",
+        "slug": "shkenca-bimore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "bujqesi",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Ekonomia e Bujqësisë dhe Ushqimit",
+        "nameEn": "Agriculture and Food Economics",
+        "slug": "ekonomia-e-bujqesise-dhe-ushqimit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "bujqesi",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shkencat e Aplikuara në Zootekni",
+        "nameEn": "Applied Animal Sciences",
+        "slug": "shkencat-e-aplikuara-ne-zootekni",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "bujqesi",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shkencat e Ushqimit",
+        "nameEn": "Food Science",
+        "slug": "shkencat-e-ushqimit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "bujqesi",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Pemëtari-Vreshtari",
+        "nameEn": "Pomology and Viticulture",
+        "slug": "pemetari-vreshtari",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "bujqesi",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Mbrojtje e Bimëve, Fitomedicine",
+        "nameEn": "Plant Protection-Fitomedicine",
+        "slug": "mbrojtje-e-bimeve-fitomedicine",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "bujqesi",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Edukimi Fizik dhe Sport",
+        "nameEn": "Physical Education and Sport",
+        "slug": "edukimi-fizik-dhe-sport",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "edukim-fizik",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Edukimi Fizik dhe Sport",
+        "nameEn": "Physical Education and Sport",
+        "slug": "edukimi-fizik-dhe-sport",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "edukim-fizik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Trajner Sportiv",
+        "nameEn": "Sport Coaching",
+        "slug": "trajner-sportiv",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "edukim-fizik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Edukimi në Fëmijëri të Hershme",
+        "nameEn": "Early Childhood Education",
+        "slug": "edukimi-ne-femijeri-te-hershme",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "edukim",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Edukimi Fillor",
+        "nameEn": "Primary Education",
+        "slug": "edukimi-fillor",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "edukim",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Teknologjia Arsimore",
+        "nameEn": "Education Technology",
+        "slug": "teknologjia-arsimore",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "edukim",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Master i Edukimit për STEAM",
+        "nameEn": "Master of Education for STEAM",
+        "slug": "master-i-edukimit-per-steam",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "edukim",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Master në Inovacion dhe Cilësi në Edukim",
+        "nameEn": "Master of Innovation and Quality in Education",
+        "slug": "master-ne-inovacion-dhe-cilesi-ne-edukim",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "edukim",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Master i Shkencave të Edukimit (me 4 specializime)",
+        "nameEn": "Master in Educational Sciences (with 4 specialisations)",
+        "slug": "master-i-shkencave-te-edukimit-me-4-specializime",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "edukim",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Master i Mësimdhënies Lëndore (me 7 specializime)",
+        "nameEn": "Master in Subject Teaching (with 7 specializations)",
+        "slug": "master-i-mesimdhenies-lendore-me-7-specializime",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "edukim",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Doktoratë në Shkencat e Edukimit (Program i përbashkët, doktoratë e dyfishtë)",
+        "nameEn": "Double degree)",
+        "slug": "doktorate-ne-shkencat-e-edukimit-program-i-perbashket-doktor",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "edukim",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Arkitekturë",
+        "nameEn": "Architecture",
+        "slug": "arkitekture",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "arkitekture",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Efiçiencë e Energjisë",
+        "nameEn": "Energy Efficiency",
+        "slug": "eficience-e-energjise",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "arkitekture",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Arkitekturë (5 specializime)",
+        "nameEn": "Architecture (5 specializations)",
+        "slug": "arkitekture-5-specializime",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "arkitekture",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      }
+    ]
+  },
+  {
+    "slug": "haxhi-zeka",
+    "name": "Universiteti \"Haxhi Zeka\", Pejë",
+    "nameEn": "University \"Haxhi Zeka\", Peja",
+    "abbr": "UHZ",
+    "city": "Pejë",
+    "type": "public",
+    "website": "https://unhz.eu",
+    "emailDomains": [
+      "unhz.eu"
+    ],
+    "campuses": [
+      {
+        "name": "Pejë",
+        "nameEn": "Pejë",
+        "slug": "peje",
+        "city": "Pejë"
+      }
+    ],
+    "faculties": [
+      {
+        "slug": "uhz-agrobiznes",
+        "name": "Fakulteti i Agrobiznesit",
+        "nameEn": "Faculty of Agribusiness",
+        "abbr": "FAB",
+        "color": "agriculture",
+        "icon": "sprout"
+      },
+      {
+        "slug": "uhz-arte",
+        "name": "Fakulteti i Arteve",
+        "nameEn": "Faculty of Arts",
+        "abbr": "ART",
+        "color": "arts",
+        "icon": "palette"
+      },
+      {
+        "slug": "uhz-biznes",
+        "name": "Fakulteti i Biznesit",
+        "nameEn": "Faculty of Business",
+        "abbr": "FB",
+        "color": "economics",
+        "icon": "trending-up"
+      },
+      {
+        "slug": "uhz-juridik",
+        "name": "Fakulteti Juridik",
+        "nameEn": "Faculty of Law",
+        "abbr": "JUR",
+        "color": "law",
+        "icon": "scale"
+      },
+      {
+        "slug": "uhz-turizem",
+        "name": "Fakulteti i Menaxhimit në Turizëm, Hotelieri dhe Mjedis",
+        "nameEn": "Faculty of Management in Tourism, Hospitality and Environment",
+        "abbr": "FMTHM",
+        "color": "agriculture",
+        "icon": "palmtree"
+      }
+    ],
+    "programs": [
+      {
+        "name": "Art Performues",
+        "nameEn": "Performing Arts",
+        "slug": "art-performues",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "uhz-arte",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Arti Muzikor",
+        "nameEn": "Music Art",
+        "slug": "arti-muzikor",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "uhz-arte",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Ekologji e Aplikuar ne Agrobiznes",
+        "nameEn": "Applied Ecology in Agribusiness",
+        "slug": "ekologji-e-aplikuar-ne-agrobiznes",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "uhz-agrobiznes",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Menaxhim në Turizëm dhe Hotelieri (Gjuhë Shqipe dhe Gjuhë Boshnjake)",
+        "nameEn": "Management in Tourism and Hospitality (in Albanian language and Bosnian Language)",
+        "slug": "menaxhim-ne-turizem-dhe-hotelieri-gjuhe-shqipe-dhe-gjuhe-bos",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "uhz-turizem",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Teknologji e Prodhimit Bimor",
+        "nameEn": "Plant Production Technology",
+        "slug": "teknologji-e-prodhimit-bimor",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "uhz-agrobiznes",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Teknologji Ushqimore",
+        "nameEn": "Food Technology",
+        "slug": "teknologji-ushqimore",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "uhz-agrobiznes",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Menaxhim Biznesi (në Gjuhën Shqipe dhe Boshnjake)",
+        "nameEn": "me specializim ne 1. Banka dhe Financa dhe 2. Administrim Biznesi Business Management (in Albanian and Bosnian Language), BSc, with specialization in 1. Banking and Finance and 2. Business Administration",
+        "slug": "menaxhim-biznesi-ne-gjuhen-shqipe-dhe-boshnjake",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "uhz-biznes",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Teknologji Informacioni në Biznes dhe Ekonomi",
+        "nameEn": "Information Technology in Business and Economy",
+        "slug": "teknologji-informacioni-ne-biznes-dhe-ekonomi",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "uhz-biznes",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Juridik i Përgjithshëm",
+        "nameEn": "General Law",
+        "slug": "juridik-i-pergjithshem",
+        "level": "bachelor",
+        "degreeTitle": "LLB",
+        "faculty": "uhz-juridik",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "E Drejta Civile dhe Biznesore",
+        "nameEn": "Civil and Business Law",
+        "slug": "e-drejta-civile-dhe-biznesore",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "uhz-juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "E Drejta dhe Siguria",
+        "nameEn": "Law and Security",
+        "slug": "e-drejta-dhe-siguria",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "uhz-juridik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Art Performues",
+        "nameEn": "Performing Arts",
+        "slug": "art-performues",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "uhz-arte",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Edukim Muzikor",
+        "nameEn": "Music Education",
+        "slug": "edukim-muzikor",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "uhz-arte",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhim Biznesi (në Gjuhën Shqipe dhe Boshnjake)",
+        "nameEn": "2 specializime: 1. Menaxhim Biznesi, 2. Banka dhe Financa Business Management (in Albanian Language and Bosnian Language), MSc, 2 specializations: 1. Business Management 2. Banking and Finance",
+        "slug": "menaxhim-biznesi-ne-gjuhen-shqipe-dhe-boshnjake",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "uhz-biznes",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Sistemet e Qëndrueshme të Prodhimit Ushqimor",
+        "nameEn": "Sustainable Food Production Systems",
+        "slug": "sistemet-e-qendrueshme-te-prodhimit-ushqimor",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "uhz-agrobiznes",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhimi i Riskut dhe Sigurimet",
+        "nameEn": "Insurance and Risk Management",
+        "slug": "menaxhimi-i-riskut-dhe-sigurimet",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "uhz-biznes",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhment dhe Turizëm te Qëndrueshëm",
+        "nameEn": "Management and Sustainable Turism",
+        "slug": "menaxhment-dhe-turizem-te-qendrueshem",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "uhz-turizem",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhim Mjedisi",
+        "nameEn": "Environmental Management",
+        "slug": "menaxhim-mjedisi",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "uhz-turizem",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Menaxhimi i Marketingut Turistik (gjuhe shqipe dhe gjuhe boshnjake)",
+        "nameEn": "Tourism, Marketing Management (in Albanian language and Bosnian Language)",
+        "slug": "menaxhimi-i-marketingut-turistik-gjuhe-shqipe-dhe-gjuhe-bosh",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "uhz-turizem",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Menaxhim i Burimeve Njerëzore",
+        "nameEn": "Human Resource Management",
+        "slug": "menaxhim-i-burimeve-njerezore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "uhz-biznes",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Informatikë në Biznes",
+        "nameEn": "Business Informatics",
+        "slug": "informatike-ne-biznes",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "uhz-biznes",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Biznes dhe Ekonomi",
+        "nameEn": "Business and Economics",
+        "slug": "biznes-dhe-ekonomi",
+        "level": "phd",
+        "degreeTitle": "PhD",
+        "faculty": "uhz-biznes",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      }
+    ]
+  },
+  {
+    "slug": "isa-boletini",
+    "name": "Universiteti \"Isa Boletini\", Mitrovicë",
+    "nameEn": "University \"Isa Boletini\", Mitrovica",
+    "abbr": "UMIB",
+    "city": "Mitrovicë",
+    "type": "public",
+    "website": "https://umib.net",
+    "emailDomains": [
+      "umib.net"
+    ],
+    "campuses": [
+      {
+        "name": "Mitrovicë",
+        "nameEn": "Mitrovicë",
+        "slug": "mitrovice",
+        "city": "Mitrovicë"
+      }
+    ],
+    "faculties": [
+      {
+        "slug": "umib-ekonomik",
+        "name": "Fakulteti Ekonomik",
+        "nameEn": "Faculty of Economics",
+        "abbr": "EKO",
+        "color": "economics",
+        "icon": "trending-up"
+      },
+      {
+        "slug": "umib-fimk",
+        "name": "Fakulteti i Inxhinierisë Mekanike dhe Kompjuterike",
+        "nameEn": "Faculty of Mechanical and Computer Engineering",
+        "abbr": "FIMK",
+        "color": "mechanical",
+        "icon": "cog"
+      },
+      {
+        "slug": "umib-gjeoshkenca",
+        "name": "Fakulteti i Gjeoshkencave",
+        "nameEn": "Faculty of Geosciences",
+        "abbr": "FGJ",
+        "color": "science",
+        "icon": "mountain"
+      },
+      {
+        "slug": "umib-juridik",
+        "name": "Fakulteti Juridik",
+        "nameEn": "Faculty of Law",
+        "abbr": "JUR",
+        "color": "law",
+        "icon": "scale"
+      },
+      {
+        "slug": "umib-ushqimore",
+        "name": "Fakulteti i Teknologjisë Ushqimore",
+        "nameEn": "Faculty of Food Technology",
+        "abbr": "FTU",
+        "color": "agriculture",
+        "icon": "wheat"
+      }
+    ],
+    "programs": [
+      {
+        "name": "Biznes dhe Menaxhment",
+        "nameEn": "(Me specializime 1. Banka, Business and Management (With specializations 1. Banks",
+        "slug": "biznes-dhe-menaxhment",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Inxhinieri dhe Tekonologji Ushqimore",
+        "nameEn": "Food Engineering and Technology",
+        "slug": "inxhinieri-dhe-tekonologji-ushqimore",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-ushqimore",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Teknologji (Me specializime 1. Inxhinieri Mjedisore dhe 2. Inxhinieri Kimike)",
+        "nameEn": "Technology (With specializations 1. Environmental Engineering and Chemical Engineering)",
+        "slug": "teknologji-me-specializime-1-inxhinieri-mjedisore-dhe-2-inxh",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-ushqimore",
+        "ects": 180,
+        "specializations": [
+          {
+            "name": "Inxhinieri Mjedisore dhe",
+            "nameEn": "Inxhinieri Mjedisore dhe",
+            "slug": "inxhinieri-mjedisore-dhe"
+          },
+          {
+            "name": "Inxhinieri Kimike",
+            "nameEn": "Inxhinieri Kimike",
+            "slug": "inxhinieri-kimike"
+          }
+        ],
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Inxhinieri Ekonomike",
+        "nameEn": "Economics Engineering",
+        "slug": "inxhinieri-ekonomike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-fimk",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Gjeologji",
+        "nameEn": "Geology",
+        "slug": "gjeologji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-gjeoshkenca",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Materiale dhe Metalurgji",
+        "nameEn": "Materials and Metalurgy",
+        "slug": "materiale-dhe-metalurgji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-gjeoshkenca",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Inxhinieri Mekanike",
+        "nameEn": "Mechanical Engineering",
+        "slug": "inxhinieri-mekanike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-fimk",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkenca Kompjuterike dhe Inxhinieri",
+        "nameEn": "Computer Sciences and Engineering",
+        "slug": "shkenca-kompjuterike-dhe-inxhinieri",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-fimk",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Inxhinieria Minerare",
+        "nameEn": "Mining Engineering",
+        "slug": "inxhinieria-minerare",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "umib-gjeoshkenca",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Juridik",
+        "nameEn": "Law",
+        "slug": "juridik",
+        "level": "bachelor",
+        "degreeTitle": "LLB",
+        "faculty": "umib-juridik",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Teknologji (me specializim Inxhinieri e Mbrojtjes Mjedisore)",
+        "nameEn": "Technology (with specialization in Environmental Protection Engeeniering)",
+        "slug": "teknologji-me-specializim-inxhinieri-e-mbrojtjes-mjedisore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "umib-ushqimore",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Vendburimet Minerale",
+        "nameEn": "Mineral Deposits",
+        "slug": "vendburimet-minerale",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "umib-gjeoshkenca",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Hidrogjeologji dhe Gjeologji Inxhinierike",
+        "nameEn": "Hydrogeology and Engineering Geology",
+        "slug": "hidrogjeologji-dhe-gjeologji-inxhinierike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "umib-gjeoshkenca",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Zhvillimi i Qëndrueshëm i Minierave",
+        "nameEn": "Sustainable Mining Development",
+        "slug": "zhvillimi-i-qendrueshem-i-minierave",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "umib-gjeoshkenca",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Materiale dhe Metalurgji",
+        "nameEn": "Materials and Metalurgy",
+        "slug": "materiale-dhe-metalurgji",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "umib-gjeoshkenca",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Inxhinieri dhe Tekonologji Ushqimore",
+        "nameEn": "Engineering and Food Technology",
+        "slug": "inxhinieri-dhe-tekonologji-ushqimore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "umib-ushqimore",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Cloud and Edge Computing",
+        "nameEn": "Cloud and Edge Computing",
+        "slug": "cloud-and-edge-computing",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "umib-fimk",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Teknologji Prodhuese dhe Menaxhment",
+        "nameEn": "Manufacturing Technology and Management",
+        "slug": "teknologji-prodhuese-dhe-menaxhment",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "umib-fimk",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      }
+    ]
+  },
+  {
+    "slug": "ushaf",
+    "name": "Universiteti i Shkencave të Aplikuara në Ferizaj",
+    "nameEn": "University of Applied Sciences in Ferizaj",
+    "abbr": "UShAF",
+    "city": "Ferizaj",
+    "type": "public",
+    "website": "https://ushaf.net",
+    "emailDomains": [
+      "ushaf.net"
+    ],
+    "campuses": [
+      {
+        "name": "Ferizaj",
+        "nameEn": "Ferizaj",
+        "slug": "ferizaj",
+        "city": "Ferizaj"
+      }
+    ],
+    "faculties": [
+      {
+        "slug": "ushaf-arkitekture",
+        "name": "Fakulteti i Arkitekturës së Interierit dhe Dizajnit të Mobiljeve",
+        "nameEn": "Faculty of Interior Architecture and Furniture Design",
+        "abbr": "FAID",
+        "color": "architecture",
+        "icon": "building-2"
+      },
+      {
+        "slug": "ushaf-industrial",
+        "name": "Fakulteti i Menaxhmentit Industrial",
+        "nameEn": "Faculty of Industrial Management",
+        "abbr": "FMI",
+        "color": "economics",
+        "icon": "factory"
+      },
+      {
+        "slug": "ushaf-inxhinieri",
+        "name": "Fakulteti i Inxhinierisë dhe Informatikës",
+        "nameEn": "Faculty of Engineering and Informatics",
+        "abbr": "FII",
+        "color": "electrical",
+        "icon": "cpu"
+      },
+      {
+        "slug": "ushaf-turizem",
+        "name": "Fakulteti i Turizmit dhe Ambientit",
+        "nameEn": "Faculty of Tourism and Environment",
+        "abbr": "FTA",
+        "color": "agriculture",
+        "icon": "palmtree"
+      }
+    ],
+    "programs": [
+      {
+        "name": "Dizajn Grafik dhe Multimedia",
+        "nameEn": "Graphic Design and Multimedia",
+        "slug": "dizajn-grafik-dhe-multimedia",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "faculty": "ushaf-arkitekture",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Informatika e Aplikuar",
+        "nameEn": "Applied Informatics",
+        "slug": "informatika-e-aplikuar",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ushaf-inxhinieri",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhimi i Biznesit dhe Ndermarresia",
+        "nameEn": "Business Management and Entrepreneurship",
+        "slug": "menaxhimi-i-biznesit-dhe-ndermarresia",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ushaf-industrial",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Inxhinieria Industriale me Informatikë",
+        "nameEn": "Industrial Engineering with Informatics",
+        "slug": "inxhinieria-industriale-me-informatike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ushaf-inxhinieri",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arkitekturë e Interierit dhe Dizajni i Mobilieve",
+        "nameEn": "Interior Architecture and Furniture Design",
+        "slug": "arkitekture-e-interierit-dhe-dizajni-i-mobilieve",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ushaf-arkitekture",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Menaxhment i Hotelierisë dhe Turizmit",
+        "nameEn": "Management of Tourism and Hospitality",
+        "slug": "menaxhment-i-hotelierise-dhe-turizmit",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ushaf-turizem",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Menaxhimi dhe Inovacioni ne Turizëm",
+        "nameEn": "Management and Innovation in Tourism",
+        "slug": "menaxhimi-dhe-inovacioni-ne-turizem",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ushaf-turizem",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Inxhinieria dhe Menaxhimi i Prodhimit",
+        "nameEn": "Engineering and Production Management",
+        "slug": "inxhinieria-dhe-menaxhimi-i-prodhimit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ushaf-industrial",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arkitektura e Gjelber dhe Dizajni i Interierit",
+        "nameEn": "Green Architecture and Interior Design",
+        "slug": "arkitektura-e-gjelber-dhe-dizajni-i-interierit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ushaf-arkitekture",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhimi i Ndërmarrësisë dhe Inovacionit",
+        "nameEn": "Entrepreneurship and Innovation Management",
+        "slug": "menaxhimi-i-ndermarresise-dhe-inovacionit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ushaf-industrial",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      }
+    ]
+  },
+  {
+    "slug": "kadri-zeka",
+    "name": "Universiteti Publik \"Kadri Zeka\", Gjilan",
+    "nameEn": "Public University \"Kadri Zeka\", Gjilan",
+    "abbr": "UKZ",
+    "city": "Gjilan",
+    "type": "public",
+    "website": "https://uni-gjilan.net",
+    "emailDomains": [
+      "uni-gjilan.net"
+    ],
+    "campuses": [
+      {
+        "name": "Gjilan",
+        "nameEn": "Gjilan",
+        "slug": "gjilan",
+        "city": "Gjilan"
+      }
+    ],
+    "faculties": [
+      {
+        "slug": "ukz-edukim",
+        "name": "Fakulteti i Edukimit",
+        "nameEn": "Faculty of Education",
+        "abbr": "EDU",
+        "color": "education",
+        "icon": "graduation-cap"
+      },
+      {
+        "slug": "ukz-ekonomik",
+        "name": "Fakulteti Ekonomik",
+        "nameEn": "Faculty of Economics",
+        "abbr": "EKO",
+        "color": "economics",
+        "icon": "trending-up"
+      },
+      {
+        "slug": "ukz-juridik",
+        "name": "Fakulteti Juridik",
+        "nameEn": "Faculty of Law",
+        "abbr": "JUR",
+        "color": "law",
+        "icon": "scale"
+      },
+      {
+        "slug": "ukz-kompjuterike",
+        "name": "Fakulteti i Shkencave Kompjuterike",
+        "nameEn": "Faculty of Computer Science",
+        "abbr": "FSHK",
+        "color": "electrical",
+        "icon": "cpu"
+      },
+      {
+        "slug": "ukz-sociale",
+        "name": "Fakulteti i Shkencave Sociale",
+        "nameEn": "Faculty of Social Sciences",
+        "abbr": "FSHS",
+        "color": "philosophy",
+        "icon": "users"
+      }
+    ],
+    "programs": [
+      {
+        "name": "Marrëdhënie Ndërkombëtare dhe Studime Europiane",
+        "nameEn": "International Relations and European Studies",
+        "slug": "marredhenie-nderkombetare-dhe-studime-europiane",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "ukz-sociale",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arsimi Parashkollor",
+        "nameEn": "Preschool Education",
+        "slug": "arsimi-parashkollor",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "ukz-edukim",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Edukim Fillor",
+        "nameEn": "Primary Education",
+        "slug": "edukim-fillor",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "ukz-edukim",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Shkenca Kompjuterike",
+        "nameEn": "Computer Sciences",
+        "slug": "shkenca-kompjuterike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ukz-kompjuterike",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Financë dhe Kontabilitet i Aplikuar",
+        "nameEn": "Finance and Applied Accounting",
+        "slug": "finance-dhe-kontabilitet-i-aplikuar",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ukz-ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Marketing dhe Menaxhim i Shitjes",
+        "nameEn": "Marketing and Sales Management",
+        "slug": "marketing-dhe-menaxhim-i-shitjes",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ukz-ekonomik",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Juridik Penal",
+        "nameEn": "Criminal Law",
+        "slug": "juridik-penal",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "faculty": "ukz-juridik",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Mësimdhënie dhe Kurrikula në Programin Fillor",
+        "nameEn": "Teaching and Curriculum in Primary Education",
+        "slug": "mesimdhenie-dhe-kurrikula-ne-programin-fillor",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "ukz-edukim",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Mësimdhënie e Gjuhës dhe Letërsisë Shqipe",
+        "nameEn": "Teaching in Albanian Language and Literature",
+        "slug": "mesimdhenie-e-gjuhes-dhe-letersise-shqipe",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "ukz-edukim",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Mësimdhënie e Gjuhës Angleze",
+        "nameEn": "English Language Teaching",
+        "slug": "mesimdhenie-e-gjuhes-angleze",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "ukz-edukim",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Analizat Ekonomika dhe Politikat Zhvillimore",
+        "nameEn": "Economic Analysis and Development Policy",
+        "slug": "analizat-ekonomika-dhe-politikat-zhvillimore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ukz-ekonomik",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "E-Qeverisja",
+        "nameEn": "E-Governance",
+        "slug": "e-qeverisja",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ukz-kompjuterike",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Sistemet e Kontrollit dhe Inteligjenca Artificiale",
+        "nameEn": "Control Systems and Artificial Intelligence",
+        "slug": "sistemet-e-kontrollit-dhe-inteligjenca-artificiale",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "faculty": "ukz-kompjuterike",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      }
+    ]
+  },
+  {
+    "slug": "fehmi-agani",
+    "name": "Universiteti \"Fehmi Agani\", Gjakovë",
+    "nameEn": "University \"Fehmi Agani\", Gjakova",
+    "abbr": "UFAGJ",
+    "city": "Gjakovë",
+    "type": "public",
+    "website": "https://uni-gjk.org",
+    "emailDomains": [
+      "uni-gjk.org"
+    ],
+    "campuses": [
+      {
+        "name": "Gjakovë",
+        "nameEn": "Gjakovë",
+        "slug": "gjakove",
+        "city": "Gjakovë"
+      }
+    ],
+    "faculties": [
+      {
+        "slug": "ufagj-aplikuara",
+        "name": "Fakulteti i Shkencave të Aplikuara",
+        "nameEn": "Faculty of Applied Sciences",
+        "abbr": "FSHA",
+        "color": "electrical",
+        "icon": "cpu"
+      },
+      {
+        "slug": "ufagj-edukim",
+        "name": "Fakulteti i Edukimit",
+        "nameEn": "Faculty of Education",
+        "abbr": "EDU",
+        "color": "education",
+        "icon": "graduation-cap"
+      },
+      {
+        "slug": "ufagj-filologji",
+        "name": "Fakulteti i Filologjisë",
+        "nameEn": "Faculty of Philology",
+        "abbr": "FIL",
+        "color": "philology",
+        "icon": "book-open"
+      },
+      {
+        "slug": "ufagj-mjekesi",
+        "name": "Fakulteti i Mjekësisë",
+        "nameEn": "Faculty of Medicine",
+        "abbr": "MJK",
+        "color": "medicine",
+        "icon": "stethoscope"
+      },
+      {
+        "slug": "ufagj-sociale",
+        "name": "Fakulteti i Shkencave Sociale",
+        "nameEn": "Faculty of Social Sciences",
+        "abbr": "FSHS",
+        "color": "philosophy",
+        "icon": "users"
+      }
+    ],
+    "programs": [
+      {
+        "name": "Gjuhë Angleze - Përkthim dhe Interpretim",
+        "nameEn": "English Language - Translation and Interpretation",
+        "slug": "gjuhe-angleze-perkthim-dhe-interpretim",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "ufagj-filologji",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhe Shqipe dhe Letersi",
+        "nameEn": "Albanian Language and Literature",
+        "slug": "gjuhe-shqipe-dhe-letersi",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "ufagj-filologji",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Kujdesi dhe Mireqenia Sociale",
+        "nameEn": "Social care and Welfare",
+        "slug": "kujdesi-dhe-mireqenia-sociale",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "ufagj-sociale",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Edukim Fillor",
+        "nameEn": "Primary Education",
+        "slug": "edukim-fillor",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "faculty": "ufagj-edukim",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Kujdesi Shëndetësor në Komunitet",
+        "nameEn": "Community Health Care",
+        "slug": "kujdesi-shendetesor-ne-komunitet",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ufagj-mjekesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Shkencat Shëndetësore në Sport dhe Turizëm",
+        "nameEn": "Health Sciences in Sport and Tourism",
+        "slug": "shkencat-shendetesore-ne-sport-dhe-turizem",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ufagj-mjekesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Shëndeti Publik",
+        "nameEn": "Public Health",
+        "slug": "shendeti-publik",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ufagj-mjekesi",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Informatikë Inxhinierike",
+        "nameEn": "Informatics Engineering",
+        "slug": "informatike-inxhinierike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "faculty": "ufagj-aplikuara",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Gjuhë Shqipe",
+        "nameEn": "Albanian Language",
+        "slug": "gjuhe-shqipe",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "ufagj-filologji",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Studime Letrare",
+        "nameEn": "Literary Studies",
+        "slug": "studime-letrare",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "ufagj-filologji",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Menaxhimi Shëndetsor",
+        "nameEn": "Health Management",
+        "slug": "menaxhimi-shendetsor",
+        "level": "master",
+        "degreeTitle": "MA",
+        "faculty": "ufagj-mjekesi",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      }
+    ]
+  },
+  {
+    "slug": "ubt",
+    "name": "Kolegji UBT",
+    "nameEn": "UBT College",
+    "abbr": "UBT",
+    "city": "Prishtinë",
+    "type": "private",
+    "website": "https://www.ubt-uni.net",
+    "emailDomains": [
+      "ubt-uni.net"
+    ],
+    "campuses": [
+      {
+        "name": "Ferizaj",
+        "nameEn": "Ferizaj",
+        "slug": "ferizaj",
+        "city": "Ferizaj"
+      },
+      {
+        "name": "Prishtinë",
+        "nameEn": "Prishtinë",
+        "slug": "prishtine",
+        "city": "Prishtinë"
+      },
+      {
+        "name": "Prizren",
+        "nameEn": "Prizren",
+        "slug": "prizren",
+        "city": "Prizren"
+      }
+    ],
+    "faculties": [],
+    "programs": [
+      {
+        "name": "Muzika Moderne, Prodhimi Digjital dhe Menaxhimi",
+        "nameEn": "Modern Music, Digital Production and Management",
+        "slug": "muzika-moderne-prodhimi-digjital-dhe-menaxhimi",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Gjuhë Angleze",
+        "nameEn": "English Language",
+        "slug": "gjuhe-angleze",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Media dhe Komunikim",
+        "nameEn": "Media and Communication",
+        "slug": "media-dhe-komunikim",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Menaxhimi i Patundshmërive dhe Infrastrukturës",
+        "nameEn": "Real Estate and Infrastructure Management",
+        "slug": "menaxhimi-i-patundshmerive-dhe-infrastruktures",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shkenca Politike",
+        "nameEn": "Political Sciences",
+        "slug": "shkenca-politike",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Turizëm",
+        "nameEn": "Tourism",
+        "slug": "turizem",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arte Dramatike",
+        "nameEn": "Dramatic Arts",
+        "slug": "arte-dramatike",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Dizajn i Modës",
+        "nameEn": "Fashion Design",
+        "slug": "dizajn-i-modes",
+        "level": "bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Dizajn",
+        "nameEn": "Design",
+        "slug": "dizajn",
+        "level": "bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Arkitekturë dhe Planifikim Hapsinor",
+        "nameEn": "Architecture and Spatial Planning",
+        "slug": "arkitekture-dhe-planifikim-hapsinor",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Arte dhe Media Digjitale",
+        "nameEn": "Arts and Digital Media",
+        "slug": "arte-dhe-media-digjitale",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Biokimi Mjekësore",
+        "nameEn": "Medical Biochemistry",
+        "slug": "biokimi-mjekesore",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Fintech dhe Analitika e Biznesit",
+        "nameEn": "Fintech and Business Analytics",
+        "slug": "fintech-dhe-analitika-e-biznesit",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Inxhineri Ndërtimore (Ndërtimtari) dhe Infrastrukture",
+        "nameEn": "Civil Engineerind and Infrastructure",
+        "slug": "inxhineri-ndertimore-ndertimtari-dhe-infrastrukture",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Inxhinieri e Agrikulturës dhe Mjedisit",
+        "nameEn": "Agriculture and Environmental Engineering",
+        "slug": "inxhinieri-e-agrikultures-dhe-mjedisit",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Inxhinieri e Energjisë",
+        "nameEn": "Energy Engineering",
+        "slug": "inxhinieri-e-energjise",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Inxhinieri e Mekatronikës",
+        "nameEn": "Mechatronics Engineering",
+        "slug": "inxhinieri-e-mekatronikes",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Inxhinieri Mjedisore dhe Infrastrukturë e Qëndrueshme",
+        "nameEn": "Environmental Engineering and Sustainable Infrastructure",
+        "slug": "inxhinieri-mjedisore-dhe-infrastrukture-e-qendrueshme",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Menaxhment, Biznes dhe Ekonomi",
+        "nameEn": "Management, Business and Economics",
+        "slug": "menaxhment-biznes-dhe-ekonomi",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Psikologji",
+        "nameEn": "Psychology",
+        "slug": "psikologji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Shendet Publik dhe Shkenca Mjekesore",
+        "nameEn": "Public Health and Medical Sciences",
+        "slug": "shendet-publik-dhe-shkenca-mjekesore",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shkenca Kompjuterike dhe Inxhinieri",
+        "nameEn": "Computer Science and Engineering",
+        "slug": "shkenca-kompjuterike-dhe-inxhinieri",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkencat e Sportit dhe Lëvizjes",
+        "nameEn": "Sports Science and Movement",
+        "slug": "shkencat-e-sportit-dhe-levizjes",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Shkencat e Ushqimit dhe Bioteknologji",
+        "nameEn": "me specializimet: 1. Teknologjia e Uhqimit, 2. Nutricion Food Science and Biotechnology, BSc, with specializations: 1. Food Technology, 2. Nutrition",
+        "slug": "shkencat-e-ushqimit-dhe-bioteknologji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Sistemet e informacionit",
+        "nameEn": "Information Systems",
+        "slug": "sistemet-e-informacionit",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Studime t137 Sigurisë",
+        "nameEn": "Security Studies",
+        "slug": "studime-t137-sigurise",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Teknik Dentar",
+        "nameEn": "Dental Technician",
+        "slug": "teknik-dentar",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Teknik i Radiologjisë",
+        "nameEn": "Radiology Technician",
+        "slug": "teknik-i-radiologjise",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Estetikë dhe Kozmetologji",
+        "nameEn": "Aesthetics and Cosmetology",
+        "slug": "estetike-dhe-kozmetologji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Inxhinieri e Ndërtimit dhe Infrastrukturës",
+        "nameEn": "Civil Engineerind and Infrastructure",
+        "slug": "inxhinieri-e-ndertimit-dhe-infrastruktures",
+        "level": "bachelor",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Inxhinieri Mekanike",
+        "nameEn": "Mechanical Engineering",
+        "slug": "inxhinieri-mekanike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Kimi Aplikative",
+        "nameEn": "Applied Chemistry",
+        "slug": "kimi-aplikative",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Stomatologji",
+        "nameEn": "Stomatology",
+        "slug": "stomatologji",
+        "level": "integrated",
+        "degreeTitle": "Dr. Dent",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 360,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Juridik",
+        "nameEn": "Law",
+        "slug": "juridik",
+        "level": "bachelor",
+        "degreeTitle": "LLB",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "E Drejta Civile dhe e Pronës",
+        "nameEn": "Civil Law and Property Rights",
+        "slug": "e-drejta-civile-dhe-e-prones",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "E Drejta Komerciale",
+        "nameEn": "Commercial Law",
+        "slug": "e-drejta-komerciale",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "E Drejta Penale",
+        "nameEn": "Criminal Law",
+        "slug": "e-drejta-penale",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhë, Media dhe Komunikim",
+        "nameEn": "Language, Media and Communication",
+        "slug": "gjuhe-media-dhe-komunikim",
+        "level": "master",
+        "degreeTitle": "MA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Politika Publike dhe Menaxhment",
+        "nameEn": "Public Policy and Management",
+        "slug": "politika-publike-dhe-menaxhment",
+        "level": "master",
+        "degreeTitle": "MA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkenca Politike",
+        "nameEn": "Political Science",
+        "slug": "shkenca-politike",
+        "level": "master",
+        "degreeTitle": "MA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Studime të Sigurisë",
+        "nameEn": "Security Studies",
+        "slug": "studime-te-sigurise",
+        "level": "master",
+        "degreeTitle": "MA",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Farmaci",
+        "nameEn": "Pharmacy MPh.",
+        "slug": "farmaci",
+        "level": "master",
+        "degreeTitle": "MPh",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 300,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Agrikulturë dhe Mjedis",
+        "nameEn": "Agriculture and Environmental",
+        "slug": "agrikulture-dhe-mjedis",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arkitekturë dhe Planifikim Hapsinor",
+        "nameEn": "Architecture and Spatial Planning",
+        "slug": "arkitekture-dhe-planifikim-hapsinor",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Biokimi",
+        "nameEn": "Biochemistry",
+        "slug": "biokimi",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Fintech dhe Menaxhimi i Inovacionit",
+        "nameEn": "Fintech and Innovation Management",
+        "slug": "fintech-dhe-menaxhimi-i-inovacionit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Inxhinieri e Energjisë dhe Mjedisit",
+        "nameEn": "Energy Engineering and Environment",
+        "slug": "inxhinieri-e-energjise-dhe-mjedisit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Inxhinieri e Mekatronikës",
+        "nameEn": "Mechatronics Engineering",
+        "slug": "inxhinieri-e-mekatronikes",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Menaxhment, Biznes dhe Ekonomi",
+        "nameEn": "Management, Business and Economics",
+        "slug": "menaxhment-biznes-dhe-ekonomi",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Psikologji",
+        "nameEn": "Psychology",
+        "slug": "psikologji",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shëndeti dhe Aktiviteti Fizik",
+        "nameEn": "Health and Physical Activity",
+        "slug": "shendeti-dhe-aktiviteti-fizik",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Shëndeti Publik dhe Menaxhment",
+        "nameEn": "Public Health and Management",
+        "slug": "shendeti-publik-dhe-menaxhment",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Shkenca dhe Teknologji e Ushqimit",
+        "nameEn": "Food Science and Technology",
+        "slug": "shkenca-dhe-teknologji-e-ushqimit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shkenca Kompjuterike dhe Inxhinieri",
+        "nameEn": "Computer Science and Engineering",
+        "slug": "shkenca-kompjuterike-dhe-inxhinieri",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkenca Paramjekësore",
+        "nameEn": "Paramedical Science",
+        "slug": "shkenca-paramjekesore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Sistemet e Informacionit dhe Menaxhment",
+        "nameEn": "Information Systems and Management",
+        "slug": "sistemet-e-informacionit-dhe-menaxhment",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Trafiku dhe Inxhinieria e Transportit",
+        "nameEn": "Traffic and Transport Engineering",
+        "slug": "trafiku-dhe-inxhinieria-e-transportit",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "campuses": [
+          "Prishtinë"
+        ],
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Menaxhment, Biznes dhe Ekonomi",
+        "nameEn": "Management, Business and Economics",
+        "slug": "menaxhment-biznes-dhe-ekonomi",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Ferizaj"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Arkitekturë dhe Planifikim Hapsinor",
+        "nameEn": "Architecture and Spatial Planning",
+        "slug": "arkitekture-dhe-planifikim-hapsinor",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Ferizaj"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkenca Kompjuterike dhe Inxhinieri",
+        "nameEn": "Computer Sciences and Engineering",
+        "slug": "shkenca-kompjuterike-dhe-inxhinieri",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Ferizaj"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Dizajn",
+        "nameEn": "Design",
+        "slug": "dizajn",
+        "level": "bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "campuses": [
+          "Prizren"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shkenca Kompjuterike dhe Inxhinieri",
+        "nameEn": "Computer Science and Engineering",
+        "slug": "shkenca-kompjuterike-dhe-inxhinieri",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prizren"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkencat e Ushqimit dhe Bioteknologji (me 2 specializime)",
+        "nameEn": "Food Science and Biotechnology (with 2 specializations)",
+        "slug": "shkencat-e-ushqimit-dhe-bioteknologji-me-2-specializime",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prizren"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arkitekturë dhe Planifikim Hapsinor",
+        "nameEn": "Architecture and Spatial Planning",
+        "slug": "arkitekture-dhe-planifikim-hapsinor",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prizren"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhment, Biznes dhe Ekonomi",
+        "nameEn": "Management, Business and Economics",
+        "slug": "menaxhment-biznes-dhe-ekonomi",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "campuses": [
+          "Prizren"
+        ],
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Juridik",
+        "nameEn": "Law",
+        "slug": "juridik",
+        "level": "bachelor",
+        "degreeTitle": "LLB",
+        "campuses": [
+          "Prizren"
+        ],
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      }
+    ]
+  },
+  {
+    "slug": "aab",
+    "name": "Kolegji AAB",
+    "nameEn": "AAB College",
+    "abbr": "AAB",
+    "city": "Prishtinë",
+    "type": "private",
+    "website": "https://aab-edu.net",
+    "emailDomains": [
+      "aab-edu.net"
+    ],
+    "campuses": [
+      {
+        "name": "Prishtinë",
+        "nameEn": "Prishtinë",
+        "slug": "prishtine",
+        "city": "Prishtinë"
+      }
+    ],
+    "faculties": [],
+    "programs": [
+      {
+        "name": "Dizajn Grafik dhe Arte Vizuele",
+        "nameEn": "Graphic Design and Visual Arts",
+        "slug": "dizajn-grafik-dhe-arte-vizuele",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Administratë Publike (me dy specializime)",
+        "nameEn": "Public Administration (2 specialisaions)",
+        "slug": "administrate-publike-me-dy-specializime",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arkitekturë",
+        "nameEn": "Architecture",
+        "slug": "arkitekture",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Arte Aplikative ne Dizajnimin e Hapesirave te Brendshme",
+        "nameEn": "Applied Arts in Spatial Design",
+        "slug": "arte-aplikative-ne-dizajnimin-e-hapesirave-te-brendshme",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Dizajn i Modës",
+        "nameEn": "Fashion Design",
+        "slug": "dizajn-i-modes",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhe Angleze",
+        "nameEn": "English Language",
+        "slug": "gjuhe-angleze",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Komunikim Masiv dhe Gazetari",
+        "nameEn": "Mass Communication and Journalism",
+        "slug": "komunikim-masiv-dhe-gazetari",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Kulturë Fizike dhe Sport",
+        "nameEn": "Physical Education and Sports",
+        "slug": "kulture-fizike-dhe-sport",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Marketing dhe Biznes",
+        "nameEn": "Marketing and Business",
+        "slug": "marketing-dhe-biznes",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Menaxhment",
+        "nameEn": "Management",
+        "slug": "menaxhment",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Perkujdesje dhe Mirëqenie e Fëmijëve",
+        "nameEn": "Child Care and Welfare",
+        "slug": "perkujdesje-dhe-mireqenie-e-femijeve",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Pikture dhe Arte Vizuele",
+        "nameEn": "Painting and Visual Arts",
+        "slug": "pikture-dhe-arte-vizuele",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Psikologji",
+        "nameEn": "Psychology",
+        "slug": "psikologji",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Biznes Digjital (me dy specializime)",
+        "nameEn": "Digital Business (2 specializations)",
+        "slug": "biznes-digjital-me-dy-specializime",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Dizajn Grafik",
+        "nameEn": "Graphic Design",
+        "slug": "dizajn-grafik",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Gjuhë Gjermane, Përkthim dhe Interpretim",
+        "nameEn": "German Language, Translation and Interpretation",
+        "slug": "gjuhe-gjermane-perkthim-dhe-interpretim",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Logopedi",
+        "nameEn": "Logopedics",
+        "slug": "logopedi",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Marketing Digjital dhe Inteligjencë Artificiale",
+        "nameEn": "Digital Marketing and Artificial Intelligence",
+        "slug": "marketing-digjital-dhe-inteligjence-artificiale",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Produksion Medial",
+        "nameEn": "Media Production",
+        "slug": "produksion-medial",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Programim dhe Intelegjencë Artificiale",
+        "nameEn": "Programming and Artificial Intelligence",
+        "slug": "programim-dhe-intelegjence-artificiale",
+        "level": "bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Programim dhe Multimedia",
+        "nameEn": "Programing and Multimedia",
+        "slug": "programim-dhe-multimedia",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Programim i Lojërave Kompjuterike",
+        "nameEn": "Computer Games Programing",
+        "slug": "programim-i-lojerave-kompjuterike",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Programim",
+        "nameEn": "Programming",
+        "slug": "programim",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Siguri Kibernetike",
+        "nameEn": "Cyber Security",
+        "slug": "siguri-kibernetike",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Teknik i Radiologjisë",
+        "nameEn": "Radiology Technician",
+        "slug": "teknik-i-radiologjise",
+        "level": "professional_bachelor",
+        "degreeTitle": "Bachelor profesional",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Infermieri",
+        "nameEn": "Nursing",
+        "slug": "infermieri",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Teknik Dentar",
+        "nameEn": "Dental Technician",
+        "slug": "teknik-dentar",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Banka, Financa dhe Kontabilitet",
+        "nameEn": "Banking, Finance and Accounting",
+        "slug": "banka-financa-dhe-kontabilitet",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Estetikë dhe Kozmetologji",
+        "nameEn": "Aesthetics and Cosmetology",
+        "slug": "estetike-dhe-kozmetologji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Kompjuterikë dhe FinTech (me 2 specializime)",
+        "nameEn": "Computer Science and FinTech (with 2 specializations)",
+        "slug": "kompjuterike-dhe-fintech-me-2-specializime",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Shkenca Kompjuterike dhe Inxhinieri Softuerike",
+        "nameEn": "Computer Science and Software Engineering",
+        "slug": "shkenca-kompjuterike-dhe-inxhinieri-softuerike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Teknik i Laboratorit",
+        "nameEn": "Laboratory Technician",
+        "slug": "teknik-i-laboratorit",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Stomatologji",
+        "nameEn": "Dentistry",
+        "slug": "stomatologji",
+        "level": "integrated",
+        "degreeTitle": "Dr. Dent",
+        "ects": 360,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Juridik i Përgjithshëm",
+        "nameEn": "General Law",
+        "slug": "juridik-i-pergjithshem",
+        "level": "bachelor",
+        "degreeTitle": "LLB",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Juridik Civil",
+        "nameEn": "Civil Law",
+        "slug": "juridik-civil",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Juridik Penal",
+        "nameEn": "Criminal Law",
+        "slug": "juridik-penal",
+        "level": "master",
+        "degreeTitle": "LLM",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Administratë Publike",
+        "nameEn": "Public Administration",
+        "slug": "administrate-publike",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Arkitekturë",
+        "nameEn": "Architecture",
+        "slug": "arkitekture",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Dizajn Grafik",
+        "nameEn": "Graphic Design",
+        "slug": "dizajn-grafik",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Gjuhë Angleze",
+        "nameEn": "English Language",
+        "slug": "gjuhe-angleze",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Komunikim Masiv dhe Gazetari",
+        "nameEn": "Mass Communication and Journalism",
+        "slug": "komunikim-masiv-dhe-gazetari",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Kontabilitet dhe Auditim",
+        "nameEn": "Accounting and Auditing",
+        "slug": "kontabilitet-dhe-auditim",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Kulturë Fizike dhe Sport",
+        "nameEn": "Physical Education and Sports",
+        "slug": "kulture-fizike-dhe-sport",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Marketing dhe Menaxhimi i Biznesit",
+        "nameEn": "Marketing and Business Management",
+        "slug": "marketing-dhe-menaxhimi-i-biznesit",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Menaxhment",
+        "nameEn": "Management",
+        "slug": "menaxhment",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Perkujdesje dhe Mirëqenie e Fëmijeve",
+        "nameEn": "Child Care and Welfare",
+        "slug": "perkujdesje-dhe-mireqenie-e-femijeve",
+        "level": "master",
+        "degreeTitle": "MA",
+        "ects": 60,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhment Shëndetësor",
+        "nameEn": "Health Management",
+        "slug": "menaxhment-shendetesor",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shëndeti Mendor",
+        "nameEn": "Mental Health",
+        "slug": "shendeti-mendor",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Shkenca Kompjuterike",
+        "nameEn": "Computer Science",
+        "slug": "shkenca-kompjuterike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      }
+    ]
+  },
+  {
+    "slug": "rit",
+    "name": "Kolegji RIT Kosovo (A.U.K.)",
+    "nameEn": "RIT Kosovo (A.U.K.)",
+    "abbr": "RIT",
+    "city": "Prishtinë",
+    "type": "private",
+    "website": "https://www.rit.edu/kosovo",
+    "emailDomains": [
+      "auk.org",
+      "rit.edu"
+    ],
+    "campuses": [
+      {
+        "name": "Prishtinë",
+        "nameEn": "Prishtinë",
+        "slug": "prishtine",
+        "city": "Prishtinë"
+      }
+    ],
+    "faculties": [],
+    "programs": [
+      {
+        "name": "Informatikë dhe Teknologjitë Informative",
+        "nameEn": "Computing and Information Technologies",
+        "slug": "informatike-dhe-teknologjite-informative",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 252,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Program i Individualizuar",
+        "nameEn": "Individualized Program",
+        "slug": "program-i-individualizuar",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Teknologjitë e Inxhinierisë Elektrike",
+        "nameEn": "Electrical Engineering Technology",
+        "slug": "teknologjite-e-inxhinierise-elektrike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 254,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Studime profesionale",
+        "nameEn": "Professional Studies",
+        "slug": "studime-profesionale",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 66,
+        "accreditationUntil": "30-Sep-2029"
+      }
+    ]
+  },
+  {
+    "slug": "rezonanca",
+    "name": "Kolegji AMECC Rezonanca",
+    "nameEn": "AMECC Rezonanca College",
+    "abbr": "Rezonanca",
+    "city": "Prishtinë",
+    "type": "private",
+    "website": "https://rezonanca-rks.com",
+    "emailDomains": [
+      "rezonanca-rks.com"
+    ],
+    "campuses": [
+      {
+        "name": "Prishtinë",
+        "nameEn": "Prishtinë",
+        "slug": "prishtine",
+        "city": "Prishtinë"
+      }
+    ],
+    "faculties": [],
+    "programs": [
+      {
+        "name": "Biokimi Laboratorike",
+        "nameEn": "Biochemistry Laboratory",
+        "slug": "biokimi-laboratorike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Farmaci Komunitare",
+        "nameEn": "Community Pharmacy",
+        "slug": "farmaci-komunitare",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Infermieri",
+        "nameEn": "Nursing",
+        "slug": "infermieri",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Radiologji Diagnostike",
+        "nameEn": "Diagnostic Radiology",
+        "slug": "radiologji-diagnostike",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Fizioterapi",
+        "nameEn": "Physiotherapy",
+        "slug": "fizioterapi",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Stomatologji",
+        "nameEn": "Dentistry",
+        "slug": "stomatologji",
+        "level": "integrated",
+        "degreeTitle": "Dr. Dent",
+        "ects": 300,
+        "accreditationUntil": "30-Sep-2031"
+      },
+      {
+        "name": "Menaxhim i Kujdesit Shëndetësor dhe Ekonomi Shëndetësore",
+        "nameEn": "Health Care Management and Health Economics",
+        "slug": "menaxhim-i-kujdesit-shendetesor-dhe-ekonomi-shendetesore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Farmaci",
+        "nameEn": "Pharmacy",
+        "slug": "farmaci",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2030"
+      },
+      {
+        "name": "Fizioterapi dhe Mjekësi Sportive",
+        "nameEn": "Physiotherapy and Sport Medicine",
+        "slug": "fizioterapi-dhe-mjekesi-sportive",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      }
+    ]
+  },
+  {
+    "slug": "heimerer",
+    "name": "Kolegji Heimerer",
+    "nameEn": "Heimerer College",
+    "abbr": "Heimerer",
+    "city": "Prishtinë",
+    "type": "private",
+    "website": "https://kolegji-heimerer.eu",
+    "emailDomains": [
+      "kolegji-heimerer.eu"
+    ],
+    "campuses": [
+      {
+        "name": "Prishtinë",
+        "nameEn": "Prishtinë",
+        "slug": "prishtine",
+        "city": "Prishtinë"
+      }
+    ],
+    "faculties": [],
+    "programs": [
+      {
+        "name": "Shkencat Shëndetësore për Profile Terapeutike - Logopedi dhe Ergoterapi",
+        "nameEn": "Health Sciences for Therapeutic Profiles (Speech Therapy, and Occupational Therapy)",
+        "slug": "shkencat-shendetesore-per-profile-terapeutike-logopedi-dhe-e",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Psikologji",
+        "nameEn": "Psychology",
+        "slug": "psikologji",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Shkencat Shëndetësore për Profile Diagnostike - Teknik Laboratori",
+        "nameEn": "Health Sciences for Diagnostic Profiles - Laboratory Technician",
+        "slug": "shkencat-shendetesore-per-profile-diagnostike-teknik-laborat",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Infermieri",
+        "nameEn": "Nursing",
+        "slug": "infermieri",
+        "level": "bachelor",
+        "degreeTitle": "BSc",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2029"
+      },
+      {
+        "name": "Infermieri - Praktika e avancuar Infermierore (ANP)",
+        "nameEn": "Nursing - Advanced Nursing Practice (ANP)",
+        "slug": "infermieri-praktika-e-avancuar-infermierore-anp",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Shkenca Mjekësore Laboratorike",
+        "nameEn": "Medical Laboratory Science",
+        "slug": "shkenca-mjekesore-laboratorike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Menaxhim i Institucioneve dhe Shërbimeve Shëndetësore",
+        "nameEn": "Management of Health Institutions and Services",
+        "slug": "menaxhim-i-institucioneve-dhe-sherbimeve-shendetesore",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2027"
+      },
+      {
+        "name": "Kujdesi Shendetesor Digjital",
+        "nameEn": "Digital Healthcare",
+        "slug": "kujdesi-shendetesor-digjital",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Psikologji Klinike",
+        "nameEn": "Clinical Psychology",
+        "slug": "psikologji-klinike",
+        "level": "master",
+        "degreeTitle": "MSc",
+        "ects": 120,
+        "accreditationUntil": "30-Sep-2028"
+      }
+    ]
+  },
+  {
+    "slug": "fama",
+    "name": "Kolegji Internacional FAMA",
+    "nameEn": "FAMA International College",
+    "abbr": "FAMA",
+    "city": "Prishtinë",
+    "type": "private",
+    "website": "https://fama-edu.org",
+    "emailDomains": [
+      "kolegjifama.eu",
+      "fama-edu.org"
+    ],
+    "campuses": [
+      {
+        "name": "Prishtinë",
+        "nameEn": "Prishtinë",
+        "slug": "prishtine",
+        "city": "Prishtinë"
+      }
+    ],
+    "faculties": [],
+    "programs": [
+      {
+        "name": "Juridik i Përgjithshëm",
+        "nameEn": "General Law",
+        "slug": "juridik-i-pergjithshem",
+        "level": "bachelor",
+        "degreeTitle": "LLB",
+        "ects": 240,
+        "accreditationUntil": "30-Sep-2028"
+      },
+      {
+        "name": "Ekonomi e Pergjithshme",
+        "nameEn": "Management and Economics (General Economy)",
+        "slug": "ekonomi-e-pergjithshme",
+        "level": "bachelor",
+        "degreeTitle": "BA",
+        "ects": 180,
+        "accreditationUntil": "30-Sep-2028"
+      }
+    ]
+  }
+];

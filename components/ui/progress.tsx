@@ -2,17 +2,18 @@
 
 import * as React from "react";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
-import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
+import { cn, clamp } from "@/lib/utils";
 
 export const Progress = React.forwardRef<
   React.ComponentRef<typeof ProgressPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> & {
     value?: number;
-    tone?: "brand" | "accent" | "success";
+    tone?: "brand" | "accent" | "success" | "pro";
     size?: "sm" | "md";
   }
 >(function Progress({ className, value = 0, tone = "brand", size = "md", ...props }, ref) {
-  const clamped = Math.min(100, Math.max(0, value));
+  const clamped = clamp(value, 0, 100);
 
   return (
     <ProgressPrimitive.Root
@@ -31,6 +32,7 @@ export const Progress = React.forwardRef<
           tone === "brand" && "bg-brand-500",
           tone === "accent" && "bg-accent-500",
           tone === "success" && "bg-success",
+          tone === "pro" && "pro-gradient",
         )}
         style={{ transform: `translateX(-${100 - clamped}%)` }}
       />
@@ -38,7 +40,7 @@ export const Progress = React.forwardRef<
   );
 });
 
-/** Progres i hapave në onboarding: "Hapi 3 nga 9". */
+/** Progres i hapave në onboarding. */
 export function StepProgress({
   current,
   total,
@@ -48,11 +50,13 @@ export function StepProgress({
   total: number;
   className?: string;
 }) {
+  const t = useTranslations("common");
+
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       <div className="flex items-baseline justify-between text-xs text-text-muted">
         <span>
-          Hapi <span className="tabular text-text">{current}</span> nga{" "}
+          {t("step")} <span className="tabular text-text">{current}</span> {t("of")}{" "}
           <span className="tabular text-text">{total}</span>
         </span>
         <span className="tabular">{Math.round((current / total) * 100)}%</span>

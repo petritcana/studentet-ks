@@ -12,11 +12,13 @@ export function Chip({
   children,
   selected = false,
   onRemove,
+  removeLabel,
   className,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   selected?: boolean;
   onRemove?: () => void;
+  removeLabel?: string;
 }) {
   return (
     <button
@@ -38,7 +40,7 @@ export function Chip({
         <span
           role="button"
           tabIndex={-1}
-          aria-label="Hiqe"
+          aria-label={removeLabel}
           onClick={(event) => {
             event.stopPropagation();
             onRemove();

@@ -1,0 +1,8 @@
+# Netlify: Next.js me Postgres (Netlify DB) dhe Netlify Blobs për ngarkimet.
+# Skema e Postgres-it ndërtohet nga prisma/schema.prisma në çdo build.
+[build]
+  command = "npm run build:netlify"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"

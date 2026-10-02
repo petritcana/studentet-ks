@@ -25,7 +25,7 @@ const ILLUSTRATIONS = {
   people: (
     <>
       <circle cx="28" cy="30" r="11" className="fill-current opacity-30" />
-      <path d="M10 66c0-10 8-17 18-17s18 7 18 17z" className="fill-current opacity-18" />
+      <path d="M10 66c0-10 8-17 18-17s18 7 18 17z" className="fill-current opacity-20" />
       <circle cx="56" cy="34" r="9" className="fill-current opacity-45" />
       <path d="M42 66c0-8 6-14 14-14s14 6 14 14z" className="fill-current opacity-25" />
     </>
@@ -41,14 +41,7 @@ const ILLUSTRATIONS = {
   search: (
     <>
       <circle cx="35" cy="35" r="20" className="fill-current opacity-15" />
-      <circle
-        cx="35"
-        cy="35"
-        r="20"
-        className="stroke-current opacity-45"
-        strokeWidth="3"
-        fill="none"
-      />
+      <circle cx="35" cy="35" r="20" className="stroke-current opacity-45" strokeWidth="3" fill="none" />
       <rect
         x="50"
         y="50"
@@ -71,13 +64,21 @@ const ILLUSTRATIONS = {
       <circle cx="52" cy="44" r="4" className="fill-current opacity-30" />
     </>
   ),
+  bell: (
+    <>
+      <path
+        d="M40 14c-9 0-16 7-16 16v12l-6 10h44l-6-10V30c0-9-7-16-16-16z"
+        className="fill-current opacity-20"
+      />
+      <path d="M32 56a8 8 0 0 0 16 0z" className="fill-current opacity-45" />
+      <circle cx="40" cy="12" r="4" className="fill-current opacity-55" />
+    </>
+  ),
 } as const;
 
 export type EmptyIllustration = keyof typeof ILLUSTRATIONS;
 
-/**
- * Asnjë ekran bosh pa udhëzim. Një fjali me ton njerëzor dhe një veprim i qartë.
- */
+/** Asnjë ekran bosh pa udhëzim. Një fjali njerëzore dhe një veprim i qartë. */
 export function EmptyState({
   illustration = "feed",
   title,
@@ -114,9 +115,7 @@ export function EmptyState({
 
       <div className="flex max-w-sm flex-col gap-1.5">
         <p className="text-base font-semibold text-text">{title}</p>
-        {description ? (
-          <p className="text-pretty text-sm text-text-muted">{description}</p>
-        ) : null}
+        {description ? <p className="text-pretty text-sm text-text-muted">{description}</p> : null}
       </div>
 
       {action || secondaryAction ? (

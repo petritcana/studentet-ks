@@ -1,6 +1,8 @@
 /**
- * Llogaritje kontrasti sipas WCAG 2.1. Përdoret nga faqja /design-system për
- * ta provuar paletën në të dyja temat, në vend që ta besojmë me sy.
+ * Llogaritje kontrasti sipas WCAG 2.1.
+ *
+ * Përdoret nga faqja /design-system për ta provuar paletën në temën aktive, dhe
+ * nga testet për ta mbrojtur atë nga regresi.
  */
 
 export type Rgb = { r: number; g: number; b: number };
@@ -25,9 +27,7 @@ export function parseColor(input: string): Rgb | null {
   }
 
   const rgb = value.match(/^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i);
-  if (rgb) {
-    return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]) };
-  }
+  if (rgb) return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]) };
 
   return null;
 }
@@ -57,17 +57,22 @@ export function contrastRatio(foreground: string, background: string): number | 
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-export type ContrastLevel = "AAA" | "AA" | "AA-i-madh" | "dështon";
+export type ContrastLevel = "AAA" | "AA" | "AA-large" | "fail";
 
 /** `large` do të thotë 18px bold ose 24px normal e lart. */
 export function contrastLevel(ratio: number, large = false): ContrastLevel {
   if (large) {
     if (ratio >= 4.5) return "AAA";
     if (ratio >= 3) return "AA";
-    return "dështon";
+    return "fail";
   }
   if (ratio >= 7) return "AAA";
   if (ratio >= 4.5) return "AA";
-  if (ratio >= 3) return "AA-i-madh";
-  return "dështon";
+  if (ratio >= 3) return "AA-large";
+  return "fail";
+}
+
+export function passesAa(ratio: number | null, large = false) {
+  if (ratio === null) return false;
+  return ratio >= (large ? 3 : 4.5);
 }

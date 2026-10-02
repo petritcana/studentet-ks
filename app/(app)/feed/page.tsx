@@ -1,132 +1,175 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
-import { Users } from "lucide-react";
-import { FeedTabs } from "@/components/feed/feed-tabs";
-import {
-  EventUnit,
-  MaterialUnit,
-  PeopleUnit,
-  QuestionUnit,
-} from "@/components/feed/interstitials";
-import { PostCard } from "@/components/feed/post-card";
-import { QuickCircles } from "@/components/social/quick-circles";
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
-import { SkeletonPost } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
-import { db } from "@/lib/db";
+import { ComposerTrigger } from "@/components/feed/composer-trigger";
+import { FeedList } from "@/components/feed/feed-list";
+import { FeedTabs } from "@/components/feed/feed-tabs";
+import { StoryRail } from "@/components/feed/story-rail";
+import { PersonCard } from "@/components/social/person-card";
+import { ContextRail } from "@/components/layout/context-rail";
+import { PageWithRail } from "@/components/layout/page-with-rail";
+import { FeedSkeleton, RailSkeleton } from "@/components/shared/page-skeleton";
+import { shouldSeeAds } from "@/lib/access";
+import { getFeed, getInterstitialData, pickAd, type FeedTab } from "@/lib/queries/feed";
+import { getStories } from "@/lib/queries/stories";
+import { getOnlineFollowedIds } from "@/lib/queries/presence";
 import { requireUser } from "@/lib/session";
-import { getFeed, getInterstitialData, type FeedTab } from "@/lib/queries/feed";
 import { getSuggestedPeople } from "@/lib/suggestions";
 
-export const metadata: Metadata = {
-  title: "Feed",
-  description: "Rrjedha e përzier sociale dhe akademike e gjeneratës sate.",
-};
+/**
+ * Filtrat e dukshem te feed-it.
+ *
+ * «Zëri i kampusit» doli nga këtu dhe jeton te Komuniteti. «Për ty» nuk është me
+ * filter i dukshem: rendi social nis me ata që studenti i ndjek vertet. Renditja
+ * e `për-ty` mbetet ne `lib/queries/feed.ts` dhe e përdor Eksploro.
+ */
+const TABS: FeedTab[] = ["ndjek", "fakulteti", "universiteti", "global"];
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("feed");
+  return { title: t("title") };
+}
 
 export const dynamic = "force-dynamic";
-
-const TABS: FeedTab[] = ["per-ty", "gjenerata", "ndjek"];
 
 export default async function FeedPage({
   searchParams,
 }: {
   searchParams: Promise<{ tab?: string }>;
 }) {
-  const params = await searchParams;
-  const tab = (TABS.includes(params.tab as FeedTab) ? params.tab : "per-ty") as FeedTab;
+  const [me, params, t] = await Promise.all([requireUser(), searchParams, getTranslations("feed")]);
 
+  // Llogaria në shqyrtim nuk ndjek ende askënd: hapet te fakulteti, jo te një listë bosh.
+  const fallback: FeedTab = me.awaitingReview ? "fakulteti" : "ndjek";
+  const requested = (TABS.includes(params.tab as FeedTab) ? params.tab : fallback) as FeedTab;
+  const tab = requested;
+
+  /*
+    Koka e faqes niset menjëherë, feed-i dhe shtylla vijnë pas.
+
+    Serveri i prodhimit rri larg bazës, prandaj pritja e të gjitha të dhënave para
+    se të dërgohet një bajt e bënte klikimin të dukej i vdekur. Me Suspense, faqja
+    duket në çast dhe përmbajtja mbush vendin e vet kur të vijë.
+  */
   return (
-    <div className="flex flex-col gap-4">
-      <FeedTabs active={tab} />
-      <Suspense fallback={<FeedSkeleton />} key={tab}>
-        <FeedStream tab={tab} />
-      </Suspense>
-    </div>
+    <PageWithRail
+      rail={
+        <Suspense fallback={<RailSkeleton />}>
+          <ContextRail page="home" user={me} />
+        </Suspense>
+      }
+    >
+      <div className="flex flex-col gap-4">
+        {/*
+          Ballina nis me stories dhe vazhdon me postimet.
+
+          Rafti «Njerëz nga viti yt» u hoq nga ballina: sugjerimet e ndjekjes
+          dalin një herë pas regjistrimit te `/mireseerdhe`, dhe pastaj rrinë te
+          shtylla e djathtë. Ballina është për përmbajtjen, jo për një mur fytyrash
+          mbi postimin e parë.
+        */}
+        <Suspense fallback={<div className="h-[104px]" />}>
+          <StoriesSection userId={me.id} name={me.name} avatar={me.avatar} />
+        </Suspense>
+
+        <ComposerTrigger user={{ name: me.name, avatar: me.avatar }} />
+
+        <FeedTabs active={requested} isPro={me.pro} />
+
+        <Suspense fallback={<FeedSkeleton label={t("title")} />}>
+          <FeedSection viewer={me} tab={tab} />
+        </Suspense>
+      </div>
+    </PageWithRail>
   );
 }
 
-function FeedSkeleton() {
-  return (
-    <div className="flex flex-col gap-4">
-      {Array.from({ length: 4 }).map((_, index) => (
-        <SkeletonPost key={index} />
-      ))}
-    </div>
-  );
+/** Stories, veçmas: rafti nuk duhet ta mbajë pengu tërë faqen. */
+async function StoriesSection({
+  userId,
+  name,
+  avatar,
+}: {
+  userId: string;
+  name: string;
+  avatar: string | null;
+}) {
+  const stories = await getStories({ id: userId });
+  return <StoryRail groups={stories} me={{ id: userId, name, avatar }} />;
 }
 
-async function FeedStream({ tab }: { tab: FeedTab }) {
-  const user = await requireUser();
+async function FeedSection({
+  viewer,
+  tab,
+}: {
+  viewer: Awaited<ReturnType<typeof requireUser>>;
+  tab: FeedTab;
+}) {
+  const locale = await getLocale();
 
-  const [feed, interstitials, suggestions, following] = await Promise.all([
-    getFeed(user.id, tab),
-    getInterstitialData(user.id),
-    getSuggestedPeople(user.id, 6),
-    db.follow.findMany({ where: { followerId: user.id }, select: { followingId: true } }),
+  const [feed, interstitialData, people, ad] = await Promise.all([
+    getFeed(viewer.access, tab, locale),
+    getInterstitialData(viewer.access, locale),
+    getSuggestedPeople(viewer.id, 3, { locale }),
+    shouldSeeAds(viewer.access) ? pickAd(viewer.access, locale) : Promise.resolve(null),
   ]);
 
-  const followingIds = following.map((item) => item.followingId);
+  const t = await getTranslations("feed");
 
-  if (feed.total === 0) {
+  const ownFaculty =
+    (locale === "en" ? viewer.faculty?.nameEn : viewer.faculty?.name) ?? viewer.university?.abbr ?? "";
+
+  // Pika e gjelbër vjen me një pyetje të vetme për tërë faqen, kurrë një për postim.
+  const onlineAuthorIds = [
+    ...(await getOnlineFollowedIds(
+      viewer.id,
+      feed.units.flatMap((unit) =>
+        unit.kind === "post" && !unit.post.author.anonymous ? [unit.post.author.profile.id] : [],
+      ),
+    )),
+  ];
+
+  if (tab === "ndjek" && feed.units.length === 0) {
+    /*
+      Kjo eshte faqja e pare e nje studenti te ri, sepse «Duke ndjekur» eshte tani
+      parazgjedhja. Prandaj ketu dalin njerez te vertete nga viti i tij.
+    */
     return (
-      <div className="flex flex-col gap-4">
-        <EmptyState
-          illustration={tab === "ndjek" ? "people" : "feed"}
-          title={
-            tab === "ndjek"
-              ? "Ende s'ke ndjekur askënd"
-              : tab === "gjenerata"
-                ? "Gjenerata jote ende s'ka postuar"
-                : "Këtu është ende qetë"
-          }
-          description={
-            tab === "ndjek"
-              ? "Ndiq disa nga gjenerata jote dhe kjo rrjedhë mbushet menjëherë."
-              : "Ndiq disa nga gjenerata jote dhe do të gjallërohet."
-          }
-          action={
-            <Button asChild>
-              <Link href="/kampusi">
-                <Users />
-                Gjej njerëz
-              </Link>
-            </Button>
-          }
-        />
-        <QuickCircles />
+      <div className="flex flex-col gap-3">
+        <EmptyState illustration="people" title={t("followingEmpty")} description={t("followingEmptyBody")} />
+
+        {people.length > 0 ? (
+          <div className="flex flex-col gap-2">
+            <h2 className="text-sm font-semibold text-text">{t("followingEmptyPeople")}</h2>
+            {people.map((person) => (
+              <PersonCard key={person.id} person={person} compact />
+            ))}
+          </div>
+        ) : null}
+
+        <div className="flex flex-wrap gap-2">
+          <Button asChild size="sm">
+            <Link href="/komuniteti">{t("followingEmptyExplore")}</Link>
+          </Button>
+          <Button asChild size="sm" variant="secondary">
+            <Link href="/komuniteti">{t("followingEmptyGroups")}</Link>
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {feed.units.map((unit, index) => {
-        if (unit.kind === "post") {
-          return <PostCard key={unit.post.id} post={unit.post} />;
-        }
-        if (unit.kind === "people") {
-          return (
-            <PeopleUnit
-              key={`people-${index}`}
-              people={suggestions}
-              followingIds={followingIds}
-            />
-          );
-        }
-        if (unit.kind === "material" && interstitials.material) {
-          return <MaterialUnit key={`material-${index}`} material={interstitials.material} />;
-        }
-        if (unit.kind === "question" && interstitials.question) {
-          return <QuestionUnit key={`question-${index}`} question={interstitials.question} />;
-        }
-        if (unit.kind === "event" && interstitials.event) {
-          return <EventUnit key={`event-${index}`} event={interstitials.event} />;
-        }
-        return null;
-      })}
-
-      <QuickCircles />
-    </div>
+    <FeedList
+      units={feed.units}
+      ad={ad}
+      interstitials={{ ...interstitialData, people }}
+      ownFaculty={ownFaculty}
+      onlineAuthorIds={onlineAuthorIds}
+      isPro={viewer.pro}
+    />
   );
 }

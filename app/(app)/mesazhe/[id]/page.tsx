@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PageHeader } from "@/components/layout/page-header";
-import { MessageThread } from "@/components/social/message-thread";
-import { MutualContext } from "@/components/social/mutual-context";
-import { Avatar } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
-import { db } from "@/lib/db";
+import { getLocale, getTranslations } from "next-intl/server";
+import { UserPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ConversationView } from "@/components/messages/conversation-view";
+import { GroupChatDialog } from "@/components/messages/group-chat-dialog";
+import { LeaveGroupButton } from "@/components/messages/leave-group-button";
+import { timeAgo } from "@/lib/format";
+import { getConversation, getGroupCandidates } from "@/lib/queries/messages";
+import { MAX_GROUP_CHAT_MEMBERS } from "@/lib/constants";
+import { getPresence } from "@/lib/queries/presence";
 import { requireUser } from "@/lib/session";
-import { getMutualContext } from "@/lib/suggestions";
 
-export const metadata: Metadata = { title: "Biseda" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("messages");
+  return { title: t("title") };
+}
+
 export const dynamic = "force-dynamic";
 
 export default async function ConversationPage({
@@ -18,89 +24,67 @@ export default async function ConversationPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const user = await requireUser();
+  const [{ id }, me, locale] = await Promise.all([params, requireUser(), getLocale()]);
 
-  const membership = await db.conversationMember.findUnique({
-    where: { conversationId_userId: { conversationId: id, userId: user.id } },
-    select: { id: true },
-  });
-  if (!membership) notFound();
+  const conversation = await getConversation(id, me.id, locale);
+  if (!conversation) notFound();
 
-  const conversation = await db.conversation.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      title: true,
-      members: {
-        where: { userId: { not: user.id } },
-        select: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              username: true,
-              avatar: true,
-              isVerified: true,
-              year: true,
-              faculty: { select: { name: true } },
-            },
-          },
-        },
-      },
-      messages: {
-        orderBy: { createdAt: "asc" },
-        take: 200,
-        select: { id: true, text: true, createdAt: true, authorId: true },
-      },
-    },
-  });
-
-  if (!conversation || conversation.members.length === 0) notFound();
-
-  const other = conversation.members[0].user;
-  const context = await getMutualContext(user.id, other.id);
+  const group = conversation.group;
+  const [presence, tPresence, tMessages, candidates] = await Promise.all([
+    conversation.other ? getPresence(conversation.other.id) : Promise.resolve(null),
+    getTranslations("presence"),
+    getTranslations("messages"),
+    group ? getGroupCandidates(me.id, group.members.map((member) => member.id)) : Promise.resolve([]),
+  ]);
+  const memberCount = group ? group.members.length + 1 : 0;
 
   return (
-    <div className="flex flex-col gap-4">
-      <PageHeader title={conversation.title ?? other.name} back="/mesazhe" />
-
-      <Card className="p-4">
-        <Link href={`/u/${other.username}`} className="flex items-center gap-3">
-          <Avatar name={other.name} src={other.avatar} verified={other.isVerified} />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-text">{other.name}</p>
-            <p className="truncate text-xs text-text-muted">
-              {other.faculty?.name.replace("Fakulteti i ", "").replace("Fakulteti ", "")}
-              {other.year ? `, viti ${other.year}` : ""}
-            </p>
-          </div>
-        </Link>
-        {context.length > 0 ? (
-          <div className="mt-2">
-            <MutualContext reasons={context} max={3} />
-          </div>
-        ) : null}
-      </Card>
-
-      <Card className="p-4">
-        <MessageThread
-          conversationId={conversation.id}
-          viewerId={user.id}
-          other={{ name: other.name, avatar: other.avatar }}
-          emptyHint={
-            context.length > 0
-              ? context.slice(0, 2).join(" · ")
-              : "Nisni nga diçka që ju lidh: një lëndë, një provim, një event."
-          }
-          messages={conversation.messages.map((message) => ({
-            id: message.id,
-            text: message.text,
-            createdAt: message.createdAt.toISOString(),
-            authorId: message.authorId,
-          }))}
-        />
-      </Card>
+    <div className="w-full">
+      <ConversationView
+        conversationId={conversation.id}
+        me={{ id: me.id, name: me.name, username: me.username, avatar: me.avatar }}
+        other={conversation.other}
+        group={group}
+        groupActions={
+          group ? (
+            <>
+              {memberCount < MAX_GROUP_CHAT_MEMBERS ? (
+                <GroupChatDialog
+                  conversationId={conversation.id}
+                  currentCount={memberCount}
+                  candidates={candidates}
+                  trigger={
+                    <Button variant="ghost" size="iconSm" aria-label={tMessages("addMembers")} title={tMessages("addMembers")}>
+                      <UserPlus />
+                    </Button>
+                  }
+                />
+              ) : null}
+              <LeaveGroupButton conversationId={conversation.id} />
+            </>
+          ) : null
+        }
+        messages={conversation.messages}
+        typing={conversation.typing}
+        onlineCount={conversation.onlineCount}
+        today={conversation.today}
+        myRole={conversation.myRole}
+        mutedUntil={conversation.mutedUntil}
+        rules={conversation.rules}
+        memberRoles={conversation.memberRoles}
+        activeCall={conversation.activeCall}
+        isAccepted={conversation.isAccepted}
+        presence={
+          presence
+            ? {
+                status: presence.status,
+                lastSeenLabel: presence.lastSeenAt
+                  ? tPresence("lastActive", { time: timeAgo(presence.lastSeenAt, locale) })
+                  : null,
+              }
+            : null
+        }
+      />
     </div>
   );
 }

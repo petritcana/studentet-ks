@@ -21,7 +21,7 @@ export const DropdownMenuContent = React.forwardRef<
         ref={ref}
         sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-52 overflow-hidden rounded-md border border-border bg-surface p-1",
+          "z-50 min-w-52 overflow-hidden rounded-md border border-border bg-surface-solid p-1",
           "text-text shadow-lifted data-[state=open]:animate-fade-in",
           className,
         )}
@@ -33,20 +33,17 @@ export const DropdownMenuContent = React.forwardRef<
 
 export const DropdownMenuItem = React.forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
-    destructive?: boolean;
-  }
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & { destructive?: boolean }
 >(function DropdownMenuItem({ className, destructive, ...props }, ref) {
   return (
     <DropdownMenuPrimitive.Item
       ref={ref}
       className={cn(
         "relative flex cursor-pointer select-none items-center gap-2.5 rounded-sm px-2.5 py-2 text-sm outline-none",
-        "transition-colors duration-150",
-        "focus:bg-surface-2",
+        "transition-colors duration-150 focus:bg-surface-2",
         "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         "[&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-text-muted",
-        destructive && "text-danger focus:bg-danger/10 [&_svg]:text-danger",
+        destructive && "text-danger-text focus:bg-danger/10 [&_svg]:text-danger-text",
         className,
       )}
       {...props}
@@ -109,7 +106,10 @@ export const DropdownMenuLabel = React.forwardRef<
   return (
     <DropdownMenuPrimitive.Label
       ref={ref}
-      className={cn("px-2.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted", className)}
+      className={cn(
+        "px-2.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted",
+        className,
+      )}
       {...props}
     />
   );
@@ -158,7 +158,7 @@ export const DropdownMenuSubContent = React.forwardRef<
       <DropdownMenuPrimitive.SubContent
         ref={ref}
         className={cn(
-          "z-50 min-w-44 overflow-hidden rounded-md border border-border bg-surface p-1 shadow-lifted",
+          "z-50 min-w-44 overflow-hidden rounded-md border border-border bg-surface-solid p-1 shadow-lifted",
           className,
         )}
         {...props}
@@ -166,12 +166,3 @@ export const DropdownMenuSubContent = React.forwardRef<
     </DropdownMenuPrimitive.Portal>
   );
 });
-
-export function DropdownMenuShortcut({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLSpanElement>) {
-  return (
-    <span className={cn("ml-auto text-xs tracking-widest text-text-muted", className)} {...props} />
-  );
-}

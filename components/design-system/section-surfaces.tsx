@@ -1,13 +1,16 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import {
-  BadgeCheck,
   Bell,
+  BookOpen,
   Bookmark,
   CalendarDays,
+  Check,
   FileText,
   Flag,
+  Lock,
   MessageCircle,
   MoreHorizontal,
   Share2,
@@ -15,17 +18,10 @@ import {
   Star,
   Users,
 } from "lucide-react";
-import { Avatar, AvatarStack } from "@/components/ui/avatar";
+import { AvatarStack } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogBody,
@@ -44,6 +40,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LockedOverlay } from "@/components/ui/locked-overlay";
 import { Progress, StepProgress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -63,49 +60,52 @@ import {
 } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
 import { Tooltip } from "@/components/ui/tooltip";
+import { UserIdentityLine } from "@/components/identity/user-identity-line";
 import { EmptyState } from "@/components/shared/empty-state";
-import { FACULTY_THEMES } from "@/lib/faculties";
-import { cn } from "@/lib/utils";
+import { facultyStyle } from "@/lib/faculties";
+import { ACCESS_CIRCLES, DEMO_PEOPLE, POST_SCOPES } from "./demo-data";
 import { Demo, Row, Section } from "./primitives";
-
-const PEOPLE = [
-  { name: "Erza Bytyqi", meta: "Mjekësi, viti III · Prishtinë", verified: true },
-  { name: "Arian Gashi", meta: "Ekonomik, viti I · Gjilan", verified: false },
-  { name: "Blerim Krasniqi", meta: "FSHMN, master · Prishtinë", verified: true },
-  { name: "Dea Morina", meta: "Arte, viti II · Pejë", verified: false },
-  { name: "Rina Hoxha", meta: "Juridik, viti II · Ferizaj", verified: true },
-  { name: "Endrit Berisha", meta: "FSHMN, viti III · Mitrovicë", verified: false },
-];
+import { cn } from "@/lib/utils";
 
 export function SectionSurfaces() {
+  const t = useTranslations("designSystem");
+  const tf = useTranslations("faculty");
+  const tc = useTranslations("common");
+  const tp = useTranslations("pro");
+  const ta = useTranslations("access");
+  const te = useTranslations("empty");
+
+  const person = (index: number) => {
+    const demo = DEMO_PEOPLE[index];
+    return { ...demo, facultyLabel: tf(`${demo.facultyCode}.short`) };
+  };
+
   return (
     <>
-      <Section
-        id="kartat"
-        title="Kartat"
-        intro="Sipërfaqja bazë e platformës. Kufi 1px, rreze 16px, hije e butë. Ngrihet vetëm nëse është e klikueshme."
-      >
+      <Section id="kartat" title={t("sections.cards")} intro={t("cards.intro")}>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Demo label="Kartë materiali" bare>
+          <Demo label={t("cards.material")} bare>
             <Card interactive>
               <CardHeader>
                 <div className="flex items-start gap-3">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-md bg-faculty-economics/12 text-faculty-economics">
+                  <span
+                    style={facultyStyle("electrical")}
+                    className="grid size-11 shrink-0 place-items-center rounded-md bg-faculty/12 text-faculty-text"
+                  >
                     <FileText className="size-5" />
                   </span>
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <CardTitle className="truncate">
-                      Skripta Mikroekonomi 2024, Prof. Berisha
-                    </CardTitle>
-                    <CardDescription>
-                      Mikroekonomi · viti I · 84 faqe · 2,4 MB
-                    </CardDescription>
+                    <CardTitle className="truncate">{t("cards.demo.materialTitle")}</CardTitle>
+                    <CardDescription>{t("cards.demo.materialMeta")}</CardDescription>
                     <div className="mt-1 flex flex-wrap gap-1.5">
                       <Badge variant="success">
-                        <BadgeCheck />I verifikuar
+                        <Check />
+                        {t("cards.demo.materialVerified")}
                       </Badge>
-                      <Badge>Skriptë</Badge>
-                      <Badge variant="brand">Ekonomik</Badge>
+                      <Badge>{t("cards.demo.materialType")}</Badge>
+                      <span style={facultyStyle("electrical")}>
+                        <Badge variant="faculty">{tf("electrical.short")}</Badge>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -114,59 +114,30 @@ export function SectionSurfaces() {
                 <span className="flex items-center gap-1.5 text-sm text-text-muted">
                   <Star className="size-4 fill-warning text-warning" />
                   <span className="tabular text-text">4,7</span>
-                  <span className="tabular">· 312 shkarkime</span>
+                  <span className="tabular">· {t("cards.demo.materialDownloads")}</span>
                 </span>
                 <Button size="sm" variant="secondary">
-                  Hape
+                  {tc("open")}
                 </Button>
               </CardFooter>
             </Card>
           </Demo>
 
-          <Demo label="Kartë postimi" bare>
+          <Demo label={t("cards.post")} bare>
             <Card>
               <CardHeader className="pb-3">
-                <div className="flex items-start gap-3">
-                  <Avatar name="Erza Bytyqi" verified />
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="flex flex-wrap items-baseline gap-x-2">
-                      <span className="text-sm font-semibold text-text">Erza Bytyqi</span>
-                      <span className="text-xs text-text-muted">Mjekësi, viti III</span>
-                    </span>
-                    <span className="text-xs text-text-muted">
-                      3 lëndë të përbashkëta · para 2 orësh
-                    </span>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="icon" variant="ghost" aria-label="Më shumë veprime">
-                        <MoreHorizontal />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Postimi</DropdownMenuLabel>
-                      <DropdownMenuItem>
-                        <Bookmark />
-                        Ruaje
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Share2 />
-                        Ndaje me një shok
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem destructive>
-                        <Flag />
-                        Raporto
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                <UserIdentityLine
+                  user={person(0)}
+                  trailing={
+                    <Button size="icon" variant="ghost" aria-label={tc("more")}>
+                      <MoreHorizontal />
+                    </Button>
+                  }
+                />
+                <p className="mt-1 text-xs text-text-muted">{t("cards.demo.postMeta")}</p>
               </CardHeader>
               <CardContent className="pb-3">
-                <p className="measure text-sm text-text">
-                  I ngarkova shënimet e Anatomisë nga ligjëratat e këtij semestri, bashkë me skemat
-                  që i bëra për provimin. Nëse gjeni gabime, shkruani në komente e i rregulloj.
-                </p>
+                <p className="measure text-sm text-text">{t("cards.demo.postBody")}</p>
               </CardContent>
               <CardFooter className="justify-between">
                 <Row className="gap-1">
@@ -183,216 +154,223 @@ export function SectionSurfaces() {
                     <span className="tabular">31</span>
                   </Button>
                 </Row>
-                <AvatarStack people={PEOPLE.slice(1, 5)} size="xs" />
+                <AvatarStack people={DEMO_PEOPLE.slice(1, 5)} size="xs" />
               </CardFooter>
             </Card>
           </Demo>
 
-          <Demo label="Kartë lënde" bare>
-            <Card interactive className="overflow-hidden">
-              <div className={cn("h-1.5 w-full", FACULTY_THEMES.medicine.dot)} aria-hidden />
+          <Demo label={t("cards.course")} bare>
+            <Card interactive className="overflow-hidden" style={facultyStyle("electrical")}>
+              <div className="h-1.5 w-full bg-faculty" aria-hidden />
               <CardHeader>
-                <CardTitle>Anatomi e njeriut I</CardTitle>
-                <CardDescription>
-                  Mjekësi · viti I · semestri 1 · 9 ECTS · Prof. Zeqiri
-                </CardDescription>
+                <CardTitle>{t("cards.demo.courseTitle")}</CardTitle>
+                <CardDescription>{t("cards.demo.courseMeta")}</CardDescription>
               </CardHeader>
               <CardFooter className="justify-between">
                 <span className="flex items-center gap-2 text-xs text-text-muted">
                   <Users className="size-4" />
-                  <span className="tabular">218 studentë</span>
+                  <span className="tabular">{t("cards.demo.courseStudents")}</span>
                 </span>
                 <Badge variant="brand">
                   <Sparkles />
-                  Lëndë e jotja
+                  {t("cards.demo.courseMine")}
                 </Badge>
               </CardFooter>
             </Card>
           </Demo>
 
-          <Demo label="Kartë eventi" bare>
+          <Demo label={t("cards.event")} bare>
             <Card interactive>
               <CardHeader>
                 <div className="flex items-start gap-4">
                   <span className="flex size-14 shrink-0 flex-col items-center justify-center rounded-md border border-border bg-surface-2">
-                    <span className="text-[10px] uppercase tracking-wide text-text-muted">nën</span>
-                    <span className="tabular text-lg font-semibold text-text">14</span>
+                    <span className="text-[10px] uppercase tracking-wide text-text-muted">
+                      {t("cards.demo.day")}
+                    </span>
+                    <span className="tabular text-lg font-semibold text-text">
+                      {t("cards.demo.dayNumber")}
+                    </span>
                   </span>
                   <div className="flex min-w-0 flex-1 flex-col gap-1">
-                    <CardTitle>Studio bashkë: Statistikë para afatit</CardTitle>
-                    <CardDescription>
-                      16:00 · Biblioteka e Fakultetit Ekonomik, salla 2
-                    </CardDescription>
+                    <CardTitle>{t("cards.demo.eventTitle")}</CardTitle>
+                    <CardDescription>{t("cards.demo.eventMeta")}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardFooter className="justify-between">
                 <span className="flex items-center gap-2">
-                  <AvatarStack people={PEOPLE.slice(0, 4)} size="xs" />
-                  <span className="text-xs text-text-muted">
-                    6 nga gjenerata jote po shkojnë
-                  </span>
+                  <AvatarStack people={DEMO_PEOPLE.slice(0, 4)} size="xs" />
+                  <span className="text-xs text-text-muted">{t("cards.demo.eventGoing")}</span>
                 </span>
-                <Button size="sm">Po vij</Button>
+                <Button size="sm">{t("cards.demo.eventCta")}</Button>
               </CardFooter>
             </Card>
           </Demo>
         </div>
       </Section>
 
-      <Section
-        id="avataret"
-        title="Avatarët"
-        intro="Pa foto, gradienti gjenerohet nga emri dhe mbetet i njëjti përgjithmonë. Asnjë siluetë gri."
-      >
-        <Demo label="Madhësitë">
-          <Row className="gap-4">
-            {(["xs", "sm", "md", "lg", "xl"] as const).map((size) => (
-              <div key={size} className="flex flex-col items-center gap-2">
-                <Avatar name="Erza Bytyqi" size={size} />
-                <span className="tabular text-xs text-text-muted">{size}</span>
-              </div>
-            ))}
-          </Row>
-        </Demo>
-
-        <Demo label="Gradientë të qëndrueshëm" note="i njëjti emër, i njëjti gradient">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {PEOPLE.map((person) => (
-              <div key={person.name} className="flex items-center gap-3">
-                <Avatar name={person.name} verified={person.verified} />
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate text-sm font-medium text-text">{person.name}</span>
-                  <span className="truncate text-xs text-text-muted">{person.meta}</span>
+      <Section id="pro" title={t("sections.pro")} intro={t("pro.intro")}>
+        <Demo label={t("pro.locked")} bare>
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-3">
+              <div className="flex items-start gap-3">
+                <span
+                  style={facultyStyle("science")}
+                  className="grid size-11 shrink-0 place-items-center rounded-md bg-faculty/12 text-faculty-text"
+                >
+                  <FileText className="size-5" />
                 </span>
+                <div className="min-w-0 flex-1">
+                  <CardTitle className="truncate">
+                    Biokimi mjekësore 2024, Prof. Shala
+                  </CardTitle>
+                  <CardDescription>
+                    {tf("science.short")} · 112 {tc("of")} · 4,8 ★ · 640
+                  </CardDescription>
+                </div>
+                <Badge variant="warning">
+                  <Lock />
+                  {ta("reason.locked")}
+                </Badge>
               </div>
-            ))}
-          </div>
-        </Demo>
+            </CardHeader>
 
-        <Demo label="Grumbull dhe unazë">
-          <Row className="gap-6">
-            <AvatarStack people={PEOPLE} max={4} />
-            <AvatarStack people={PEOPLE.slice(0, 3)} size="md" max={3} />
-            <Avatar name="Blerim Krasniqi" size="lg" ring verified />
-          </Row>
-        </Demo>
-      </Section>
-
-      <Section
-        id="badge"
-        title="Badge dhe etiketa"
-        intro="Badge tregon gjendje ose arritje. Nuk klikohet. Nëse klikohet, është Chip."
-      >
-        <Demo label="Variantet">
-          <Row>
-            <Badge>Skriptë</Badge>
-            <Badge variant="brand">Ekonomik</Badge>
-            <Badge variant="accent">I ri</Badge>
-            <Badge variant="success">
-              <BadgeCheck />I verifikuar
-            </Badge>
-            <Badge variant="warning">Pa verifikuar ende</Badge>
-            <Badge variant="danger">I fshehur për rishikim</Badge>
-            <Badge variant="solid">Lider i lëndës</Badge>
-          </Row>
-        </Demo>
-
-        <Demo label="Badge-t e platformës" note="statusi vjen nga kompetenca, jo nga fama">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { name: "Lider i lëndës: Statistikë", desc: "Kontributi më i vlerësuar këtë semestër" },
-              { name: "Shpëtimtar", desc: "10 përgjigje të pranuara" },
-              { name: "Arkivist", desc: "25 materiale të miratuara" },
-              { name: "Themelues", desc: "Nga 500 përdoruesit e parë" },
-              { name: "Ambasador", desc: "10 ftesa të suksesshme" },
-              { name: "Pionier i fakultetit", desc: "I pari nga fakulteti yt" },
-            ].map((badge) => (
-              <div
-                key={badge.name}
-                className="flex items-start gap-3 rounded-md border border-border bg-surface p-3"
+            <CardContent>
+              <LockedOverlay
+                title={tp("lockedTitle", { faculty: tf("science.short") })}
+                body={tp("lockedBody", { ownFaculty: tf("electrical.short") })}
+                onUnlock={() => toast(tp("upgrade"))}
               >
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-brand-500/12 text-brand-500">
-                  <BadgeCheck className="size-4" />
-                </span>
-                <span className="flex min-w-0 flex-col">
-                  <span className="truncate text-sm font-medium text-text">{badge.name}</span>
-                  <span className="text-xs text-text-muted">{badge.desc}</span>
-                </span>
-              </div>
-            ))}
+                <div className="flex flex-col gap-2 rounded-md border border-border bg-surface-2 p-4">
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-3 rounded-full bg-text-muted/30"
+                      style={{ width: `${100 - index * 7}%` }}
+                    />
+                  ))}
+                </div>
+              </LockedOverlay>
+            </CardContent>
+          </Card>
+        </Demo>
+
+        <Demo label={t("pro.table")} note={ta("intro")} bare>
+          <div className="overflow-x-auto rounded-lg border border-border bg-surface scrollbar-thin">
+            <table className="w-full min-w-[30rem] text-left text-sm">
+              <thead>
+                <tr className="border-b border-border text-xs uppercase tracking-wide text-text-muted">
+                  <th scope="col" className="px-4 py-2.5 font-medium">
+                    {ta("circle")}
+                  </th>
+                  <th scope="col" className="px-4 py-2.5 font-medium">
+                    {ta("scope")}
+                  </th>
+                  <th scope="col" className="px-4 py-2.5 font-medium">
+                    {ta("free")}
+                  </th>
+                  <th scope="col" className="px-4 py-2.5 font-medium">
+                    {ta("pro")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {ACCESS_CIRCLES.map((row) => (
+                  <tr key={row.key} className="border-b border-border last:border-0">
+                    <td className="tabular px-4 py-2.5 text-text-muted">{row.circle}</td>
+                    <td className="px-4 py-2.5 text-text">{ta(`circles.${row.key}`)}</td>
+                    <td className="px-4 py-2.5">
+                      <Mark on={row.free} />
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <Mark on />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+        </Demo>
+
+        <Demo label={t("pro.scopeSelector")}>
+          <ScopeSelectorDemo />
+        </Demo>
+
+        <Demo label={tp("earnBanner")} bare>
+          <Card className="p-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="pro-gradient grid size-10 shrink-0 place-items-center rounded-full text-pro-contrast">
+                <Sparkles className="size-5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-text">{tp("earnedDays", { days: 12 })}</p>
+                <p className="text-xs text-text-muted">{tp("earnBanner")}</p>
+              </div>
+              <Button variant="pro" size="sm">
+                {tp("exchangeCta")}
+              </Button>
+            </div>
+            <Progress value={40} tone="pro" className="mt-3" />
+            <p className="mt-2 text-xs text-text-muted">{tp("exchangeRate")}</p>
+          </Card>
         </Demo>
       </Section>
 
-      <Section
-        id="mbivendosjet"
-        title="Mbivendosjet"
-        intro="Dialogu për vendime, fleta për veprime në telefon, menyja për veprime dytësore, tooltip vetëm për sqarim të shkurtër."
-      >
-        <Demo label="Dialog, fletë, meny, tooltip">
+      <Section id="mbivendosjet" title={t("sections.overlays")} intro={t("overlays.intro")}>
+        <Demo label={t("sections.overlays")}>
           <Row>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="secondary">Hap dialogun</Button>
+                <Button variant="secondary">{t("overlays.openDialog")}</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Ndaje këtë material</DialogTitle>
-                  <DialogDescription>
-                    Shkon te biseda, jo në feed. Vetëm ata që i zgjedh e shohin.
-                  </DialogDescription>
+                  <DialogTitle>{t("overlays.dialogTitle")}</DialogTitle>
+                  <DialogDescription>{t("overlays.dialogBody")}</DialogDescription>
                 </DialogHeader>
                 <DialogBody>
                   <div className="flex flex-col gap-3">
-                    {PEOPLE.slice(0, 3).map((person) => (
-                      <div key={person.name} className="flex items-center gap-3">
-                        <Avatar name={person.name} size="sm" verified={person.verified} />
-                        <span className="flex min-w-0 flex-1 flex-col">
-                          <span className="truncate text-sm text-text">{person.name}</span>
-                          <span className="truncate text-xs text-text-muted">{person.meta}</span>
-                        </span>
-                        <Button size="sm" variant="outline">
-                          Dërgo
-                        </Button>
-                      </div>
+                    {[0, 2, 4].map((index) => (
+                      <UserIdentityLine
+                        key={index}
+                        user={person(index)}
+                        size="sm"
+                        trailing={
+                          <Button size="sm" variant="outline">
+                            {t("overlays.dialogSend")}
+                          </Button>
+                        }
+                      />
                     ))}
                   </div>
                 </DialogBody>
                 <DialogFooter>
-                  <Button variant="ghost">Mbylle</Button>
-                  <Button>Dërgo te të gjithë</Button>
+                  <Button variant="ghost">{tc("close")}</Button>
+                  <Button>{t("overlays.dialogSendAll")}</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
 
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="secondary">Hap fletën</Button>
+                <Button variant="secondary">{t("overlays.openSheet")}</Button>
               </SheetTrigger>
               <SheetContent side="bottom">
                 <SheetHeader>
-                  <SheetTitle>Çfarë po poston?</SheetTitle>
-                  <SheetDescription>
-                    Zgjidh llojin dhe forma përshtatet vetë.
-                  </SheetDescription>
+                  <SheetTitle>{t("overlays.sheetTitle")}</SheetTitle>
+                  <SheetDescription>{t("overlays.sheetBody")}</SheetDescription>
                 </SheetHeader>
                 <SheetBody>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                    {[
-                      "Postim",
-                      "Pyetje",
-                      "Material",
-                      "Sondazh",
-                      "Event",
-                      "Zëri i kampusit",
-                    ].map((type) => (
+                    {(
+                      ["text", "question", "material", "poll", "event", "seek", "campusVoice"] as const
+                    ).map((type) => (
                       <button
                         key={type}
                         type="button"
                         className="rounded-md border border-border bg-surface p-3 text-sm text-text transition-colors duration-150 ease-brand hover:border-brand-500/50 hover:bg-brand-500/8"
                       >
-                        {type}
+                        {t(`overlays.postTypes.${type}`)}
                       </button>
                     ))}
                   </div>
@@ -402,105 +380,157 @@ export function SectionSurfaces() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary">Hap menynë</Button>
+                <Button variant="secondary">{t("overlays.openMenu")}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
-                <DropdownMenuLabel>Materiali</DropdownMenuLabel>
+                <DropdownMenuLabel>{t("overlays.menuLabel")}</DropdownMenuLabel>
                 <DropdownMenuItem>
                   <Bookmark />
-                  Ruaje në dosjen time
+                  {t("overlays.menuSave")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Share2 />
-                  Ndaje
+                  {t("overlays.menuShare")}
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Bell />
-                  Njofto kur ka version të ri
+                  {t("overlays.menuNotify")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem destructive>
                   <Flag />
-                  Raporto
+                  {t("overlays.menuReport")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Tooltip label="Ky material e ka kaluar kontrollin e tre studentëve.">
+            <Tooltip label={t("overlays.tooltipBody")}>
               <Button variant="outline">
-                <BadgeCheck />
-                Pse është i verifikuar?
+                <Check />
+                {t("overlays.tooltipTrigger")}
               </Button>
             </Tooltip>
           </Row>
         </Demo>
       </Section>
 
-      <Section
-        id="progresi"
-        title="Progresi"
-        intro="Progresi tregon rrugë, jo pritje. Për pritje përdoret skeleton."
-      >
+      <Section id="progresi" title={t("sections.feedback")} intro={t("feedback.intro")}>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Demo label="Shirit progresi">
+          <Demo label={t("feedback.progress")}>
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <span className="flex items-baseline justify-between text-sm">
-                  <span className="text-text">Nga Kolegi te Bartës shënimesh</span>
-                  <span className="tabular text-text-muted">640 / 1.000 XP</span>
+                <span className="flex items-baseline justify-between gap-3 text-sm">
+                  <span className="text-text">{t("feedback.levelProgress")}</span>
+                  <span className="tabular text-text-muted">{t("feedback.levelValue")}</span>
                 </span>
                 <Progress value={64} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <span className="flex items-baseline justify-between text-sm">
-                  <span className="text-text">Materialet e verifikuara në Statistikë</span>
-                  <span className="tabular text-text-muted">18 / 24</span>
+                <span className="flex items-baseline justify-between gap-3 text-sm">
+                  <span className="text-text">{t("feedback.materialProgress")}</span>
+                  <span className="tabular text-text-muted">{t("feedback.materialValue")}</span>
                 </span>
                 <Progress value={75} tone="success" />
               </div>
               <div className="flex flex-col gap-1.5">
-                <span className="flex items-baseline justify-between text-sm">
-                  <span className="text-text">Profili yt</span>
+                <span className="flex items-baseline justify-between gap-3 text-sm">
+                  <span className="text-text">{t("feedback.profileProgress")}</span>
                   <span className="tabular text-text-muted">40%</span>
                 </span>
-                <Progress value={40} tone="accent" size="sm" />
+                <Progress value={40} tone="pro" size="sm" />
               </div>
             </div>
           </Demo>
 
-          <Demo label="Hapat e regjistrimit">
+          <Demo label={t("feedback.steps")}>
             <div className="flex flex-col gap-5">
               <StepProgress current={5} total={9} />
-              <Separator label="ose" />
+              <Separator label={t("feedback.or")} />
               <StepProgress current={9} total={9} />
             </div>
           </Demo>
         </div>
+
+        <Demo label={t("feedback.toasts")} note={t("feedback.toastsNote")}>
+          <Row>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                toast.success(t("feedback.demo.successToast"), {
+                  description: t("feedback.demo.successToastBody"),
+                })
+              }
+            >
+              {t("feedback.demo.success")}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                toast.error(t("feedback.demo.errorToast"), {
+                  description: t("feedback.demo.errorToastBody"),
+                })
+              }
+            >
+              {t("feedback.demo.error")}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                toast.warning(t("feedback.demo.warningToast"), {
+                  description: t("feedback.demo.warningToastBody"),
+                })
+              }
+            >
+              {t("feedback.demo.warning")}
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                toast(t("feedback.demo.actionToast"), {
+                  description: t("feedback.demo.actionToastBody"),
+                  action: {
+                    label: t("feedback.demo.actionToastCta"),
+                    onClick: () => toast.success(t("feedback.demo.actionToastDone")),
+                  },
+                })
+              }
+            >
+              {t("feedback.demo.action")}
+            </Button>
+            <Button
+              variant="pro"
+              onClick={() =>
+                toast.success(t("feedback.demo.proToast"), {
+                  description: t("feedback.demo.proToastBody"),
+                  icon: <Sparkles className="size-4" />,
+                })
+              }
+            >
+              {t("feedback.demo.pro")}
+            </Button>
+          </Row>
+        </Demo>
       </Section>
 
-      <Section
-        id="skeleton"
-        title="Skeleton"
-        intro="Kurrë spinner. Forma e skeletonit është forma e përmbajtjes që po vjen, kështu që faqja nuk kërcen kur mbërrin."
-      >
+      <Section id="skeleton" title={t("sections.skeletons")} intro={t("skeletons.intro")}>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Demo label="Postim">
-            <SkeletonPost />
+          <Demo label={t("skeletons.post")}>
+            <SkeletonPost label={tc("loading")} />
           </Demo>
-          <Demo label="Material">
+          <Demo label={t("skeletons.material")}>
             <div className="flex flex-col gap-3">
-              <SkeletonMaterial />
-              <SkeletonMaterial />
+              <SkeletonMaterial label={tc("loading")} />
+              <SkeletonMaterial label={tc("loading")} />
             </div>
           </Demo>
-          <Demo label="Njerëz">
+          <Demo label={t("skeletons.people")}>
             <div className="flex flex-col gap-4">
-              <SkeletonPerson />
-              <SkeletonPerson />
-              <SkeletonPerson />
+              <SkeletonPerson label={tc("loading")} />
+              <SkeletonPerson label={tc("loading")} />
+              <SkeletonPerson label={tc("loading")} />
             </div>
           </Demo>
-          <Demo label="Blloqe bazë">
+          <Demo label={t("skeletons.blocks")}>
             <div className="flex flex-col gap-3">
               <Skeleton className="h-8 w-48" />
               <Skeleton className="h-3.5 w-full" />
@@ -511,142 +541,149 @@ export function SectionSurfaces() {
         </div>
       </Section>
 
-      <Section
-        id="gjendjet-boshe"
-        title="Gjendjet boshe"
-        intro="Asnjë ekran bosh pa udhëzim. Një ilustrim i vogël, një fjali njerëzore, një veprim."
-      >
+      <Section id="gjendjet-boshe" title={t("sections.empty")} intro={t("empty.intro")}>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Demo label="Feed bosh" bare>
+          <Demo label={t("sections.empty")} bare>
             <EmptyState
               illustration="feed"
-              title="Këtu është ende qetë"
-              description="Ndiq disa nga gjenerata jote dhe do të gjallërohet."
+              title={te("feed.title")}
+              description={te("feed.body")}
               action={
                 <Button>
                   <Users />
-                  Ndiq gjeneratën time
+                  {te("feed.action")}
                 </Button>
               }
-              secondaryAction={<Button variant="ghost">Më vonë</Button>}
             />
           </Demo>
 
-          <Demo label="Lëndë pa materiale" bare>
+          <Demo label={t("cards.material")} bare>
             <EmptyState
               illustration="materials"
-              title="Askush s'ka ngarkuar ende materiale për këtë lëndë"
-              description="Bëhu i pari dhe merr badge-in Pionier."
-              action={<Button>Ngarko material</Button>}
+              title={te("course.title")}
+              description={te("course.body")}
+              action={
+                <Button>
+                  <BookOpen />
+                  {te("course.action")}
+                </Button>
+              }
             />
           </Demo>
 
-          <Demo label="Bisedë e re" bare>
+          <Demo label={t("overlays.postTypes.text")} bare>
             <EmptyState
               illustration="messages"
-              title="Fillo bisedën"
-              description="Ju jeni bashkë në 3 lëndë."
-              action={<Button variant="outline">Shkruaj përshëndetje</Button>}
+              compact
+              title={te("messages.title")}
+              description={te("messages.body")}
+              action={<Button variant="outline">{te("messages.action")}</Button>}
             />
           </Demo>
 
-          <Demo label="Kërkim pa rezultat" bare>
+          <Demo label={tc("search")} bare>
             <EmptyState
               illustration="search"
               compact
-              title="S'gjetëm asgjë për 'ekonometri e avancuar'"
-              description="Provo emrin e lëndës ashtu si shkruhet në silabus, ose kërko profesorin."
-              action={<Button variant="secondary">Pastro kërkimin</Button>}
+              title={te("search.title")}
+              description={te("search.body")}
+              action={<Button variant="secondary">{te("search.action")}</Button>}
             />
           </Demo>
 
-          <Demo label="Orar bosh" bare>
+          <Demo label={t("cards.event")} bare>
             <EmptyState
               illustration="calendar"
               compact
-              title="Sot s'ke ligjërata"
-              description="Afati më i afërt është Statistika, më 14 nëntor."
-              action={<Button variant="outline">Shto afat provimi</Button>}
+              title={te("schedule.title")}
+              description={te("schedule.body")}
+              action={
+                <Button variant="outline">
+                  <CalendarDays />
+                  {te("schedule.action")}
+                </Button>
+              }
             />
           </Demo>
 
-          <Demo label="Pa sugjerime" bare>
+          <Demo label={te("notifications.title")} bare>
             <EmptyState
-              illustration="people"
+              illustration="bell"
               compact
-              title="I ndoqe të gjithë nga gjenerata jote"
-              description="Zgjero rrethin: ndiq ata që erdhën nga shkolla jote e mesme."
-              action={<Button variant="outline">Shiko shkollën time</Button>}
+              title={te("notifications.title")}
+              description={te("notifications.body")}
             />
           </Demo>
         </div>
       </Section>
-
-      <Section
-        id="njoftimet"
-        title="Njoftimet"
-        intro="Thuaj çfarë ndodhi, jo 'operacioni u krye'. Gabimi gjithmonë ofron hapin tjetër."
-      >
-        <Demo label="Provoji">
-          <Row>
-            <Button
-              variant="secondary"
-              onClick={() =>
-                toast.success("E ruajtëm materialin", {
-                  description: "E gjen te Unë · Ruajtjet.",
-                })
-              }
-            >
-              Sukses
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() =>
-                toast.error("S'u ngarkua dot", {
-                  description: "Provo një skedar nën 25MB.",
-                })
-              }
-            >
-              Gabim
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() =>
-                toast.warning("Ky material s'e ka kaluar ende kontrollin", {
-                  description: "Tre studentë duhet ta vlerësojnë para se të shfaqet te të gjithë.",
-                })
-              }
-            >
-              Kujdes
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() =>
-                toast("Arta po të ndjek", {
-                  description: "Ekonomik, viti II. Jeni bashkë në 3 lëndë.",
-                  action: {
-                    label: "Ndiqe edhe ti",
-                    onClick: () => toast.success("U bëtë shokë. Tani DM-ja është e hapur."),
-                  },
-                })
-              }
-            >
-              Me veprim
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() =>
-                toast("Nesër ke Statistikë në 10:00", {
-                  description: "Salla 4, Fakulteti Ekonomik.",
-                  icon: <CalendarDays className="size-4" />,
-                })
-              }
-            >
-              Njoftim
-            </Button>
-          </Row>
-        </Demo>
-      </Section>
     </>
+  );
+}
+
+function Mark({ on }: { on: boolean }) {
+  return (
+    <span
+      className={cn(
+        "grid size-5 place-items-center rounded-full",
+        on ? "bg-success/15 text-success-text" : "bg-surface-2 text-text-muted",
+      )}
+    >
+      {on ? <Check className="size-3" /> : <Lock className="size-3" />}
+    </span>
+  );
+}
+
+/**
+ * Zgjedhësi i shtrirjes. Opsionet e kyçura shfaqen me dry dhe tekstin «Me Pro»,
+ * kurrë të fshehura. Klikimi shpjegon kontekstin, nuk bërtet.
+ */
+function ScopeSelectorDemo() {
+  const ta = useTranslations("access");
+  const tp = useTranslations("pro");
+  const [scope, setScope] = React.useState<string>("faculty");
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap gap-2">
+        {POST_SCOPES.map((item) => {
+          const active = scope === item.key;
+          return (
+            <button
+              key={item.key}
+              type="button"
+              aria-pressed={active}
+              onClick={() => {
+                if (item.free) {
+                  setScope(item.key);
+                  return;
+                }
+                toast(tp("lockedScopeTitle"), {
+                  description: tp("lockedScopeBody", { scope: ta(`scopes.${item.key}`) }),
+                  action: { label: tp("upgrade"), onClick: () => undefined },
+                });
+              }}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium",
+                "transition-all duration-150 ease-brand",
+                active
+                  ? "border-brand-500 bg-brand-500/12 text-brand-500"
+                  : item.free
+                    ? "border-border bg-surface text-text-muted hover:text-text"
+                    : "border-dashed border-border bg-surface text-text-muted",
+              )}
+            >
+              {!item.free ? <Lock className="size-3 shrink-0" /> : null}
+              {ta(`scopes.${item.key}`)}
+              {!item.free ? (
+                <span className="rounded-full bg-surface-2 px-1.5 py-px text-[10px] uppercase tracking-wide">
+                  {tp("withPro")}
+                </span>
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+      <p className="text-xs text-text-muted">{ta("intro")}</p>
+    </div>
   );
 }

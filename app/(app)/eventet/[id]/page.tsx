@@ -1,24 +1,31 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, Images, MapPin, Users } from "lucide-react";
-import { PageHeader } from "@/components/layout/page-header";
-import { RsvpButtons } from "@/components/social/rsvp-buttons";
-import { CommentThread } from "@/components/feed/comment-thread";
-import { UserRow } from "@/components/social/user-card";
+import { getLocale, getTranslations } from "next-intl/server";
+import { CalendarDays, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { EventCard } from "@/components/campus/event-card";
+import { UserIdentityLine } from "@/components/identity/user-identity-line";
 import { db } from "@/lib/db";
+import { toPublicAuthor } from "@/lib/dto";
+import { formatDate, formatTime } from "@/lib/format";
+import { getMyRsvp } from "@/lib/queries/campus";
 import { requireUser } from "@/lib/session";
-import { EVENT_KIND_LABELS, type EventKind } from "@/lib/constants";
-import { formatEventDate } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Eventi" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const event = await db.event.findUnique({ where: { id }, select: { title: true } });
+  return { title: event?.title ?? "" };
+}
+
 export const dynamic = "force-dynamic";
 
 export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const user = await requireUser();
+  const [{ id }, me, locale] = await Promise.all([params, requireUser(), getLocale()]);
 
   const event = await db.event.findUnique({
     where: { id },
@@ -27,16 +34,28 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
       title: true,
       description: true,
       date: true,
+      endDate: true,
       location: true,
       kind: true,
       creator: {
-        select: { id: true, name: true, username: true, avatar: true, isVerified: true },
-      },
-      faculty: { select: { id: true, name: true, color: true } },
-      rsvps: {
-        where: { status: { in: ["going", "maybe"] } },
         select: {
-          status: true,
+          id: true,
+          name: true,
+          username: true,
+          avatar: true,
+          isVerified: true,
+          year: true,
+          proEarnedUntil: true,
+          university: { select: { abbr: true } },
+          faculty: { select: { name: true, nameEn: true, color: true } },
+          subscriptions: { where: { status: "active" }, select: { status: true, expiresAt: true } },
+        },
+      },
+      rsvps: {
+        where: { status: "going" },
+        take: 40,
+        select: {
+          userId: true,
           user: {
             select: {
               id: true,
@@ -46,145 +65,105 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
               isVerified: true,
               year: true,
               facultyId: true,
-              faculty: { select: { name: true, color: true } },
+              proEarnedUntil: true,
+              university: { select: { abbr: true } },
+              faculty: { select: { name: true, nameEn: true, color: true } },
+              subscriptions: {
+                where: { status: "active" },
+                select: { status: true, expiresAt: true },
+              },
             },
           },
         },
       },
-      posts: {
-        orderBy: { createdAt: "asc" },
-        select: {
-          id: true,
-          text: true,
-          createdAt: true,
-          author: { select: { name: true, username: true, avatar: true, isVerified: true } },
-        },
-      },
     },
   });
-
   if (!event) notFound();
 
-  const myRsvp = event.rsvps.find((rsvp) => rsvp.user.id === user.id)?.status ?? null;
-  const going = event.rsvps.filter((rsvp) => rsvp.status === "going");
-  const sameGeneration = going.filter(
-    (rsvp) => rsvp.user.facultyId === user.facultyId && rsvp.user.year === user.year,
-  );
-  const isPast = event.date.getTime() < Date.now();
+  const [t, tk, myStatus] = await Promise.all([
+    getTranslations("campus"),
+    getTranslations("eventKind"),
+    getMyRsvp(id, me.id),
+  ]);
 
-  const discussionPost = event.posts[0];
+  const sameYear = event.rsvps.filter(
+    (rsvp) =>
+      rsvp.userId !== me.id && rsvp.user.year === me.year && rsvp.user.facultyId === me.facultyId,
+  );
 
   return (
-    <div className="flex flex-col gap-5">
-      <PageHeader title={event.title} back="/kampusi?tab=eventet" />
-
-      <Card className="p-4 sm:p-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant={event.kind === "study_together" ? "brand" : "neutral"}>
-            {EVENT_KIND_LABELS[event.kind as EventKind] ?? event.kind}
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5">
+      <Card className="flex flex-col gap-4 p-4 sm:p-6">
+        <div className="flex flex-col gap-2">
+          <Badge variant="accent" className="w-fit">
+            {tk(event.kind)}
           </Badge>
-          {isPast ? <Badge variant="neutral">Ka kaluar</Badge> : null}
-          {event.faculty ? <Badge>{event.faculty.name}</Badge> : null}
+          <h1 className="text-pretty text-2xl font-semibold tracking-tight text-text">
+            {event.title}
+          </h1>
         </div>
 
-        <div className="mt-4 flex flex-col gap-2 text-sm">
-          <p className="flex items-center gap-2 text-text">
-            <CalendarDays className="size-4 shrink-0 text-text-muted" />
-            {formatEventDate(event.date)}
+        <div className="flex flex-col gap-1.5 text-sm text-text-muted">
+          <p className="tabular flex items-center gap-2">
+            <CalendarDays className="size-4 shrink-0" />
+            {formatDate(event.date, locale)} · {formatTime(event.date)}
+            {event.endDate ? `, ${formatTime(event.endDate)}` : ""}
           </p>
-          <p className="flex items-center gap-2 text-text">
-            <MapPin className="size-4 shrink-0 text-text-muted" />
+          <p className="flex items-center gap-2">
+            <MapPin className="size-4 shrink-0" />
             {event.location}
           </p>
-          <p className="flex items-center gap-2 text-text-muted">
-            <Users className="size-4 shrink-0" />
-            <span className="tabular">{going.length}</span> po shkojnë
-            {sameGeneration.length > 0 ? (
-              <span className="text-text">
-                , {sameGeneration.length} nga gjenerata jote
-              </span>
-            ) : null}
-          </p>
         </div>
 
-        <p className="measure mt-4 whitespace-pre-line text-sm text-text">
+        <p className="measure whitespace-pre-wrap text-pretty text-sm text-text">
           {event.description}
         </p>
 
-        <p className="mt-4 text-xs text-text-muted">
-          Organizues:{" "}
-          <Link
-            href={`/u/${event.creator.username}`}
-            className="font-medium text-brand-500 hover:underline"
-          >
-            {event.creator.name}
-          </Link>
-        </p>
-
-        {!isPast ? (
-          <div className="mt-4 border-t border-border pt-4">
-            <RsvpButtons eventId={event.id} current={myRsvp} />
-          </div>
-        ) : null}
-      </Card>
-
-      {isPast ? (
-        <Card className="p-4">
-          <div className="flex items-center gap-2">
-            <Images className="size-4 text-brand-500" />
-            <h2 className="text-sm font-semibold text-text">Albumi i përbashkët</h2>
-          </div>
-          <p className="mt-1 text-sm text-text-muted">
-            Eventi ka kaluar. Kush ka fotografi, i shton këtu që t&apos;i shohin të gjithë që
-            ishin.
-          </p>
-        </Card>
-      ) : null}
-
-      <Card className="p-4">
-        <h2 className="text-sm font-semibold text-text">
-          Kush po shkon ({going.length})
-        </h2>
-        <div className="mt-3 flex flex-col gap-3">
-          {going.slice(0, 12).map((rsvp) => (
-            <UserRow
-              key={rsvp.user.id}
-              person={{
-                id: rsvp.user.id,
-                name: rsvp.user.name,
-                username: rsvp.user.username,
-                avatar: rsvp.user.avatar,
-                isVerified: rsvp.user.isVerified,
-                facultyName: rsvp.user.faculty?.name ?? null,
-                facultyColor: rsvp.user.faculty?.color ?? null,
-                year: rsvp.user.year,
-                reasons:
-                  rsvp.user.facultyId === user.facultyId && rsvp.user.year === user.year
-                    ? ["Nga gjenerata jote"]
-                    : undefined,
-              }}
-            />
-          ))}
-          {going.length === 0 ? (
-            <p className="text-sm text-text-muted">
-              Ende askush. Bëhu i pari dhe të tjerët e shohin që po vjen dikush.
-            </p>
-          ) : null}
+        <div className="flex flex-col gap-2 border-t border-border pt-4">
+          <p className="text-xs text-text-muted">{t("organiser")}</p>
+          <UserIdentityLine user={toPublicAuthor(event.creator, locale)} size="sm" />
         </div>
       </Card>
 
-      {discussionPost ? (
-        <Card className="p-4">
-          <h2 className="text-sm font-semibold text-text">Fija e diskutimit</h2>
-          <div className="mt-4">
-            <CommentThread
-              postId={discussionPost.id}
-              comments={[]}
-              viewer={{ name: user.name, avatar: user.avatar }}
+      <EventCard
+        event={{
+          id: event.id,
+          title: event.title,
+          description: "",
+          date: event.date.toISOString(),
+          location: event.location,
+          kind: event.kind,
+          past: event.date.getTime() < Date.now(),
+          goingCount: event.rsvps.length,
+          myStatus,
+          sameYearGoing: sameYear
+            .slice(0, 3)
+            .map((rsvp) => ({ name: rsvp.user.name, avatar: rsvp.user.avatar })),
+          attendees: event.rsvps
+            .slice(0, 6)
+            .map((rsvp) => ({ name: rsvp.user.name, avatar: rsvp.user.avatar })),
+        }}
+        compact
+      />
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-sm font-semibold text-text">{t("whoIsGoing")}</h2>
+        {sameYear.length > 0 ? (
+          <p className="text-xs text-success-text">
+            {t("fromYourYear")} · {sameYear.length}
+          </p>
+        ) : null}
+
+        <div className="grid gap-2 sm:grid-cols-2">
+          {event.rsvps.map((rsvp) => (
+            <UserIdentityLine
+              key={rsvp.userId}
+              user={toPublicAuthor(rsvp.user, locale)}
+              size="sm"
             />
-          </div>
-        </Card>
-      ) : null}
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,15 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Instrument_Serif, JetBrains_Mono, Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
-import { Providers } from "@/components/shared/theme-provider";
-import { ServiceWorkerRegistrar } from "@/components/shared/service-worker";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { Providers } from "@/components/shared/providers";
+import { ServiceWorker } from "@/components/shared/service-worker";
 import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Plus Jakarta Sans për tekstin, Poppins për titujt, markën dhe butonat kryesorë,
+// JetBrains Mono për numrat dhe rreshtat meta. Të tria mbajnë shkronjat shqipe.
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin", "latin-ext"],
+  weight: ["600", "700", "800"],
   display: "swap",
 });
 
@@ -23,46 +33,29 @@ const instrumentSerif = Instrument_Serif({
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin", "latin-ext"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Studentët.KS — Mësim që të lidh, lidhje që të mëson",
-    template: "%s · Studentët.KS",
-  },
-  description:
-    "Gjithçka që të duhet për fakultetin, në një vend. Orari, materialet, pyetjet dhe njerëzit e gjeneratës sate.",
-  applicationName: "Studentët.KS",
-  keywords: ["studentë", "Kosovë", "materiale", "fakultet", "orar", "praktika"],
-  authors: [{ name: "Studentët.KS" }],
-  manifest: "/manifest.webmanifest",
-  appleWebApp: {
-    capable: true,
-    title: "Studentët.KS",
-    statusBarStyle: "default",
-  },
-  icons: {
-    icon: [
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: "/apple-icon.png",
-  },
-  openGraph: {
-    title: "Studentët.KS",
-    description: "Mësim që të lidh, lidhje që të mëson.",
-    locale: "sq_AL",
-    type: "website",
-  },
-  formatDetection: { telephone: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+
+  return {
+    title: { default: `${t("name")}, ${t("tagline")}`, template: `%s · ${t("name")}` },
+    description: t("description"),
+    applicationName: t("name"),
+    openGraph: { title: t("name"), description: t("tagline"), type: "website" },
+    formatDetection: { telephone: false },
+    manifest: "/manifest.webmanifest",
+    appleWebApp: { capable: true, title: t("name"), statusBarStyle: "default" },
+    icons: { icon: "/icon-192.png", apple: "/apple-icon.png" },
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  };
+}
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAFAF9" },
-    { media: "(prefers-color-scheme: dark)", color: "#0C0A09" },
-  ],
+  // Tema nuk ndjek sistemin e pajisjes: shiriti i shfletuesit merr blunë e parazgjedhjes.
+  themeColor: "#0f2451",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -71,12 +64,16 @@ export const viewport: Viewport = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
+  const [locale, messages, t] = await Promise.all([
+    getLocale(),
+    getMessages(),
+    getTranslations("meta"),
+  ]);
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${jakarta.variable} ${poppins.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>
@@ -84,11 +81,11 @@ export default async function RootLayout({
               href="#permbajtja"
               className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-100 focus:rounded-sm focus:bg-brand-500 focus:px-4 focus:py-2 focus:text-sm focus:text-brand-contrast"
             >
-              {locale === "en" ? "Skip to content" : "Kalo te përmbajtja"}
+              {t("skipToContent")}
             </a>
             {children}
             <Toaster />
-            <ServiceWorkerRegistrar />
+            <ServiceWorker />
           </Providers>
         </NextIntlClientProvider>
       </body>

@@ -1,11 +1,12 @@
 import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { authAdapter } from "@/lib/auth-adapter";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { cookies } from "next/headers";
 import { db } from "@/lib/db";
-import { isInstitutionalEmail } from "@/lib/constants";
+import { RESET_INTENT_COOKIE, RESET_PASS_COOKIE, RESET_PASS_MINUTES, makeResetPass } from "@/lib/password-reset";
 
 declare module "next-auth" {
   interface Session {
@@ -13,24 +14,31 @@ declare module "next-auth" {
       id: string;
       username: string;
       role: string;
-      isVerified: boolean;
       onboarded: boolean;
     } & DefaultSession["user"];
   }
 }
 
+/**
+ * Hyrja pranon email ose emër përdoruesi.
+ *
+ * Studenti e mban mend «petrit.cana» më lehtë se emailin e fakultetit, prandaj
+ * fusha e parë pranon të dyja. Emri i përdoruesit krahasohet pa dallim shkronjash
+ * të mëdha, sepse i njëjti emër nuk duhet të bëhet dy llogari.
+ */
 const credentialsSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
+  email: z.string().trim().min(3),
+  password: z.string().min(1),
 });
 
 const googleEnabled = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
-
-/** UI-ja e fsheh butonin e Google-it nëse çelësat mungojnë, në vend ta shfaqë të vdekur. */
 export const isGoogleEnabled = googleEnabled;
 
+/** Hyrja me një klikim si llogari demo, e ndezur vetëm nga DEMO_MODE. */
+export const isDemoMode = process.env.DEMO_MODE === "true";
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(db),
+  adapter: authAdapter,
   session: { strategy: "jwt", maxAge: 60 * 60 * 24 * 30 },
   pages: { signIn: "/hyr", newUser: "/regjistrohu", error: "/hyr" },
   trustHost: true,
@@ -40,58 +48,105 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           Google({
             clientId: process.env.AUTH_GOOGLE_ID,
             clientSecret: process.env.AUTH_GOOGLE_SECRET,
+            // Google e ka vërtetuar emailin, prandaj lidhet me llogarinë ekzistuese me të njëjtin email.
             allowDangerousEmailAccountLinking: true,
+            // Zgjedhja e llogarisë del gjithmonë, që studenti të zgjedhë atë @student.uni-pr.edu.
+            authorization: { params: { prompt: "select_account" } },
           }),
         ]
       : []),
     Credentials({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Fjalëkalimi", type: "password" },
-      },
+      id: "credentials",
+      credentials: { email: {}, password: {} },
       async authorize(raw) {
         const parsed = credentialsSchema.safeParse(raw);
         if (!parsed.success) return null;
 
-        const user = await db.user.findUnique({
-          where: { email: parsed.data.email.toLowerCase().trim() },
-        });
+        const identifier = parsed.data.email.toLowerCase().trim();
+        const user = identifier.includes("@")
+          ? await db.user.findUnique({ where: { email: identifier } })
+          : await db.user.findFirst({ where: { username: identifier } });
         if (!user?.passwordHash) return null;
 
         const valid = await bcrypt.compare(parsed.data.password, user.passwordHash);
         if (!valid) return null;
 
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.avatar,
-        };
+        return { id: user.id, name: user.name, email: user.email, image: user.avatar };
       },
     }),
+    /**
+     * Hyrje demo pa fjalëkalim. Ekziston vetëm kur DEMO_MODE është i ndezur, që
+     * çdo gjendje e produktit të shihet pa krijuar llogari. Kurrë në prodhim.
+     */
+    ...(isDemoMode
+      ? [
+          Credentials({
+            id: "demo",
+            name: "demo",
+            credentials: { userId: {} },
+            async authorize(raw) {
+              const userId = typeof raw?.userId === "string" ? raw.userId : null;
+              if (!userId) return null;
+
+              const user = await db.user.findFirst({
+                where: { id: userId, demoLabel: { not: null } },
+              });
+              if (!user) return null;
+
+              return { id: user.id, name: user.name, email: user.email, image: user.avatar };
+            },
+          }),
+        ]
+      : []),
   ],
+  events: {
+    /**
+     * Pas Google-it në rrugën e password-it të harruar: leja e nënshkruar për
+     * pikërisht këtë llogari, dhjetë minuta, dhe qëllimi fshihet.
+     */
+    async signIn({ user, account }) {
+      if (account?.provider !== "google" || !user.id) return;
+      const jar = await cookies();
+      if (!jar.get(RESET_INTENT_COOKIE)) return;
+      jar.delete(RESET_INTENT_COOKIE);
+      jar.set(RESET_PASS_COOKIE, makeResetPass(user.id), {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: RESET_PASS_MINUTES * 60,
+      });
+    },
+  },
   callbacks: {
+    /** Me Google hyn vetëm kush e ka emailin të konfirmuar nga Google. */
+    async signIn({ account, profile }) {
+      if (account?.provider !== "google") return true;
+      if (profile?.email_verified !== true || typeof profile.email !== "string") return false;
+
+      // «Ke harruar password-in?»: Google vetëm konfirmon një llogari që ekziston, nuk krijon të re.
+      const jar = await cookies();
+      if (jar.get(RESET_INTENT_COOKIE)) {
+        const exists = await db.user.findUnique({ where: { email: profile.email.toLowerCase() }, select: { id: true } });
+        if (!exists) {
+          jar.delete(RESET_INTENT_COOKIE);
+          return "/harrova-password?gabim=pa-llogari";
+        }
+      }
+      return true;
+    },
     async jwt({ token, user, trigger }) {
       if (user?.id) token.sub = user.id;
       if (!token.sub) return token;
 
-      // Rifreskohet në hyrje dhe sa herë sesioni përditësohet nga onboarding-u.
       if (user || trigger === "update" || token.username === undefined) {
         const record = await db.user.findUnique({
           where: { id: token.sub },
-          select: {
-            username: true,
-            role: true,
-            isVerified: true,
-            onboardedAt: true,
-            name: true,
-            avatar: true,
-          },
+          select: { username: true, role: true, onboardedAt: true, name: true, avatar: true },
         });
         if (record) {
           token.username = record.username;
           token.role = record.role;
-          token.isVerified = record.isVerified;
           token.onboarded = Boolean(record.onboardedAt);
           token.name = record.name;
           token.picture = record.avatar;
@@ -103,40 +158,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token.sub) session.user.id = token.sub;
       session.user.username = (token.username as string) ?? "";
       session.user.role = (token.role as string) ?? "student";
-      session.user.isVerified = Boolean(token.isVerified);
       session.user.onboarded = Boolean(token.onboarded);
       return session;
     },
   },
-  events: {
-    /**
-     * Hyrja me Google nuk kalon nëpër formën tonë, prandaj emri i përdoruesit
-     * dhe verifikimi institucional plotësohen këtu.
-     */
-    async createUser({ user }) {
-      if (!user.id || !user.email) return;
-      const base = user.email.split("@")[0].toLowerCase().replace(/[^a-z0-9.]/g, "");
-      let username = base || `student${Date.now()}`;
-      let attempt = 1;
-      while (await db.user.findUnique({ where: { username } })) {
-        attempt += 1;
-        username = `${base}${attempt}`;
-      }
-      await db.user.update({
-        where: { id: user.id },
-        data: {
-          username,
-          isVerified: isInstitutionalEmail(user.email),
-          emailVerified: isInstitutionalEmail(user.email) ? new Date() : null,
-        },
-      });
-    },
-  },
 });
-
-/** Sesioni i kërkuar. Përdoret në faqet që s'ekzistojnë pa përdorues. */
-export async function requireSession() {
-  const session = await auth();
-  if (!session?.user?.id) return null;
-  return session;
-}

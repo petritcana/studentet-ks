@@ -1,85 +1,18 @@
+"use client";
+
+import { TimeAgo } from "@/components/shared/time-ago";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarDays,
-  Download,
-  FileText,
-  MessageCircleQuestion,
-  Star,
-  Users,
-} from "lucide-react";
-import { Avatar } from "@/components/ui/avatar";
+import { useLocale, useTranslations } from "next-intl";
+import { ArrowRight, Calendar, FileText, HelpCircle, MapPin, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { UserRow } from "@/components/social/user-card";
-import { MATERIAL_TYPE_LABELS, type MaterialType } from "@/lib/constants";
-import { formatEventDate, timeAgoShort } from "@/lib/format";
+import { PersonCard } from "@/components/social/person-card";
+import { formatDateShort, formatNumber, formatTime } from "@/lib/format";
 import type { SuggestedPerson } from "@/lib/suggestions";
-import { formatNumber } from "@/lib/utils";
 
-function Frame({
-  title,
-  hint,
-  children,
-  action,
-}: {
-  title: string;
-  hint?: string;
-  children: React.ReactNode;
-  action?: React.ReactNode;
-}) {
-  return (
-    <Card className="border-dashed bg-surface/70 p-4">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 className="text-sm font-semibold text-text">{title}</h2>
-        {hint ? <span className="text-xs text-text-muted">{hint}</span> : null}
-      </div>
-      <div className="mt-3">{children}</div>
-      {action ? <div className="mt-3">{action}</div> : null}
-    </Card>
-  );
-}
-
-/** Njësia (c): rekomandime me arsye të shkruar, kurrë profile pa kontekst. */
-export function PeopleUnit({
-  people,
-  followingIds,
-}: {
+export type InterstitialData = {
   people: SuggestedPerson[];
-  followingIds: string[];
-}) {
-  if (people.length === 0) return null;
-
-  return (
-    <Frame
-      title="Njerëz nga gjenerata jote"
-      hint="rifreskohet çdo javë"
-      action={
-        <Button asChild variant="ghost" size="sm">
-          <Link href="/kampusi">
-            Shiko të gjithë
-            <ArrowRight />
-          </Link>
-        </Button>
-      }
-    >
-      <div className="flex flex-col gap-3">
-        {people.slice(0, 3).map((person) => (
-          <UserRow
-            key={person.id}
-            person={person}
-            followState={followingIds.includes(person.id) ? "following" : "none"}
-          />
-        ))}
-      </div>
-    </Frame>
-  );
-}
-
-export function MaterialUnit({
-  material,
-}: {
   material: {
     id: string;
     title: string;
@@ -87,112 +20,182 @@ export function MaterialUnit({
     rating: number;
     downloads: number;
     pages: number | null;
-    course: { id: string; name: string };
-    uploader: { name: string; username: string; avatar: string | null };
-  };
-}) {
-  return (
-    <Frame title="I ri për lëndët e tua">
-      <Link
-        href={`/materialet/${material.id}`}
-        className="flex items-start gap-3 rounded-md p-2 transition-colors duration-150 hover:bg-surface-2"
-      >
-        <span className="grid size-11 shrink-0 place-items-center rounded-md bg-brand-500/12 text-brand-500">
-          <FileText className="size-5" />
-        </span>
-        <span className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="truncate text-sm font-medium text-text">{material.title}</span>
-          <span className="truncate text-xs text-text-muted">
-            {material.course.name} ·{" "}
-            {MATERIAL_TYPE_LABELS[material.type as MaterialType] ?? material.type}
-            {material.pages ? ` · ${material.pages} faqe` : ""}
-          </span>
-          <span className="flex items-center gap-3 text-xs text-text-muted">
-            <span className="tabular inline-flex items-center gap-1">
-              <Star className="size-3 fill-warning text-warning" />
-              {material.rating.toFixed(1)}
-            </span>
-            <span className="tabular inline-flex items-center gap-1">
-              <Download className="size-3" />
-              {formatNumber(material.downloads)}
-            </span>
-          </span>
-        </span>
-        <Avatar name={material.uploader.name} src={material.uploader.avatar} size="sm" />
-      </Link>
-    </Frame>
-  );
-}
-
-/** Pyetja pa përgjigje shkon te ata që e kanë kaluar lëndën. */
-export function QuestionUnit({
-  question,
-}: {
+    courseName: string;
+    uploader: { name: string; avatar: string | null };
+  } | null;
   question: {
     id: string;
     title: string;
     courseName: string;
     answerCount: number;
     createdAt: string;
-  };
-}) {
-  return (
-    <Frame title="Kjo pyetje pret përgjigje" hint={timeAgoShort(question.createdAt)}>
-      <Link
-        href={`/pyetje/${question.id}`}
-        className="flex items-start gap-3 rounded-md p-2 transition-colors duration-150 hover:bg-surface-2"
-      >
-        <span className="grid size-11 shrink-0 place-items-center rounded-md bg-accent-500/12 text-accent-text">
-          <MessageCircleQuestion className="size-5" />
-        </span>
-        <span className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="line-clamp-2 text-sm font-medium text-text">{question.title}</span>
-          <span className="truncate text-xs text-text-muted">
-            {question.courseName} ·{" "}
-            {question.answerCount === 0
-              ? "asnjë përgjigje ende"
-              : `${question.answerCount} përgjigje, asnjë e pranuar`}
-          </span>
-          <Badge variant="accent" className="w-fit">
-            Ti e ke marrë këtë lëndë
-          </Badge>
-        </span>
-      </Link>
-    </Frame>
-  );
-}
-
-export function EventUnit({
-  event,
-}: {
+  } | null;
   event: {
     id: string;
     title: string;
     date: string;
     location: string;
+    kind: string;
     goingCount: number;
-  };
+  } | null;
+};
+
+function Frame({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
 }) {
   return (
-    <Frame title="Po ndodh te ti">
-      <Link
-        href={`/eventet/${event.id}`}
-        className="flex items-start gap-3 rounded-md p-2 transition-colors duration-150 hover:bg-surface-2"
-      >
-        <span className="grid size-11 shrink-0 place-items-center rounded-md bg-success/12 text-success-text">
-          <CalendarDays className="size-5" />
+    <Card className="flex flex-col gap-3 border-brand-500/25 bg-brand-500/4 p-4 sm:p-5">
+      <p className="flex items-center gap-2 text-sm font-semibold text-text">
+        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-brand-500/12 text-brand-500">
+          {icon}
         </span>
-        <span className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="truncate text-sm font-medium text-text">{event.title}</span>
-          <span className="truncate text-xs text-text-muted">
-            {formatEventDate(event.date)} · {event.location}
+        {title}
+      </p>
+      {children}
+    </Card>
+  );
+}
+
+/** «Njerëz nga gjenerata jote», tre karta, gjithmonë me arsye nën emrin. */
+export function PeopleInterstitial({ people }: { people: SuggestedPerson[] }) {
+  const t = useTranslations("interstitial");
+  if (people.length === 0) return null;
+
+  return (
+    <Frame icon={<Users className="size-4" />} title={t("peopleTitle")}>
+      <p className="measure text-sm text-text-muted">{t("peopleBody")}</p>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        {people.slice(0, 3).map((person) => (
+          <PersonCard key={person.id} person={person} compact className="rounded-md bg-surface p-3" />
+        ))}
+      </div>
+
+      <Button asChild variant="ghost" size="sm" className="self-start">
+        <Link href="/komuniteti">
+          {t("peopleCta")}
+          <ArrowRight />
+        </Link>
+      </Button>
+    </Frame>
+  );
+}
+
+export function MaterialInterstitial({
+  material,
+}: {
+  material: NonNullable<InterstitialData["material"]>;
+}) {
+  const locale = useLocale();
+  const t = useTranslations("interstitial");
+  const tf = useTranslations("feed");
+  const tm = useTranslations("materialType");
+  const tmat = useTranslations("material");
+
+  return (
+    <Frame icon={<FileText className="size-4" />} title={tf("newMaterial")}>
+      <div className="flex min-w-0 flex-col gap-1">
+        <p className="truncate text-sm font-semibold text-text">{material.title}</p>
+        <p className="tabular flex flex-wrap items-center gap-x-2 text-xs text-text-muted">
+          <span>{tm(material.type)}</span>
+          <span>· {material.courseName}</span>
+          {material.pages ? <span>· {material.pages}</span> : null}
+          <span>
+            · {tmat("downloads", { count: formatNumber(material.downloads, locale) })}
           </span>
-          <span className="tabular inline-flex items-center gap-1 text-xs text-text-muted">
-            <Users className="size-3" />
-            {event.goingCount} po shkojnë
-          </span>
-        </span>
-      </Link>
+        </p>
+        <p className="text-xs text-text-muted">
+          {material.rating > 0 ? (
+            <span className="tabular inline-flex items-center gap-1 text-warning-text">
+              <Star className="size-3 fill-current" />
+              {material.rating.toFixed(1)}
+            </span>
+          ) : (
+            tmat("noRating")
+          )}
+          <span> · {tmat("uploader")}: {material.uploader.name}</span>
+        </p>
+      </div>
+
+      <Button asChild size="sm" className="self-start">
+        <Link href={`/materialet/${material.id}`}>
+          {t("materialCta")}
+          <ArrowRight />
+        </Link>
+      </Button>
+    </Frame>
+  );
+}
+
+export function QuestionInterstitial({
+  question,
+}: {
+  question: NonNullable<InterstitialData["question"]>;
+}) {
+  const t = useTranslations("interstitial");
+  const tf = useTranslations("feed");
+  const tq = useTranslations("question");
+
+  return (
+    <Frame icon={<HelpCircle className="size-4" />} title={tf("waitingQuestion")}>
+      <div className="flex min-w-0 flex-col gap-1.5">
+        <p className="text-pretty text-sm font-semibold text-text">{question.title}</p>
+        <p className="tabular flex flex-wrap items-center gap-x-2 text-xs text-text-muted">
+          <span>{question.courseName}</span>
+          <span>· {tq("answersCount", { count: question.answerCount })}</span>
+          <span>· <TimeAgo value={question.createdAt} /></span>
+        </p>
+        <Badge variant="success" className="w-fit">
+          {tf("waitingQuestionBadge")}
+        </Badge>
+      </div>
+
+      <Button asChild size="sm" className="self-start">
+        <Link href={`/pyetje/${question.id}`}>
+          {t("questionCta")}
+          <ArrowRight />
+        </Link>
+      </Button>
+    </Frame>
+  );
+}
+
+export function EventInterstitial({ event }: { event: NonNullable<InterstitialData["event"]> }) {
+  const locale = useLocale();
+  const t = useTranslations("interstitial");
+  const tf = useTranslations("feed");
+  const tk = useTranslations("eventKind");
+
+  return (
+    <Frame icon={<Calendar className="size-4" />} title={tf("happeningNow")}>
+      <div className="flex min-w-0 flex-col gap-1">
+        <p className="truncate text-sm font-semibold text-text">{event.title}</p>
+        <p className="tabular flex flex-wrap items-center gap-x-2 text-xs text-text-muted">
+          <span>{tk(event.kind)}</span>
+          <span>· {formatDateShort(event.date, locale)}</span>
+          <span>· {formatTime(event.date)}</span>
+        </p>
+        <p className="flex items-center gap-1 text-xs text-text-muted">
+          <MapPin className="size-3 shrink-0" />
+          <span className="truncate">{event.location}</span>
+          {event.goingCount > 0 ? (
+            <span className="shrink-0">· {tf("goingCount", { count: event.goingCount })}</span>
+          ) : null}
+        </p>
+      </div>
+
+      <Button asChild size="sm" className="self-start">
+        <Link href={`/eventet/${event.id}`}>
+          {t("eventCta")}
+          <ArrowRight />
+        </Link>
+      </Button>
     </Frame>
   );
 }

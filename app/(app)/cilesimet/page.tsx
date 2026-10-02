@@ -1,120 +1,132 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { PageHeader } from "@/components/layout/page-header";
-import {
-  BlockedPanel,
-  CoursesPanel,
-  DataPanel,
-  InterestsPanel,
-  PreferencesPanel,
-  ProfilePanel,
-} from "@/components/settings/settings-panels";
-import { LanguagePanel } from "@/components/settings/language-panel";
-import { SignOutButton } from "@/components/settings/sign-out-button";
-import { Card } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
+import { EducationSettings } from "@/components/academic/education-settings";
+import { ProfileImageEditor } from "@/components/profile/profile-image-editor";
+import { SettingsPanel } from "@/components/settings/settings-panel";
+import { NotificationPrefs } from "@/components/settings/notification-prefs";
+import { PasswordChange } from "@/components/settings/password-change";
+import { ProSettings } from "@/components/pro/pro-settings";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
 
-export const metadata: Metadata = {
-  title: "Cilësimet",
-  description: "Profili, lëndët, njoftimet, privatësia dhe të dhënat e tua.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("settings");
+  return { title: t("title"), robots: { index: false, follow: false } };
+}
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const user = await requireUser();
+  const [me, t] = await Promise.all([requireUser(), getTranslations("settings")]);
 
-  const [courses, enrollments, blocked] = await Promise.all([
-    user.facultyId
-      ? db.course.findMany({
-          where: {
-            department: { facultyId: user.facultyId },
-            ...(user.year ? { year: user.year } : {}),
-          },
-          select: { id: true, name: true, code: true, year: true, semester: true },
-          orderBy: [{ semester: "asc" }, { name: "asc" }],
-        })
-      : Promise.resolve([]),
-    db.enrollment.findMany({
-      where: { userId: user.id },
-      select: { courseId: true },
-    }),
-    db.userBlock.findMany({
-      where: { blockerId: user.id },
-      select: {
-        kind: true,
-        blocked: { select: { id: true, name: true, username: true, avatar: true } },
-      },
-    }),
-  ]);
+  // Arsimimi lexohet i plotë, që seksioni të tregojë emrat, jo id-të.
+  const education = await db.user.findUnique({
+    where: { id: me.id },
+    select: {
+      year: true,
+      cohortYear: true,
+      level: true,
+      highSchool: true,
+      previousCity: true,
+      university: { select: { id: true, name: true } },
+      campus: { select: { id: true, name: true } },
+      faculty: { select: { id: true, name: true } },
+      studyProgram: { select: { id: true, name: true, degreeTitle: true } },
+      specialization: { select: { id: true, name: true } },
+    },
+  });
+
+  // Preferencat e njoftimeve: mungesa e një rreshti do të thotë «po».
+  const prefRows = await db.notificationSetting.findMany({
+    where: { userId: me.id },
+    select: { category: true, inApp: true },
+  });
+  const notificationPrefs = Object.fromEntries(prefRows.map((row) => [row.category, row.inApp]));
+
+  const blocks = await db.userBlock.findMany({
+    where: { blockerId: me.id },
+    select: {
+      kind: true,
+      blocked: { select: { id: true, name: true, username: true } },
+    },
+  });
 
   return (
-    <div className="flex flex-col gap-5">
-      <PageHeader
-        title="Cilësimet"
-        description="Gjithçka që mund ta ndryshosh, në një vend."
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold tracking-tight text-text">{t("title")}</h1>
+        <p className="measure text-sm text-text-muted">{t("subtitle")}</p>
+      </header>
+
+      <ProfileImageEditor
+        avatar={me.avatar}
+        cover={me.cover}
+        name={me.name}
+        bio={me.bio}
+        gender={me.gender}
       />
 
-      <ProfilePanel
+      {/* Te profili, «⋯» → «Ndrysho password-in» të sjell drejt këtu (`#password`). */}
+      <PasswordChange />
+
+      <NotificationPrefs initial={notificationPrefs} />
+
+      <ProSettings
         initial={{
-          name: user.name,
-          username: user.username,
-          bio: user.bio ?? "",
-          city: user.city ?? "",
-          highSchool: user.highSchool ?? "",
-          avatar: user.avatar,
+          isPro: me.pro,
+          accent: me.proAccent,
+          coverStyle: me.proCoverStyle,
+          featured: Boolean(me.featuredUntil && me.featuredUntil > new Date()),
+          whoCanFollow: me.whoCanFollow,
+          whoCanMessage: me.whoCanMessage,
         }}
       />
 
-      <CoursesPanel
-        courses={courses}
-        selected={enrollments.map((item) => item.courseId)}
-      />
-
-      <InterestsPanel selected={user.interestList} />
-
-      <LanguagePanel />
-
-      <PreferencesPanel
+      <EducationSettings
         initial={{
-          showReadReceipts: user.showReadReceipts,
-          pushEnabled: user.pushEnabled,
-          analyticsConsent: user.analyticsConsent,
+          selection: {
+            universityId: education?.university?.id ?? null,
+            campusId: education?.campus?.id ?? null,
+            level: education?.level ?? null,
+            facultyId: education?.faculty?.id ?? null,
+            studyProgramId: education?.studyProgram?.id ?? null,
+            specializationId: education?.specialization?.id ?? null,
+          },
+          year: education?.year ?? null,
+          cohortYear: education?.cohortYear ?? null,
+          institutionName: education?.university?.name ?? null,
+          campusName: education?.campus?.name ?? null,
+          facultyName: education?.faculty?.name ?? null,
+          programName: education?.studyProgram?.name ?? null,
+          degreeTitle: education?.studyProgram?.degreeTitle ?? null,
+          specializationName: education?.specialization?.name ?? null,
+          level: education?.level ?? null,
+          previousInstitution: education?.highSchool ?? "",
+          previousCity: education?.previousCity ?? "",
         }}
       />
 
-      <BlockedPanel
-        blocked={blocked.map((item) => ({
-          id: item.blocked.id,
-          name: item.blocked.name,
-          username: item.blocked.username,
-          avatar: item.blocked.avatar,
-          kind: item.kind,
+      <SettingsPanel
+        user={{
+          username: me.username,
+          email: me.email,
+          interests: me.interestList,
+          pushEnabled: me.pushEnabled,
+          emailDigest: me.emailDigest,
+          showReadReceipts: me.showReadReceipts,
+          showOnlineStatus: me.showOnlineStatus,
+          showLastActive: me.showLastActive,
+          analyticsConsent: me.analyticsConsent,
+          isPrivate: me.isPrivate,
+          autoAcceptFollows: me.autoAcceptFollows,
+        }}
+        blocked={blocks.map((block) => ({
+          id: block.blocked.id,
+          name: block.blocked.name,
+          username: block.blocked.username,
+          kind: block.kind,
         }))}
       />
-
-      <DataPanel />
-
-      <Card className="flex flex-col gap-3 p-4 sm:p-5">
-        <h2 className="text-sm font-semibold text-text">Llogaria</h2>
-        <p className="text-xs text-text-muted">
-          Emaili yt është <span className="font-mono text-text">{user.email}</span>. Nuk shfaqet
-          kurrë publikisht dhe nuk kthehet në asnjë përgjigje të API-t.
-        </p>
-        <div className="flex flex-wrap gap-3 text-sm">
-          <Link href="/privatesia" className="text-brand-500 hover:underline">
-            Politika e privatësisë
-          </Link>
-          <Link href="/kushtet" className="text-brand-500 hover:underline">
-            Kushtet e përdorimit
-          </Link>
-          <Link href="/moderimi/publik" className="text-brand-500 hover:underline">
-            Raporti i moderimit
-          </Link>
-        </div>
-        <SignOutButton />
-      </Card>
     </div>
   );
 }

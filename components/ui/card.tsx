@@ -9,9 +9,9 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-lg border border-border bg-surface shadow-soft",
+        "glass rounded-card",
         interactive &&
-          "transition-all duration-250 ease-brand hover:-translate-y-0.5 hover:shadow-lifted",
+          "transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-surface-2",
         className,
       )}
       {...props}
@@ -24,9 +24,7 @@ export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDiv
 }
 
 export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return (
-    <h3 className={cn("text-base font-semibold text-text", className)} {...props} />
-  );
+  return <h3 className={cn("text-base font-semibold text-text", className)} {...props} />;
 }
 
 export function CardDescription({

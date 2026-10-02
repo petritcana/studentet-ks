@@ -1,9 +1,13 @@
-// Studentët.KS — skema e të dhënave.
+// Studentët.KS — skema e të dhënave (v2).
 //
-// Provideri është SQLite për zhvillim lokal. Kalimi në PostgreSQL është vetëm
-// ndërrim i `provider` dhe i `DATABASE_URL`, prandaj skema shmang çdo veçori
-// specifike të njërit motor: pa enum-e (String plus tipe TypeScript), pa fusha
-// vargje (String me JSON brenda, shih lib/json.ts), pa tipin Json.
+// Provideri lokal është SQLite sepse kjo makinë s'ka as PostgreSQL as Docker.
+// Skema është shkruar që kalimi në PostgreSQL të jetë vetëm ndërrim i
+// `provider` dhe i `DATABASE_URL`: pa enum-e (String plus tipe TypeScript në
+// lib/types.ts), pa fusha vargje (String me JSON), pa tipin Json.
+//
+// Embeddings ruhen si JSON në `MaterialEmbedding.vector`. Ngjashmëria kozinus
+// llogaritet në lib/ai/retrieval.ts. Kur baza të jetë Postgres me pgvector,
+// ndryshon vetëm ai funksion, jo skema dhe jo thirrësit.
 
 generator client {
   provider = "prisma-client-js"
@@ -21,31 +25,84 @@ datasource db {
 model University {
   id          String   @id @default(cuid())
   name        String
+  nameEn      String
   abbr        String   @unique
+  /// Emër i shkurtër dhe i qëndrueshëm për lidhje dhe për seed: uni-pr, ubt, aab.
+  slug        String   @unique @default("")
   logo        String?
+  /// Domeni kryesor. Institucionet me disa domene i mbajnë te `emailDomains`.
   emailDomain String?
+  website     String?
   city        String
+  /// public | private
+  type        String   @default("public")
+  /// Institucionet që nuk pranojnë më studentë dalin nga zgjedhja, pa u fshirë.
+  active      Boolean  @default(true)
   createdAt   DateTime @default(now())
 
-  faculties Faculty[]
-  users     User[]
+  faculties    Faculty[]
+  campuses     Campus[]
+  programs     StudyProgram[]
+  emailDomains UniversityEmailDomain[]
+  users        User[]
+
+  teamEventsA  TeamEvent[]             @relation("TeamEventA")
+  teamEventsB  TeamEvent[]             @relation("TeamEventB")
+  achievements UniversityAchievement[]
+}
+
+/// Një institucion mund të ketë disa domene emaili studentor, prandaj ato rrinë
+/// si rreshta, jo si një fushë e vetme që detyron zgjedhje.
+model UniversityEmailDomain {
+  id           String @id @default(cuid())
+  universityId String
+  domain       String @unique
+
+  university University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+
+  @@index([universityId])
+}
+
+/// Dega ose qyteti ku zhvillohet programi. Vetëm institucionet me disa degë e
+/// përdorin; te të tjerat mbetet bosh dhe UI-ja nuk e pyet fare.
+model Campus {
+  id           String  @id @default(cuid())
+  universityId String
+  name         String
+  nameEn       String
+  slug         String
+  city         String
+  active       Boolean @default(true)
+
+  university University     @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  programs   StudyProgram[]
+  users      User[]
+
+  @@unique([universityId, slug])
 }
 
 model Faculty {
   id           String @id @default(cuid())
   universityId String
   name         String
-  /// Çelës i temës vizuale: economics | medicine | law | science | philology | arts
+  nameEn       String
+  abbr         String
+  slug         String @default("")
+  /// Çelësi i temës vizuale, nga lib/faculties.ts
   color        String
   icon         String
 
-  university  University   @relation(fields: [universityId], references: [id], onDelete: Cascade)
-  departments Department[]
-  users       User[]
-  posts       Post[]
-  events      Event[]
+  university    University     @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  departments   Department[]
+  programs      StudyProgram[]
+  users         User[]
+  posts         Post[]
+  events        Event[]
+  announcements Announcement[]
+  onlineCourses OnlineCourse[]
+  voiceRooms    VoiceRoom[]
 
-  @@unique([universityId, name])
+  @@unique([universityId, abbr])
   @@index([universityId])
 }
 
@@ -53,39 +110,42 @@ model Department {
   id        String @id @default(cuid())
   facultyId String
   name      String
+  nameEn    String
+  slug      String @default("")
 
-  faculty Faculty  @relation(fields: [facultyId], references: [id], onDelete: Cascade)
-  courses Course[]
-  users   User[]
+  faculty  Faculty        @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  courses  Course[]
+  programs StudyProgram[]
+  users    User[]
 
   @@unique([facultyId, name])
-  @@index([facultyId])
 }
 
 model Course {
   id           String @id @default(cuid())
   departmentId String
   name         String
+  nameEn       String
   code         String
   year         Int
   semester     Int
   ects         Int
   professor    String
 
-  department  Department     @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  enrollments Enrollment[]
-  materials   Material[]
-  questions   Question[]
-  posts       Post[]
-  groups      Group[]
-  slots       ScheduleSlot[]
-  examDates   ExamDate[]
+  department    Department      @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  enrollments   Enrollment[]
+  materials     Material[]
+  questions     Question[]
+  studySessions StudyTogether[]
+  posts         Post[]
+  groups        Group[]
+  slots         ScheduleSlot[]
+  examDates     ExamDate[]
 
   @@unique([departmentId, code])
   @@index([departmentId, year])
 }
 
-/// Termini javor i ligjëratës. Orari i studentit ndërtohet nga këto, jo me dorë.
 model ScheduleSlot {
   id        String @id @default(cuid())
   courseId  String
@@ -132,64 +192,160 @@ model Enrollment {
 // ---------------------------------------------------------------------------
 
 model User {
-  id           String  @id @default(cuid())
-  email        String  @unique
-  passwordHash String?
-  username     String  @unique
-  name         String
-  avatar       String?
-  bio          String?
-  universityId String?
-  facultyId    String?
-  departmentId String?
-  /// 1..4 për bachelor, 1..2 për master
-  year         Int?
+  id               String  @id @default(cuid())
+  email            String  @unique
+  passwordHash     String?
+  username         String  @unique
+  name             String
+  /// Emri dhe mbiemri ruhen edhe veçmas: prej tyre del emri i përdoruesit dhe
+  /// me to krahasohet identiteti i emailit studentor.
+  firstName        String?
+  lastName         String?
+  /// Data e lindjes, nga regjistrimi. Platforma pranon vetëm nga 16 vjeç.
+  birthDate        DateTime?
+  /// Emaili studentor i konfirmuar me kod. Te regjistrimi me email është i njëjti
+  /// si `email`; te Google mund të jetë tjetër. Një email studentor, një llogari.
+  studentEmail     String? @unique
+  /// Llogaria e re vetëm shikon derisa admini ta miratojë ID-në: pa postime,
+  /// komente, pëlqime, storje, mesazhe, ndjekje, ngarkime dhe aplikime.
+  /// Llogaritë e vjetra mbeten të lira (false).
+  awaitingReview   Boolean @default(false)
+  avatar           String?
+  /// male | female | null. Vetëm për avatarin e parazgjedhur kur nuk ka foto: djalë,
+  /// vajzë, ose neutral kur studenti nuk e ka thënë. Asgjë tjetër nuk varet prej saj.
+  gender           String?
+  /// Foto e kokës së profilit. Kur mungon, faqja vizaton një sfond të qetë.
+  cover            String?
+  bio              String?
+  universityId     String?
+  facultyId        String?
+  departmentId     String?
+  campusId         String?
+  studyProgramId   String?
+  specializationId String?
+  /// Viti kur nisi studimet, p.sh. 2024. Prej tij del gjenerata.
+  cohortYear       Int?
+  year             Int?
   /// bachelor | master | phd
-  level        String?
-  city         String?
-  highSchool   String?
-  isVerified   Boolean @default(false)
+  level            String?
+  city             String?
+  /// Arsimimi i mëparshëm: shkolla e mesme për bachelor, institucioni i diplomës
+  /// së fundit për master dhe doktoratë. Qyteti mbahet veç, për lidhjet sociale.
+  highSchool       String?
+  previousCity     String?
+  isVerified       Boolean @default(false)
+  /// unverified | pending | verified | rejected. `isVerified` mbetet si shkurtore.
+  verification     String  @default("unverified")
+  /// student | assistant | professor | org_admin | org_moderator | company |
+  /// faculty_admin | university_admin | moderator | admin | super_admin
+  role             String  @default("student")
+  /// sq | en
+  locale           String  @default("sq")
+  interests        String  @default("[]")
 
-  xp           Int       @default(0)
+  /// XP i kontributit: i vetmi që konvertohet në Pro.
+  xpContribution Int @default(0)
+  /// XP i aktivitetit: vetëm nivele dhe renditje.
+  xpActivity     Int @default(0)
+
   dailyStreak  Int       @default(0)
   lastStreakAt DateTime?
   streakFreeze Int       @default(2)
 
-  /// student | moderator | admin | company
-  role      String   @default("student")
-  interests String   @default("[]")
-  createdAt DateTime @default(now())
-  lastSeenAt DateTime @default(now())
+  /// Ditë Pro të fituara nga kontributi, të grumbulluara dhe të pashpenzuara.
+  proDaysEarned  Int       @default(0)
+  proEarnedUntil DateTime?
 
   emailVerified DateTime?
   onboardedAt   DateTime?
 
   showReadReceipts Boolean @default(true)
   pushEnabled      Boolean @default(false)
+  emailDigest      Boolean @default(true)
   analyticsConsent Boolean @default(false)
 
-  university University?  @relation(fields: [universityId], references: [id])
-  faculty    Faculty?     @relation(fields: [facultyId], references: [id])
-  department Department?  @relation(fields: [departmentId], references: [id])
+  /// A e sheh tjetri pikën e gjelbër. I ndarë nga koha e fundit me qëllim:
+  /// dikush e pranon të duket online pa e treguar orarin e vet.
+  showOnlineStatus Boolean @default(true)
+  showLastActive   Boolean @default(true)
 
-  enrollments   Enrollment[]
-  posts         Post[]
-  comments      Comment[]
-  reactions     Reaction[]
-  bookmarks     Bookmark[]
-  materials     Material[]
-  ratings       MaterialRating[]
-  questions     Question[]
-  answers       Answer[]
-  answerVotes   AnswerVote[]
-  pollVotes     PollVote[]
-  groupMembers  GroupMember[]
-  messages      Message[]
-  eventsCreated Event[]
-  rsvps         Rsvp[]
-  badges        UserBadge[]
-  accounts      Account[]
-  sessions      Session[]
+  /// Profil privat: postimet, media dhe stories i sheh vetëm ndjekësi i pranuar.
+  /// Postimi i ngulur ne krye te profilit. Vetem nje, dhe vetem me Pro.
+  pinnedPostId  String?
+  /// Profili i veçuar: dukshmeri shtese te sugjerimet, deri ne kete date.
+  featuredUntil DateTime?
+  /// Pamja premium e profilit: theksi dhe stili i kopertines.
+  proAccent     String?
+  proCoverStyle String?
+  /// Dizajni i profilit (vetëm Pro): aurora | sunset | forest | midnight | gold. Null do të thotë pa dizajn.
+  profileTheme  String?
+  /// Ngjyra e emrit te profili (vetëm Pro), #rrggbb. E zgjedh studenti lirisht.
+  nameColor     String?
+
+  /// Kush mund te te ndjeke: everyone | verified | university | nobody.
+  whoCanFollow  String @default("everyone")
+  /// Kush mund te te shkruaje: everyone | friends | university | nobody.
+  whoCanMessage String @default("everyone")
+
+  isPrivate Boolean @default(false)
+
+  /// Kush bëhet ndjekësi yt e vendos ti. Kur ky çelës ndizet, kërkesat pranohen
+  /// vetvetiu dhe ndjekja bëhet menjëherë, si te llogaritë publike të hapura.
+  autoAcceptFollows Boolean @default(false)
+
+  /// Kur u pranuan kushtet dhe kur u konfirmua mosha. Të dyja janë premtim ligjor.
+  termsAcceptedAt DateTime?
+  ageConfirmedAt  DateTime?
+
+  /// Vetëm për llogaritë demo: përshkrimi i gjendjes që demonstrojnë.
+  demoLabel String?
+
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+
+  university     University?     @relation(fields: [universityId], references: [id])
+  faculty        Faculty?        @relation(fields: [facultyId], references: [id])
+  department     Department?     @relation(fields: [departmentId], references: [id])
+  campus         Campus?         @relation(fields: [campusId], references: [id])
+  studyProgram   StudyProgram?   @relation(fields: [studyProgramId], references: [id])
+  specialization Specialization? @relation(fields: [specializationId], references: [id])
+
+  media            MediaAsset[]
+  mediaUploads     MediaUpload[]
+  postViews        PostView[]
+  messageReactions MessageReaction[]
+  listings         MarketListing[]
+  voiceRooms       VoiceRoom[]
+  voiceSeats       VoiceParticipant[]
+  voiceMessages    VoiceMessage[]
+  enrollments      Enrollment[]
+  posts            Post[]
+  comments         Comment[]
+  reactions        Reaction[]
+  bookmarks        Bookmark[]
+  materials        Material[]
+  ratings          MaterialRating[]
+  questions        Question[]
+  answers          Answer[]
+  answerVotes      AnswerVote[]
+  pollVotes        PollVote[]
+  groupMembers     GroupMember[]
+  messages         Message[]
+  eventsCreated    Event[]
+  rsvps            Rsvp[]
+  badges           UserBadge[]
+  accounts         Account[]
+  sessions         Session[]
+  subscriptions    Subscription[]
+  payments         Payment[]
+  vouchers         Voucher[]
+  xpTransactions   XpTransaction[]
+  aiConversations  AiConversation[]
+  battlesStarted   Battle[]             @relation("BattleChallenger")
+  battlesJoined    Battle[]             @relation("BattleOpponent")
+  battleEntries    BattleEntry[]
+  conversations    ConversationMember[]
+  pushSubs         PushSubscription[]
 
   following      Follow[]       @relation("follower")
   followers      Follow[]       @relation("following")
@@ -201,8 +357,32 @@ model User {
   inviteUsed     Invite?        @relation("invitedUser")
   blocksMade     UserBlock[]    @relation("blocker")
   blocksTaken    UserBlock[]    @relation("blocked")
-  conversations  ConversationMember[]
-  pushSubs       PushSubscription[]
+
+  verifications         Verification[]        @relation("verificationSubject")
+  reviewedVerifications Verification[]        @relation("verificationReviewer")
+  emailCodes            EmailCode[]
+  stories               Story[]
+  storyHighlights       StoryHighlight[]
+  proGrantsReceived     ProGrant[]            @relation("ProGrantsReceived")
+  proGrantsGiven        ProGrant[]            @relation("ProGrantsGiven")
+  feedback              Feedback[]
+  chatCallsStarted      ChatCall[]            @relation("ChatCallsStarted")
+  chatCallSeats         ChatCallParticipant[]
+  passwordResets        PasswordReset[]
+  jobSignals            JobSignal[]
+  storyViews            StoryView[]
+  applications          Application[]
+  careerProfile         CareerProfile?
+  taughtCourses         OnlineCourse[]        @relation("courseInstructor")
+  courseEnrollments     CourseEnrollment[]
+  lessonProgress        LessonProgress[]
+  courseReviews         CourseReview[]
+  certificates          Certificate[]
+  payouts               Payout[]
+  studySessions         StudyTogether[]
+  studyJoins            StudyTogetherJoin[]
+  notificationSettings  NotificationSetting[]
+  auditLogs             AuditLog[]
 
   @@index([facultyId, year])
   @@index([universityId])
@@ -247,18 +427,40 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+/// Kush e ka pare nje postim.
+///
+/// Analitika e Pro-s duhet te tregoje numra te vertete, jo shumen e rifreskimeve.
+/// Prandaj mbahet nje rresht per person, dhe `Post.viewCount` rritet vetem here
+/// e pare. Pamja shenohet nga vete shfletuesi kur karta hyn ne ekran.
+model PostView {
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+  @@index([userId, createdAt])
+}
+
 model Follow {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   followerId  String
   followingId String
-  isMutual    Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  isMutual    Boolean   @default(false)
+  /// accepted | pending | declined. Ndjekja e re vjen si kërkesë, dhe pronari
+  /// vendos. E refuzuara mbetet e shënuar, që të mos përsëritet pa dashje.
+  status      String    @default("pending")
+  respondedAt DateTime?
+  createdAt   DateTime  @default(now())
 
   follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
 
   @@unique([followerId, followingId])
   @@index([followingId])
+  @@index([followingId, status])
 }
 
 model UserBlock {
@@ -281,6 +483,8 @@ model Invite {
   code          String    @unique
   invitedUserId String?   @unique
   usedAt        DateTime?
+  /// Ftesa jep XP vetëm pasi i ftuari mbetet aktiv 7 ditë.
+  rewardedAt    DateTime?
   createdAt     DateTime  @default(now())
 
   inviter     User  @relation("inviter", fields: [inviterId], references: [id], onDelete: Cascade)
@@ -294,27 +498,39 @@ model Invite {
 // ---------------------------------------------------------------------------
 
 model Post {
-  id          String  @id @default(cuid())
-  authorId    String
+  id           String  @id @default(cuid())
+  authorId     String
   /// text | question | material | poll | event | seek | campus_voice
-  type        String
-  text        String
-  /// JSON: string[]
-  media       String  @default("[]")
-  courseId    String?
-  facultyId   String?
-  groupId     String?
-  materialId  String?
-  eventId     String?
-  isAnonymous Boolean @default(false)
-  pseudonym   String?
+  type         String
+  text         String
+  media        String  @default("[]")
+  /// course | generation | faculty | university | national
+  scope        String  @default("faculty")
+  courseId     String?
+  facultyId    String?
+  universityId String?
+  groupId      String?
+  materialId   String?
+  eventId      String?
+  /// Kur postimi shperndan nje dhome zeri, karta ne feed e hap ate.
+  voiceRoomId  String?
+  /// Ripostim: postimi origjinal që ndahet.
+  repostOfId   String?
+  isAnonymous  Boolean @default(false)
+  pseudonym    String?
 
-  score      Float    @default(0)
-  likeCount  Int      @default(0)
-  commentCount Int    @default(0)
-  saveCount  Int      @default(0)
-  isHidden   Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  likeCount    Int @default(0)
+  commentCount Int @default(0)
+  saveCount    Int @default(0)
+  repostCount  Int @default(0)
+  /// Sa here eshte pare. Numerohet nje here per person, te `PostView`.
+  viewCount    Int @default(0)
+
+  /// Veçimi nga Pro: postimi merr dukshmeri shtese deri ne kete date.
+  featuredUntil DateTime?
+
+  isHidden  Boolean  @default(false)
+  createdAt DateTime @default(now())
 
   author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   course   Course?   @relation(fields: [courseId], references: [id])
@@ -322,15 +538,19 @@ model Post {
   group    Group?    @relation(fields: [groupId], references: [id])
   material Material? @relation(fields: [materialId], references: [id])
   event    Event?    @relation(fields: [eventId], references: [id])
+  repostOf Post?     @relation("Reposts", fields: [repostOfId], references: [id], onDelete: Cascade)
+  reposts  Post[]    @relation("Reposts")
 
   comments    Comment[]
   reactions   Reaction[]
+  views       PostView[]
   pollOptions PollOption[]
+  sharedIn    Message[]    @relation("SharedPosts")
 
   @@index([createdAt])
   @@index([authorId])
   @@index([courseId])
-  @@index([type])
+  @@index([scope])
 }
 
 model Comment {
@@ -338,6 +558,8 @@ model Comment {
   postId    String
   authorId  String
   text      String
+  /// I mbushur vetem te fijet anonime. I qendrueshem brenda nje fije.
+  pseudonym String?
   parentId  String?
   isHidden  Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -354,14 +576,14 @@ model Reaction {
   id        String   @id @default(cuid())
   userId    String
   postId    String
-  /// like | helpful | celebrate
   type      String   @default("like")
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, postId])
+  /// like | useful. Të pavarura: një postim mund të pëlqehet dhe të shënohet i dobishëm.
+  @@unique([userId, postId, type])
   @@index([postId])
 }
 
@@ -410,32 +632,39 @@ model PollVote {
 // ---------------------------------------------------------------------------
 
 model Material {
-  id                 String  @id @default(cuid())
+  id                 String    @id @default(cuid())
   uploaderId         String
   courseId           String
   title              String
   /// lecture | script | notes | past_exam | solved | slides | book | video
   type               String
   fileUrl            String
-  mimeType           String  @default("application/pdf")
+  /// SHA-256 i skedarit. Bllokon dublikatat në gjithë sistemin.
+  fileHash           String    @unique
+  mimeType           String    @default("application/pdf")
   size               Int
   pages              Int?
   professor          String?
   academicYear       String
   description        String?
-  rating             Float   @default(0)
-  ratingCount        Int     @default(0)
-  downloads          Int     @default(0)
+  rating             Float     @default(0)
+  ratingCount        Int       @default(0)
+  downloads          Int       @default(0)
   /// pending | verified | rejected | hidden
-  verificationStatus String  @default("pending")
-  isHidden           Boolean @default(false)
+  verificationStatus String    @default("pending")
+  isHidden           Boolean   @default(false)
+  /// Shënohet kur miratimi ka dhënë XP dhe ditë Pro, që të mos jepen dy herë.
+  rewardedAt         DateTime?
+  /// Shënohet kur kalimi i 100 shkarkimeve ka dhënë bonusin.
+  milestoneAt        DateTime?
 
   createdAt DateTime @default(now())
 
-  uploader User             @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
-  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  ratings  MaterialRating[]
-  posts    Post[]
+  uploader   User                @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  course     Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  ratings    MaterialRating[]
+  posts      Post[]
+  embeddings MaterialEmbedding[]
 
   @@index([courseId, type])
   @@index([uploaderId])
@@ -455,18 +684,32 @@ model MaterialRating {
   @@unique([materialId, userId])
 }
 
+/// Copëza teksti me embedding, për kërkimin semantik të asistentit.
+model MaterialEmbedding {
+  id         String @id @default(cuid())
+  materialId String
+  chunk      Int    @default(0)
+  content    String
+  /// JSON: number[]. Në Postgres me pgvector bëhet kolonë vector.
+  vector     String
+
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([materialId, chunk])
+  @@index([materialId])
+}
+
 model Question {
-  id               String  @id @default(cuid())
+  id               String    @id @default(cuid())
   authorId         String
   courseId         String
   title            String
   text             String
   acceptedAnswerId String?
-  views            Int     @default(0)
-  isHidden         Boolean @default(false)
-  /// Ora kur u dërguan njoftimet te studentët që e kanë kaluar lëndën.
+  views            Int       @default(0)
+  isHidden         Boolean   @default(false)
   nudgedAt         DateTime?
-  createdAt        DateTime @default(now())
+  createdAt        DateTime  @default(now())
 
   author  User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -476,13 +719,15 @@ model Question {
 }
 
 model Answer {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   questionId String
   authorId   String
   text       String
-  votes      Int      @default(0)
-  isHidden   Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  votes      Int       @default(0)
+  isHidden   Boolean   @default(false)
+  /// Shënohet kur pranimi ka dhënë XP dhe ditën e Pro-s.
+  rewardedAt DateTime?
+  createdAt  DateTime  @default(now())
 
   question Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
   author   User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -510,6 +755,7 @@ model AnswerVote {
 model Group {
   id          String  @id @default(cuid())
   name        String
+  nameEn      String
   /// course | generation | custom
   type        String
   courseId    String?
@@ -533,7 +779,6 @@ model GroupMember {
   id       String   @id @default(cuid())
   groupId  String
   userId   String
-  /// member | moderator | owner
   role     String   @default("member")
   joinedAt DateTime @default(now())
 
@@ -545,24 +790,35 @@ model GroupMember {
 }
 
 model Conversation {
-  id        String   @id @default(cuid())
-  /// direct | group
-  type      String   @default("direct")
-  title     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  type       String   @default("direct")
+  title      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  /// Grupi: kur eshte true, shkruajne vetem adminet (biseda e ndalur).
+  adminsOnly Boolean  @default(false)
+  /// Grupi: kur eshte false, linqet i dergojne vetem adminet.
+  allowLinks Boolean  @default(true)
 
   members  ConversationMember[]
   messages Message[]
+  calls    ChatCall[]
 }
 
 model ConversationMember {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   conversationId String
   userId         String
-  /// Kërkesa nga jo-shokë presin pranim.
-  isAccepted     Boolean  @default(true)
-  lastReadAt     DateTime @default(now())
+  isAccepted     Boolean   @default(true)
+  lastReadAt     DateTime  @default(now())
+  /// Deri kur ky anetar shihet si «po shkruan». Rri ne baze sepse nuk ka
+  /// lidhje te gjalle mes shfletuesve: shenja rifreskohet nga vete shkrimi.
+  typingUntil    DateTime?
+  /// member | admin. Ka kuptim vetem te grupet: krijuesi eshte admini i pare.
+  role           String    @default("member")
+  /// Njoftimet e kesaj bisede heshtin deri atehere. Null do te thote te ndezura.
+  mutedUntil     DateTime?
+  joinedAt       DateTime  @default(now())
 
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -571,21 +827,88 @@ model ConversationMember {
   @@index([userId])
 }
 
+/// Thirrja zanore ose me video brenda nje bisede. Zeri dhe pamja shkojne drejt
+/// mes shfletuesve (WebRTC); serveri mban vetem kush eshte brenda dhe sinjalet.
+model ChatCall {
+  id             String    @id @default(cuid())
+  conversationId String
+  startedById    String
+  video          Boolean   @default(false)
+  startedAt      DateTime  @default(now())
+  endedAt        DateTime?
+  /// ended | declined | missed. Te thirrja me dy veta i thotë thirrësit pse mbaroi.
+  endReason      String?
+
+  conversation Conversation          @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  startedBy    User                  @relation("ChatCallsStarted", fields: [startedById], references: [id], onDelete: Cascade)
+  participants ChatCallParticipant[]
+
+  @@index([conversationId, endedAt])
+}
+
+model ChatCallParticipant {
+  id         String    @id @default(cuid())
+  callId     String
+  userId     String
+  joinedAt   DateTime  @default(now())
+  /// Rrahja e fundit nga shfletuesi: kush nuk rreh me, quhet jashte.
+  seenAt     DateTime  @default(now())
+  leftAt     DateTime?
+  /// Refuzoi thirrjen: zilja nuk i bie më për të.
+  declinedAt DateTime?
+
+  call ChatCall @relation(fields: [callId], references: [id], onDelete: Cascade)
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([callId, userId])
+  @@index([userId])
+}
+
 model Message {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   conversationId String
   authorId       String
   text           String
-  /// JSON: string[]
-  media          String   @default("[]")
-  /// JSON: string[] me id-të e përdoruesve
-  readBy         String   @default("[]")
-  createdAt      DateTime @default(now())
+  media          String    @default("[]")
+  readBy         String    @default("[]")
+  /// text | voice | story_reply | story_reaction. Zeri ruhet si media, por shfaqet ndryshe.
+  kind           String    @default("text")
+  /// Storja te cila i pergjigjet ose reagon mesazhi. Fshirja e storjes e le mesazhin.
+  storyId        String?
+  /// Postimi i ndarë në bisedë («Dërgo»). Kur postimi fshihet, mesazhi mbetet pa të.
+  postId         String?
+  /// Mesazhi te cilit i pergjigjet. Fshirja e origjinalit nuk e fshin pergjigjen.
+  replyToId      String?
+  editedAt       DateTime?
+  /// Fshirja eshte e bute: rreshti mbetet qe rendi i bisedes te mos thyhet,
+  /// por teksti nuk shfaqet me.
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
 
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  author       User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  conversation Conversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  author       User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  replyTo      Message?          @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies      Message[]         @relation("MessageReplies")
+  reactions    MessageReaction[]
+  story        Story?            @relation(fields: [storyId], references: [id], onDelete: SetNull)
+  post         Post?             @relation("SharedPosts", fields: [postId], references: [id], onDelete: SetNull)
 
   @@index([conversationId, createdAt])
+  @@index([storyId])
+}
+
+/// Reagimi me emoji te nje mesazh. Nje emoji per person dhe per mesazh.
+model MessageReaction {
+  messageId String
+  userId    String
+  emoji     String
+  createdAt DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, userId])
+  @@index([messageId])
 }
 
 // ---------------------------------------------------------------------------
@@ -593,7 +916,7 @@ model Message {
 // ---------------------------------------------------------------------------
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   creatorId   String
   title       String
   description String
@@ -601,9 +924,8 @@ model Event {
   endDate     DateTime?
   location    String
   facultyId   String?
-  /// lecture | exam | fair | party | contest | workshop | study_together
-  kind        String   @default("workshop")
-  createdAt   DateTime @default(now())
+  kind        String    @default("workshop")
+  createdAt   DateTime  @default(now())
 
   creator User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   faculty Faculty? @relation(fields: [facultyId], references: [id])
@@ -617,7 +939,6 @@ model Rsvp {
   id      String @id @default(cuid())
   eventId String
   userId  String
-  /// going | maybe | not_going
   status  String @default("going")
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
@@ -639,45 +960,258 @@ model Company {
 }
 
 model JobPost {
-  id          String   @id @default(cuid())
-  companyId   String
-  title       String
+  id           String   @id @default(cuid())
+  companyId    String
+  title        String
   /// internship | part_time | full_time | scholarship | contest | exchange | hackathon
-  type        String
-  field       String
-  city        String
-  isRemote    Boolean  @default(false)
-  description String
-  deadline    DateTime
-  link        String?
-  createdAt   DateTime @default(now())
+  type         String
+  field        String
+  city         String
+  isRemote     Boolean  @default(false)
+  description  String
+  /// Kerkesat si tekst i lire. Opsionale: jo cdo shpallje i ka.
+  requirements String?
+  /// Aftesite, si liste e serializuar. SQLite nuk ka fusha vargje.
+  skills       String   @default("[]")
+  /// Pagesa si tekst, p.sh. «400 deri 600 euro». Shpesh nuk jepet fare.
+  salary       String?
+  deadline     DateTime
+  link         String?
+  createdAt    DateTime @default(now())
 
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  applications Application[]
 
   @@index([type, deadline])
 }
 
 // ---------------------------------------------------------------------------
-// Gamification, njoftime, moderim
+// Pro, pagesat dhe ekonomia e XP-së
+// ---------------------------------------------------------------------------
+
+model Plan {
+  id              String  @id @default(cuid())
+  code            String  @unique
+  /// Muaj që mbulon.
+  months          Int
+  priceCents      Int
+  currency        String  @default("EUR")
+  /// Zbritje në përqindje për email institucional.
+  studentDiscount Int     @default(20)
+  isActive        Boolean @default(true)
+  sortOrder       Int     @default(0)
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String
+  planId    String?
+  /// active | expired | cancelled
+  status    String   @default("active")
+  /// payment | voucher | xp | contribution | manual
+  source    String
+  startedAt DateTime @default(now())
+  expiresAt DateTime
+  autoRenew Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan? @relation(fields: [planId], references: [id])
+
+  @@index([userId, status])
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  userId      String
+  amountCents Int
+  currency    String   @default("EUR")
+  /// paddle | localbank | transfer | voucher | xp | mock
+  provider    String
+  externalId  String?
+  /// pending | paid | failed | refunded
+  status      String   @default("pending")
+  reference   String?  @unique
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+model Voucher {
+  id     String    @id @default(cuid())
+  code   String    @unique
+  days   Int
+  batch  String?
+  usedBy String?
+  usedAt DateTime?
+
+  user User? @relation(fields: [usedBy], references: [id])
+
+  @@index([batch])
+}
+
+/// Regjistri i çdo lëvizjeje XP-je. Pa të, anulimi nuk do të ishte i mundur.
+model XpTransaction {
+  id            String    @id @default(cuid())
+  userId        String
+  /// contribution | activity
+  kind          String
+  amount        Int
+  /// material_approved | answer_accepted | answer_votes | material_milestone |
+  /// invite | post | comment | daily | reaction | exchange | revoked
+  reason        String
+  targetId      String?
+  note          String?
+  /// Shënohet kur moderatori e anulon, me arsye.
+  revokedAt     DateTime?
+  revokedReason String?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, kind])
+  @@index([reason])
+}
+
+// ---------------------------------------------------------------------------
+// Asistenti AI
+// ---------------------------------------------------------------------------
+
+model AiConversation {
+  id           String   @id @default(cuid())
+  userId       String
+  title        String
+  /// explain | summarize | quiz | flashcards | exam_plan | translate | proofread | chat
+  mode         String   @default("chat")
+  /// Titulli u shkrua nga modeli pas shkëmbimit të parë, jo nga prerja e pyetjes.
+  titled       Boolean  @default(false)
+  /// Përmbledhja e pjesës së vjetër të bisedës, që del jashtë dritares së kontekstit.
+  summary      String?
+  /// Sa mesazhe të para mbulon përmbledhja.
+  summaryCount Int      @default(0)
+  /// Materiali për të cilin u hap biseda, që pyetjet pasuese ta kenë parasysh.
+  contextKind  String?
+  contextId    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages AiMessage[]
+
+  @@index([userId, updatedAt])
+}
+
+model AiMessage {
+  id             String   @id @default(cuid())
+  conversationId String
+  /// user | assistant
+  role           String
+  content        String
+  /// JSON: id-të e materialeve të cituara.
+  sourceIds      String   @default("[]")
+  /// JSON: imazhet e bashkëngjitura, si `{ id, extension }` te `MediaAsset`.
+  attachments    String   @default("[]")
+  tokensIn       Int      @default(0)
+  tokensOut      Int      @default(0)
+  costMicros     Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  conversation AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Reklamat
+// ---------------------------------------------------------------------------
+
+model Advertiser {
+  id      String  @id @default(cuid())
+  name    String  @unique
+  logo    String?
+  contact String?
+
+  ads Ad[]
+}
+
+model Ad {
+  id           String   @id @default(cuid())
+  advertiserId String
+  title        String
+  titleEn      String
+  body         String
+  bodyEn       String
+  image        String?
+  url          String
+  cta          String
+  ctaEn        String
+  /// JSON: { universityIds, facultyIds, years, cities }
+  targeting    String   @default("{}")
+  startsAt     DateTime @default(now())
+  endsAt       DateTime
+  priority     Int      @default(0)
+  budgetCents  Int      @default(0)
+  isActive     Boolean  @default(true)
+
+  advertiser  Advertiser     @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+  impressions AdImpression[]
+  clicks      AdClick[]
+
+  @@index([isActive, priority])
+}
+
+model AdImpression {
+  id        String   @id @default(cuid())
+  adId      String
+  userId    String?
+  placement String
+  createdAt DateTime @default(now())
+
+  ad Ad @relation(fields: [adId], references: [id], onDelete: Cascade)
+
+  @@index([adId, createdAt])
+}
+
+model AdClick {
+  id        String   @id @default(cuid())
+  adId      String
+  userId    String?
+  createdAt DateTime @default(now())
+
+  ad Ad @relation(fields: [adId], references: [id], onDelete: Cascade)
+
+  @@index([adId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Njoftimet, moderimi
 // ---------------------------------------------------------------------------
 
 model Badge {
-  id          String @id @default(cuid())
-  code        String @unique
-  name        String
-  description String
-  icon        String
+  id            String @id @default(cuid())
+  code          String @unique
+  name          String
+  nameEn        String
+  description   String
+  descriptionEn String
+  icon          String
 
   users UserBadge[]
 }
 
 model UserBadge {
-  id       String   @id @default(cuid())
-  userId   String
-  badgeId  String
-  /// Kontekst opsional, p.sh. emri i lëndës për "Lider i lëndës".
-  context  String?
-  earnedAt DateTime @default(now())
+  id        String    @id @default(cuid())
+  userId    String
+  badgeId   String
+  context   String?
+  earnedAt  DateTime  @default(now())
+  /// «Lider i lëndës» jep Pro sa kohë mbahet, prandaj ka skadim.
+  expiresAt DateTime?
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
@@ -687,16 +1221,19 @@ model UserBadge {
 }
 
 model Notification {
-  id       String  @id @default(cuid())
-  userId   String
-  /// follow | follow_back | mutual | comment | answer | accepted | material | event | streak | badge | question_nudge | reactivation
-  type     String
-  actorId  String?
-  targetId String?
-  text     String
-  /// Konteksti i lexueshëm, p.sh. "Jeni bashkë në 3 lëndë."
-  context  String?
-  isRead   Boolean @default(false)
+  id         String  @id @default(cuid())
+  userId     String
+  /// social | academic | progress | jobs | system
+  category   String  @default("social")
+  type       String
+  actorId    String?
+  targetId   String?
+  targetType String?
+  /// JSON me çelësa përkthimi dhe vlera, që teksti të mos ruhet i përkthyer.
+  payload    String  @default("{}")
+  /// Njoftimet me të njëjtin groupKey bashkohen në një rresht.
+  groupKey   String?
+  isRead     Boolean @default(false)
 
   createdAt DateTime @default(now())
 
@@ -704,22 +1241,20 @@ model Notification {
   actor User? @relation("actor", fields: [actorId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead, createdAt])
+  @@index([userId, groupKey])
 }
 
 model Report {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   reporterId  String
   targetId    String
-  /// post | comment | material | user | message | answer
   targetType  String
-  /// harassment | hate | targeting | sexual | threat | spam | personal_data | copyright | other
   reason      String
   note        String?
-  /// open | reviewing | actioned | dismissed
-  status      String   @default("open")
+  status      String    @default("open")
   moderatorId String?
   resolution  String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
   resolvedAt  DateTime?
 
   reporter  User  @relation("reporter", fields: [reporterId], references: [id], onDelete: Cascade)
@@ -729,16 +1264,13 @@ model Report {
   @@index([targetId, targetType])
 }
 
-/// Regjistri publik i agreguar i moderimit ("kjo javë: 14 postime të hequra").
 model ModerationLog {
-  id         String   @id @default(cuid())
-  weekOf     DateTime
-  removed    Int      @default(0)
-  reviewed   Int      @default(0)
-  dismissed  Int      @default(0)
-  createdAt  DateTime @default(now())
-
-  @@unique([weekOf])
+  id        String   @id @default(cuid())
+  weekOf    DateTime @unique
+  removed   Int      @default(0)
+  reviewed  Int      @default(0)
+  dismissed Int      @default(0)
+  createdAt DateTime @default(now())
 }
 
 model PushSubscription {
@@ -751,4 +1283,973 @@ model PushSubscription {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+/// Tabela e njoftimeve, vendi 1 i shtyllës së djathtë.
+/// Kjo është hapësira e platformës dhe e fakulteteve të verifikuara, kurrë e reklamuesve.
+model Announcement {
+  id        String    @id @default(cuid())
+  title     String
+  titleEn   String
+  body      String
+  bodyEn    String
+  url       String?
+  /// Pamja e njoftimit te karta e veçuar. Nje adrese `/api/media/[id]`.
+  image     String?
+  /// notice | event | trip | meetup. Shih lib/announcements.ts.
+  kind      String    @default("notice")
+  /// Kur ndodh eventi ose nis udhëtimi. Null për njoftimet e thjeshta.
+  eventAt   DateTime?
+  place     String?
+  /// Sa lart rri. 2 e lart shënohet si urgjente.
+  priority  Int       @default(0)
+  deadline  DateTime?
+  /// Null do të thotë njoftim i platformës. Ndryshe, i atij fakulteti.
+  facultyId String?
+  isActive  Boolean   @default(true)
+  startsAt  DateTime  @default(now())
+  endsAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  faculty Faculty? @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+
+  @@index([isActive, priority, startsAt])
+}
+
+/// Programi i studimit: ajo që studenti thotë kur e pyesin «çfarë studion».
+///
+/// Nuk është lënda. Lënda është `Course`. Hierarkia mbi programin ndryshon nga
+/// institucioni në institucion, prandaj fakulteti, departamenti dhe kampusi janë
+/// fakultativë: nuk trillohet një strukturë që institucioni nuk e ka.
+model StudyProgram {
+  id                 String    @id @default(cuid())
+  universityId       String
+  campusId           String?
+  facultyId          String?
+  departmentId       String?
+  name               String
+  nameEn             String
+  slug               String
+  /// Emri i normalizuar, pa theks dhe me shkronja të vogla, vetëm për kërkim.
+  searchKey          String    @default("")
+  /// bachelor | master | phd | professional_bachelor | integrated
+  degreeLevel        String
+  /// Titulli që fiton studenti, ashtu si e shkruan institucioni.
+  degreeTitle        String?
+  ects               Int?
+  durationYears      Int?
+  /// Viti akademik për të cilin u verifikua, p.sh. 2026/27.
+  academicYear       String?
+  /// accredited | pending | expired | unverified
+  accreditation      String    @default("unverified")
+  accreditationUntil DateTime?
+  /// official_institution | kaa | other_official
+  sourceType         String?
+  sourceRef          String?
+  lastVerifiedAt     DateTime?
+  active             Boolean   @default(true)
+
+  university      University       @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  campus          Campus?          @relation(fields: [campusId], references: [id], onDelete: SetNull)
+  faculty         Faculty?         @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  department      Department?      @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  specializations Specialization[]
+  students        User[]
+
+  /// I njëjti program në degë të ndryshme është zë më vete, prandaj dega hyn te çelësi.
+  @@unique([universityId, slug, degreeLevel, campusId])
+  @@index([universityId, active])
+  @@index([facultyId, degreeLevel])
+  @@index([searchKey])
+}
+
+/// Drejtimi brenda programit. Ekziston vetëm kur institucioni e publikon vetë.
+model Specialization {
+  id             String  @id @default(cuid())
+  studyProgramId String
+  name           String
+  nameEn         String
+  slug           String
+  active         Boolean @default(true)
+
+  program  StudyProgram @relation(fields: [studyProgramId], references: [id], onDelete: Cascade)
+  students User[]
+
+  @@unique([studyProgramId, slug])
+}
+
+/// Verifikimi tripjeshesh i kapitullit 7: email institucional, foto e ID-se dhe selfie.
+/// Imazhet rrine private dhe fshihen pas afatit; ketu ruhet vetem referenca.
+model Verification {
+  id              String    @id @default(cuid())
+  userId          String
+  /// student | professor | company
+  kind            String    @default("student")
+  /// pending | verified | rejected
+  status          String    @default("pending")
+  /// A u konfirmua emaili institucional me kod.
+  emailVerifiedAt DateTime?
+  /// Referenca drejt ruajtjes private. Kurre nuk del nepermjet nje API publike.
+  idDocumentRef   String?
+  selfieRef       String?
+  /// Per profesoret deshmi punesimi, per kompanite numri i regjistrimit.
+  proofRef        String?
+  note            String?
+  reviewerId      String?
+  reviewedAt      DateTime?
+  rejectedReason  String?
+  /// Kur u dërgua fotoja e ID-së: radha e moderimit shkon sipas saj.
+  submittedAt     DateTime?
+  /// Kur fshihen imazhet. Ruajtja pergjithmone do te ishte rrezik pa nevoje.
+  purgeAfter      DateTime?
+  createdAt       DateTime  @default(now())
+
+  user     User  @relation("verificationSubject", fields: [userId], references: [id], onDelete: Cascade)
+  reviewer User? @relation("verificationReviewer", fields: [reviewerId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([userId])
+}
+
+/// Kodi njehereshem qe konfirmon emailin institucional.
+model EmailCode {
+  id        String    @id @default(cuid())
+  userId    String
+  email     String
+  /// signup = konfirmimi i emailit te regjistrimi.
+  /// institutional = emaili i fakultetit, per shenjen e verifikimit.
+  purpose   String    @default("signup")
+  codeHash  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  attempts  Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose, expiresAt])
+}
+
+/// Stories, kapitulli 6. Jetojne 24 ore dhe fshihen vete.
+model Story {
+  id        String   @id @default(cuid())
+  authorId  String
+  /// image | video
+  kind      String   @default("image")
+  mediaUrl  String
+  /// Teksti mbi foto, deri 200 shenja.
+  caption   String?
+  /// Mbetet nga shtrirjet e vjetra. Sot çdo storje ndjek profilin: publik ose privat.
+  scope     String   @default("followers")
+  /// Shtresat e editorit (tekst, vizatim, stikera) si JSON, për videot dhe për qasshmërinë.
+  layers    String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  author         User                 @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  views          StoryView[]
+  highlightItems StoryHighlightItem[]
+  messages       Message[]
+
+  @@index([authorId, expiresAt])
+  @@index([expiresAt])
+}
+
+/// Dosjet e storjeve në profil (highlights): pronari i mban storjet pas 24 orëve,
+/// me titull, p.sh. «me», «place», «friends». I sheh kush e sheh profilin.
+model StoryHighlight {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  /// Fotoja e rrethit. Null do të thotë fotoja e storjes së parë.
+  coverUrl  String?
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  user  User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items StoryHighlightItem[]
+
+  @@index([userId, position])
+}
+
+model StoryHighlightItem {
+  id          String @id @default(cuid())
+  highlightId String
+  storyId     String
+  position    Int    @default(0)
+
+  highlight StoryHighlight @relation(fields: [highlightId], references: [id], onDelete: Cascade)
+  story     Story          @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([highlightId, storyId])
+  @@index([storyId])
+}
+
+/// Kush e pa. Pa kete, rendi "te pashikuarat te parat" nuk do te ishte i mundur.
+model StoryView {
+  id      String   @id @default(cuid())
+  storyId String
+  userId  String
+  seenAt  DateTime @default(now())
+
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([storyId, userId])
+  @@index([userId])
+}
+
+/// Gjurmuesi i aplikimeve, kapitulli 9.
+model Application {
+  id        String    @id @default(cuid())
+  userId    String
+  jobId     String
+  /// saved | applied | interview | rejected | accepted | archived
+  status    String    @default("saved")
+  note      String?
+  appliedAt DateTime?
+  updatedAt DateTime  @default(now())
+  createdAt DateTime  @default(now())
+
+  user User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  JobPost @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId, status])
+}
+
+/// Bursat, te ndara nga punet sepse fushat jane te tjera.
+model Scholarship {
+  id          String   @id @default(cuid())
+  title       String
+  provider    String
+  description String
+  /// Shuma ne euro, kur eshte publike.
+  amountCents Int?
+  country     String   @default("Kosovë")
+  field       String
+  /// bachelor | master | phd | any
+  level       String   @default("any")
+  eligibility String
+  link        String?
+  deadline    DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([deadline, isActive])
+}
+
+/// Profili i karrieres, i ndezur vetem nga studenti.
+model CareerProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  /// private | students | employers | public
+  visibility    String   @default("private")
+  headline      String?
+  summary       String?
+  /// JSON: lista e aftesive.
+  skills        String   @default("[]")
+  experience    String   @default("[]")
+  projects      String   @default("[]")
+  certificates  String   @default("[]")
+  languages     String   @default("[]")
+  portfolioUrl  String?
+  desiredRoles  String   @default("[]")
+  preferredCity String?
+  openToWork    Boolean  @default(false)
+  updatedAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Kurset online te profesoreve, kapitulli 10
+// ---------------------------------------------------------------------------
+
+model OnlineCourse {
+  id           String    @id @default(cuid())
+  instructorId String
+  title        String
+  subtitle     String?
+  description  String
+  coverImage   String?
+  /// sq | en
+  language     String    @default("sq")
+  /// beginner | intermediate | advanced
+  level        String    @default("beginner")
+  category     String
+  facultyId    String?
+  /// Cmimi ne cent. Zero do te thote falas.
+  priceCents   Int       @default(0)
+  currency     String    @default("EUR")
+  /// draft | in_review | published | unlisted | archived
+  status       String    @default("draft")
+  publishedAt  DateTime?
+  rating       Float     @default(0)
+  ratingCount  Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
+
+  instructor  User               @relation("courseInstructor", fields: [instructorId], references: [id], onDelete: Cascade)
+  faculty     Faculty?           @relation(fields: [facultyId], references: [id])
+  sections    CourseSection[]
+  enrollments CourseEnrollment[]
+  reviews     CourseReview[]
+  ledger      LedgerEntry[]
+
+  @@index([status, publishedAt])
+  @@index([instructorId])
+}
+
+model CourseSection {
+  id       String @id @default(cuid())
+  courseId String
+  title    String
+  order    Int    @default(0)
+
+  course  OnlineCourse @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@index([courseId, order])
+}
+
+model Lesson {
+  id        String  @id @default(cuid())
+  sectionId String
+  title     String
+  /// video | text | material | quiz | assignment
+  kind      String  @default("video")
+  /// Permbajtja: URL videoje, tekst, ose JSON kuizi.
+  content   String  @default("")
+  /// Kohezgjatja ne sekonda, kur eshte video.
+  duration  Int?
+  /// A eshte parapamje falas per ata qe nuk kane blere.
+  isPreview Boolean @default(false)
+  order     Int     @default(0)
+
+  section  CourseSection    @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  progress LessonProgress[]
+
+  @@index([sectionId, order])
+}
+
+model CourseEnrollment {
+  id            String    @id @default(cuid())
+  courseId      String
+  userId        String
+  /// payment | free | voucher | gift
+  source        String    @default("payment")
+  completedAt   DateTime?
+  certificateId String?
+  createdAt     DateTime  @default(now())
+
+  course OnlineCourse @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
+  @@index([userId])
+}
+
+model LessonProgress {
+  id        String   @id @default(cuid())
+  lessonId  String
+  userId    String
+  secondsIn Int      @default(0)
+  completed Boolean  @default(false)
+  updatedAt DateTime @default(now())
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, userId])
+  @@index([userId])
+}
+
+model CourseReview {
+  id        String   @id @default(cuid())
+  courseId  String
+  userId    String
+  stars     Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  course OnlineCourse @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
+}
+
+/// Certifikata e perfundimit, e gjeneruar si PDF nga shfletuesi.
+model Certificate {
+  id       String   @id @default(cuid())
+  userId   String
+  courseId String
+  /// Kodi i verifikimit, qe nje punedhenes ta kontrolloje.
+  code     String   @unique
+  issuedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// Libri i te ardhurave. Cdo shitje shkruan nje rresht, pa perjashtim.
+model LedgerEntry {
+  id              String   @id @default(cuid())
+  courseId        String?
+  buyerId         String?
+  instructorId    String?
+  /// sale | refund | payout
+  kind            String   @default("sale")
+  /// Sa pagoi studenti.
+  grossCents      Int
+  /// Sa mban platforma.
+  platformCents   Int
+  /// Sa i mbetet instruktorit.
+  instructorCents Int
+  /// Tarifa e ofruesit te pageses, kur dihet.
+  providerCents   Int      @default(0)
+  currency        String   @default("EUR")
+  paymentId       String?
+  note            String?
+  createdAt       DateTime @default(now())
+
+  course OnlineCourse? @relation(fields: [courseId], references: [id])
+
+  @@index([instructorId, createdAt])
+  @@index([kind, createdAt])
+}
+
+/// Kerkesa per terheqje te te ardhurave.
+model Payout {
+  id           String    @id @default(cuid())
+  instructorId String
+  amountCents  Int
+  currency     String    @default("EUR")
+  /// requested | approved | paid | rejected
+  status       String    @default("requested")
+  reference    String?
+  note         String?
+  requestedAt  DateTime  @default(now())
+  resolvedAt   DateTime?
+
+  instructor User @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  @@index([instructorId, status])
+}
+
+/// "Studio bashke", kapitulli 11. Nje postim i vogel qe e ben platformen pjese
+/// te dites, jo nje faqe qe hapet nje here ne jave.
+model StudyTogether {
+  id        String   @id @default(cuid())
+  authorId  String
+  courseId  String?
+  title     String
+  place     String
+  startsAt  DateTime
+  capacity  Int?
+  note      String?
+  createdAt DateTime @default(now())
+
+  author  User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  course  Course?             @relation(fields: [courseId], references: [id])
+  joiners StudyTogetherJoin[]
+
+  @@index([startsAt])
+}
+
+model StudyTogetherJoin {
+  id        String   @id @default(cuid())
+  sessionId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  session StudyTogether @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId])
+}
+
+/// Cilesimet e njoftimeve, nje rresht per lloj.
+model NotificationSetting {
+  id       String  @id @default(cuid())
+  userId   String
+  /// social | academic | career | groups | materials | xp | pro | system
+  category String
+  inApp    Boolean @default(true)
+  push     Boolean @default(false)
+  email    Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category])
+}
+
+/// Gjurma e vendimeve, kapitulli 15. Cdo veprim moderimi ose admini shkruhet
+/// ketu me moderatorin, arsyen dhe kohen. Pa te, "kush e fshiu" nuk pergjigjet.
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  /// remove | restore | warn | suspend | verify | reject | payout | plan | ad
+  action     String
+  targetType String
+  targetId   String
+  reason     String?
+  /// JSON me gjendjen e vjeter, kur ka rendesi.
+  before     String?
+  createdAt  DateTime @default(now())
+
+  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+
+  @@index([actorId, createdAt])
+  @@index([targetType, targetId])
+}
+
+/// Bajtat e ngarkuar nga studentet.
+///
+/// Rreshti mban vetem metadata: bajtat rrine jashte `public/`, te `lib/storage`.
+/// Kjo eshte arsyeja qe skedari merret vetem nga `/api/media/[id]`, e cila e
+/// kontrollon lejen, dhe kurre nga nje adrese e hamendesuar.
+model MediaAsset {
+  id         String   @id
+  ownerId    String
+  /// image | video
+  kind       String
+  extension  String
+  mime       String
+  bytes      Int
+  width      Int?
+  height     Int?
+  durationMs Int?
+  createdAt  DateTime @default(now())
+
+  owner  User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  claims MediaUpload[]
+
+  @@index([ownerId, createdAt])
+}
+
+/// Kush e ka ngarkuar vertet nje skedar.
+///
+/// Skedaret ruhen sipas permbajtjes: dy studente qe ngarkojne te njejten foto
+/// marrin te njejtin id. Nje pronar i vetem te `MediaAsset` do te thoshte se i
+/// dyti nuk e vendos dot ate foto as si avatar, sepse kontrolli i pronesise e
+/// gjen te parin. Prandaj pronesia matet ketu: nje rresht per secilin qe e
+/// ngarkoi, dhe id-ja e skedarit eshte vete deshmia se i kishte bajtat.
+model MediaUpload {
+  assetId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  asset MediaAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([assetId, userId])
+  @@index([userId, createdAt])
+}
+
+/// Dhoma e zerit: hapesire e drejtperdrejte ku studentet mblidhen te flasin.
+///
+/// Gjendja e dhomes rri ne bazen e te dhenave, jo ne memorie te serverit: nje
+/// rinisje nuk duhet ta zhduke nje sesion studimi qe eshte duke ndodhur.
+model VoiceRoom {
+  id              String  @id @default(cuid())
+  hostId          String
+  title           String
+  description     String?
+  /// open | password
+  access          String  @default("open")
+  /// Hash i fjalekalimit. Fjalekalimi i paster nuk ruhet dhe nuk kthehet kurre.
+  passwordHash    String?
+  /// faculty | university | followers | global
+  scope           String  @default("faculty")
+  facultyId       String?
+  universityId    String?
+  /// live | scheduled | ended
+  status          String  @default("live")
+  maxParticipants Int     @default(25)
+
+  startsAt  DateTime  @default(now())
+  endedAt   DateTime?
+  createdAt DateTime  @default(now())
+
+  host         User               @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  faculty      Faculty?           @relation(fields: [facultyId], references: [id])
+  participants VoiceParticipant[]
+  invites      VoiceInvite[]
+  messages     VoiceMessage[]
+
+  @@index([status, startsAt])
+  @@index([hostId, status])
+}
+
+/// Kush eshte brenda dhe me cfare roli.
+model VoiceParticipant {
+  id         String    @id @default(cuid())
+  roomId     String
+  userId     String
+  /// host | moderator | speaker | listener
+  role       String    @default("listener")
+  isMuted    Boolean   @default(true)
+  /// A ka ngritur doren per te folur.
+  handRaised Boolean   @default(false)
+  joinedAt   DateTime  @default(now())
+  leftAt     DateTime?
+  /// Rrahja e fundit brenda dhomes. Pa te, nje skede e mbyllur do te mbetej brenda.
+  seenAt     DateTime  @default(now())
+  /// Pritesi ose moderatori e largoi. Nuk hyn dot perseri ne te njejten dhome.
+  removedAt  DateTime?
+
+  room VoiceRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([roomId, leftAt])
+}
+
+/// Biseda me shkrim brenda dhomes, qe askush te mos dale per te shkruar nje rresht.
+model VoiceMessage {
+  id        String   @id @default(cuid())
+  roomId    String
+  userId    String
+  text      String
+  /// Foto, video ose skedare, si JSON (`MediaRef[]`), te rindertuara nga baza.
+  media     String   @default("[]")
+  createdAt DateTime @default(now())
+
+  room VoiceRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([roomId, createdAt])
+}
+
+/// Pro e dhuruar nga admini, me ore. Pro vete rri te `User.proEarnedUntil`; ky eshte
+/// historiku: kush e dha, kujt, sa ore dhe deri kur. `revokedAt` kur admini e ndal.
+model ProGrant {
+  id          String    @id @default(cuid())
+  userId      String
+  grantedById String
+  hours       Int
+  until       DateTime
+  reason      String?
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  user      User @relation("ProGrantsReceived", fields: [userId], references: [id], onDelete: Cascade)
+  grantedBy User @relation("ProGrantsGiven", fields: [grantedById], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+/// Raporti i nje testuesi: problem me platformen ose sugjerim. Faqja, pajisja dhe
+/// gabimet e fundit te JavaScript-it kapen vete. `source` = user | bot.
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  /// bug | suggestion
+  kind      String
+  message   String
+  /// Adresa ku ishte studenti kur shkroi.
+  path      String
+  /// Pajisja: shfletuesi, madhesia e ekranit, gjuha, tema, si JSON.
+  device    String   @default("{}")
+  /// Gabimet e fundit te JavaScript-it ne ate faqe, si JSON.
+  errors    String   @default("[]")
+  media     String   @default("[]")
+  /// new | seen | resolved
+  status    String   @default("new")
+  source    String   @default("user")
+  adminNote String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([kind, createdAt])
+}
+
+/// Ftesa ne nje dhome zeri. Kur e dergon pritesi ose moderatori (`grantsEntry`), i ftuari
+/// hyn edhe pa fjalekalim dhe jashte rrethit te dhomes; perndryshe eshte vetem njoftim.
+model VoiceInvite {
+  id          String   @id @default(cuid())
+  roomId      String
+  userId      String
+  invitedById String
+  grantsEntry Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  room VoiceRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([userId])
+}
+
+/// Sinjalet WebRTC mes pjesemarresve te nje dhome: oferta, pergjigja dhe kandidatet ICE.
+/// Zeri vete shkon drejt mes shfletuesve; serveri vetem i con keto mesazhe te shkurtra
+/// dhe i fshin sapo lexohen.
+model VoiceSignal {
+  id        String   @id @default(cuid())
+  roomId    String
+  fromId    String
+  toId      String
+  /// offer | answer | candidate
+  kind      String
+  payload   String
+  createdAt DateTime @default(now())
+
+  @@index([roomId, toId, createdAt])
+}
+
+/// Tregu: libra, shënime, pajisje, dhoma, shërbime mes studentëve.
+model MarketListing {
+  id           String   @id @default(cuid())
+  sellerId     String
+  title        String
+  description  String
+  /// null do të thotë falas.
+  priceCents   Int?
+  /// books | notes | electronics | housing | furniture | services | other
+  category     String
+  /// new | like_new | used
+  condition    String   @default("used")
+  city         String
+  media        String   @default("[]")
+  /// active | sold | removed
+  status       String   @default("active")
+  universityId String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+
+  seller User @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  @@index([status, category, createdAt])
+  @@index([sellerId, status])
+}
+
+// ---------------------------------------------------------------------------
+// Gara: Quiz Battle, pikët e universiteteve, arritjet
+//
+// Çdo pikë e garës kalon nga `CompetitionPoint`, një regjistër ku e njëjta
+// (student, burim, id) shkruhet vetëm një herë. Renditjet llogariten prej tij te
+// serveri, kurrë nga klienti.
+// ---------------------------------------------------------------------------
+
+model QuizQuestion {
+  id           String   @id @default(cuid())
+  /// Kategoria, nga `lib/competition/categories.ts`.
+  category     String
+  /// 1 e lehtë, 2 mesatare, 3 e vështirë.
+  difficulty   Int      @default(2)
+  prompt       String
+  /// JSON: katër alternativat.
+  options      String
+  correctIndex Int
+  explanation  String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  @@index([category, active])
+}
+
+model Battle {
+  id           String    @id @default(cuid())
+  /// challenge | random | daily | event
+  mode         String
+  category     String
+  /// JSON: id-të e pyetjeve, në rendin që i sheh çdo lojtar.
+  questionIds  String
+  timeLimitSec Int       @default(100)
+  /// pending (pret pranimin) | waiting (pret kundërshtar) | active | finished | declined | expired
+  status       String    @default("active")
+  challengerId String?
+  opponentId   String?
+  winnerId     String?
+  /// Kuizi ditor: një betejë për ditë, me datën e Kosovës si çelës.
+  dailyKey     String?   @unique
+  eventId      String?
+  createdAt    DateTime  @default(now())
+  acceptedAt   DateTime?
+  finishedAt   DateTime?
+  expiresAt    DateTime
+
+  challenger User?         @relation("BattleChallenger", fields: [challengerId], references: [id], onDelete: SetNull)
+  opponent   User?         @relation("BattleOpponent", fields: [opponentId], references: [id], onDelete: SetNull)
+  event      TeamEvent?    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  entries    BattleEntry[]
+
+  @@index([mode, status, category])
+  @@index([challengerId, createdAt])
+  @@index([opponentId, createdAt])
+  @@index([eventId])
+}
+
+/// Loja e një studenti brenda një beteje. Një hyrje për studentin për betejë.
+model BattleEntry {
+  id           String    @id @default(cuid())
+  battleId     String
+  userId       String
+  /// Universiteti në çastin e lojës, vetëm për studentin e verifikuar.
+  universityId String?
+  startedAt    DateTime  @default(now())
+  finishedAt   DateTime?
+  correct      Int       @default(0)
+  timeMs       Int       @default(0)
+
+  battle  Battle         @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers BattleAnswer[]
+
+  @@unique([battleId, userId])
+  @@index([userId, finishedAt])
+}
+
+model BattleAnswer {
+  id         String   @id @default(cuid())
+  entryId    String
+  questionId String
+  choice     Int
+  correct    Boolean
+  answeredAt DateTime @default(now())
+
+  entry BattleEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@unique([entryId, questionId])
+}
+
+/// Regjistri i pikëve. Unik sipas studentit, burimit dhe id-së: asgjë nuk numërohet dy herë.
+model CompetitionPoint {
+  id           String    @id @default(cuid())
+  userId       String
+  /// Vetëm studenti i verifikuar i jep pikë universitetit.
+  universityId String?
+  facultyId    String?
+  /// battle_complete | battle_win | daily_quiz | event_quiz | material_approved | answer_accepted | post_useful
+  source       String
+  sourceId     String
+  points       Int
+  createdAt    DateTime  @default(now())
+  /// Përmbajtja e fshirë ose e moderuar nuk vazhdon të japë pikë.
+  revokedAt    DateTime?
+
+  @@unique([userId, source, sourceId])
+  @@index([universityId, createdAt])
+  @@index([userId, createdAt])
+  @@index([source, sourceId])
+  @@index([createdAt])
+}
+
+/// Statistikat e lojtarit, të mbajtura në transaksion me çdo betejë.
+model CompetitorStats {
+  userId        String   @id
+  rating        Int      @default(1000)
+  battles       Int      @default(0)
+  wins          Int      @default(0)
+  dailyDone     Int      @default(0)
+  streak        Int      @default(0)
+  /// Dita e fundit me aktivitet gare, si datë e Kosovës.
+  lastActiveDay String?
+  updatedAt     DateTime @updatedAt
+
+  @@index([wins])
+}
+
+/// Ngjarjet e garës: «Arta mundi Petritin», «UBT u ngjit në vendin e dytë».
+model CompetitionEvent {
+  id           String   @id @default(cuid())
+  /// battle_won | achievement | university_rank | daily_milestone | team_event | weekly_result | university_milestone
+  kind         String
+  actorId      String?
+  universityId String?
+  payload      String   @default("{}")
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([universityId, createdAt])
+}
+
+/// «UP kundër UBT»: ngjarje e përkohshme mes dy universiteteve.
+model TeamEvent {
+  id            String    @id @default(cuid())
+  title         String
+  category      String
+  universityAId String
+  universityBId String
+  startsAt      DateTime
+  endsAt        DateTime
+  scoreA        Int       @default(0)
+  scoreB        Int       @default(0)
+  winnerId      String?
+  finalizedAt   DateTime?
+  createdById   String
+  createdAt     DateTime  @default(now())
+
+  universityA University @relation("TeamEventA", fields: [universityAId], references: [id], onDelete: Cascade)
+  universityB University @relation("TeamEventB", fields: [universityBId], references: [id], onDelete: Cascade)
+  battles     Battle[]
+
+  @@index([endsAt])
+}
+
+/// Java e mbyllur, me renditjen përfundimtare si JSON. Mbyllet një herë.
+model CompetitionWeek {
+  weekKey     String   @id
+  startsAt    DateTime
+  endsAt      DateTime
+  results     String
+  finalizedAt DateTime @default(now())
+}
+
+/// Renditja e universiteteve në fund të ditës, për të parë lëvizjet e mëdha.
+model RankSnapshot {
+  dayKey  String   @id
+  ranking String
+  takenAt DateTime @default(now())
+}
+
+model UniversityAchievement {
+  id           String   @id @default(cuid())
+  universityId String
+  /// weekly_champion | quiz_champions | top_contributor | most_active | event_winner
+  code         String
+  /// Java (2026-W39) ose id-ja e ngjarjes.
+  period       String
+  awardedAt    DateTime @default(now())
+
+  university University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+
+  @@unique([code, period])
+  @@index([universityId, awardedAt])
+}
+
+/// Rivendosja e password-it. Ruhet vetëm hash-i i lidhjes, që edhe kush lexon
+/// bazën të mos hyjë dot në llogarinë e dikujt. Lidhja vlen një herë dhe skadon.
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// Çfarë kërkon studenti te Karriera: shpalljet që hap dhe filtrat që përdor.
+/// Ushqen «Mundësi për ty». Mbahen 90 ditë; nuk shfaqen askund si histori.
+model JobSignal {
+  id        String   @id @default(cuid())
+  userId    String
+  jobId     String?
+  field     String?
+  type      String?
+  /// view | filter
+  kind      String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }

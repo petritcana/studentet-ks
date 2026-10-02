@@ -1,204 +1,96 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Users } from "lucide-react";
-import { PageHeader } from "@/components/layout/page-header";
-import { Avatar } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Suspense } from "react";
+import { GroupChatDialog } from "@/components/messages/group-chat-dialog";
+import { NewChatDialog } from "@/components/messages/new-chat-dialog";
+import { PeopleSearch } from "@/components/messages/people-search";
+import { ConversationRow } from "@/components/messages/conversation-list";
 import { EmptyState } from "@/components/shared/empty-state";
-import { db } from "@/lib/db";
+import { getConversations, getGroupCandidates } from "@/lib/queries/messages";
 import { requireUser } from "@/lib/session";
-import { timeAgoShort } from "@/lib/format";
-import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Mesazhe",
-  description: "Bisedat e tua me shokët dhe kërkesat nga të tjerët.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("messages");
+  return { title: t("title") };
+}
 
 export const dynamic = "force-dynamic";
 
 export default async function MessagesPage() {
-  const user = await requireUser();
+  const [me, locale, t, te] = await Promise.all([
+    requireUser(),
+    getLocale(),
+    getTranslations("messages"),
+    getTranslations("empty"),
+  ]);
+  const kindLabels = { voice: t("voiceMessage"), media: t("mediaMessage"), call: t("callMessage"), post: t("postMessage") };
 
-  const memberships = await db.conversationMember.findMany({
-    where: { userId: user.id },
-    select: {
-      lastReadAt: true,
-      isAccepted: true,
-      conversation: {
-        select: {
-          id: true,
-          type: true,
-          title: true,
-          updatedAt: true,
-          members: {
-            where: { userId: { not: user.id } },
-            select: {
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  username: true,
-                  avatar: true,
-                  isVerified: true,
-                },
-              },
-            },
-          },
-          messages: {
-            orderBy: { createdAt: "desc" },
-            take: 1,
-            select: { text: true, createdAt: true, authorId: true },
-          },
-        },
-      },
-    },
-  });
-
-  const sorted = memberships
-    .filter((item) => item.conversation.members.length > 0)
-    .sort(
-      (a, b) =>
-        b.conversation.updatedAt.getTime() - a.conversation.updatedAt.getTime(),
-    );
-
-  const accepted = sorted.filter((item) => item.isAccepted);
-  const requests = sorted.filter((item) => !item.isAccepted);
+  const [{ accepted, requests }, candidates] = await Promise.all([
+    getConversations(me.id, locale),
+    getGroupCandidates(me.id),
+  ]);
 
   return (
-    <div className="flex flex-col gap-5">
-      <PageHeader
-        title="Mesazhe"
-        description="Me shokët biseda është e hapur. Nga të tjerët vjen si kërkesë."
-      />
-
-      {sorted.length === 0 ? (
-        <EmptyState
-          illustration="messages"
-          title="Ende s'ke biseda"
-          description="Sapo dikush që e ndjek të ndjek edhe ty, biseda hapet vetë."
-          action={
-            <Button asChild>
-              <Link href="/kampusi">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5">
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-col gap-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-text">{t("title")}</h1>
+          <p className="measure text-sm text-text-muted">{t("subtitle")}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Suspense fallback={null}>
+            <NewChatDialog />
+          </Suspense>
+          <GroupChatDialog
+            candidates={candidates}
+            trigger={
+              <Button variant="secondary" size="sm">
                 <Users />
-                Gjej njerëz
-              </Link>
-            </Button>
-          }
-        />
-      ) : (
-        <div className="flex flex-col gap-5">
-          {requests.length > 0 ? (
-            <section className="flex flex-col gap-2">
-              <h2 className="text-sm font-semibold text-text">
-                Kërkesa ({requests.length})
-              </h2>
-              <Card className="divide-y divide-border">
-                {requests.map((item) => (
-                  <ConversationRow
-                    key={item.conversation.id}
-                    conversation={item.conversation}
-                    lastReadAt={item.lastReadAt}
-                    userId={user.id}
-                    isRequest
-                  />
-                ))}
-              </Card>
-            </section>
-          ) : null}
-
-          <section className="flex flex-col gap-2">
-            <h2 className="text-sm font-semibold text-text">Bisedat</h2>
-            {accepted.length === 0 ? (
-              <EmptyState
-                illustration="messages"
-                compact
-                title="Asnjë bisedë e hapur"
-                description="Bëhu shok me dikë dhe DM-ja hapet pa kufizime."
-              />
-            ) : (
-              <Card className="divide-y divide-border">
-                {accepted.map((item) => (
-                  <ConversationRow
-                    key={item.conversation.id}
-                    conversation={item.conversation}
-                    lastReadAt={item.lastReadAt}
-                    userId={user.id}
-                  />
-                ))}
-              </Card>
-            )}
-          </section>
+                {t("newGroup")}
+              </Button>
+            }
+          />
         </div>
-      )}
-    </div>
-  );
-}
+      </header>
 
-function ConversationRow({
-  conversation,
-  lastReadAt,
-  userId,
-  isRequest = false,
-}: {
-  conversation: {
-    id: string;
-    type: string;
-    title: string | null;
-    members: {
-      user: {
-        id: string;
-        name: string;
-        username: string;
-        avatar: string | null;
-        isVerified: boolean;
-      };
-    }[];
-    messages: { text: string; createdAt: Date; authorId: string }[];
-  };
-  lastReadAt: Date;
-  userId: string;
-  isRequest?: boolean;
-}) {
-  const other = conversation.members[0].user;
-  const last = conversation.messages[0];
-  const unread = Boolean(last && last.authorId !== userId && last.createdAt > lastReadAt);
+      {/* Kërkimi i njerëzve: shkruaj emrin dhe hap bisedën, pa kaluar nga profili. */}
+      <PeopleSearch showSuggestions={false} />
 
-  return (
-    <Link
-      href={`/mesazhe/${conversation.id}`}
-      className={cn(
-        "flex items-center gap-3 p-3 transition-colors duration-150 hover:bg-surface-2",
-        unread && "bg-brand-500/6",
-      )}
-    >
-      <Avatar name={other.name} src={other.avatar} verified={other.isVerified} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-baseline gap-2">
-          <span
-            className={cn(
-              "truncate text-sm text-text",
-              unread ? "font-semibold" : "font-medium",
-            )}
-          >
-            {conversation.title ?? other.name}
-          </span>
-          {isRequest ? <Badge variant="warning">Kërkesë</Badge> : null}
-          {last ? (
-            <span className="tabular ml-auto shrink-0 text-xs text-text-muted">
-              {timeAgoShort(last.createdAt)}
-            </span>
-          ) : null}
-        </div>
-        <span className="truncate text-xs text-text-muted">
-          {last
-            ? `${last.authorId === userId ? "Ti: " : ""}${last.text}`
-            : "Ende asnjë mesazh. Nis ti."}
-        </span>
+      {/* Te kompjuteri lista rri në kolonën majtas; këtu mbetet ftesa për të zgjedhur. */}
+      <div className="hidden lg:block" data-pick-conversation>
+        <EmptyState illustration="messages" title={t("pickTitle")} description={t("pickBody")} />
       </div>
-      {unread ? <span className="size-2 shrink-0 rounded-full bg-brand-500" aria-label="E palexuar" /> : null}
-    </Link>
+
+      <div className="flex flex-col gap-5 lg:hidden">
+        {requests.length > 0 ? (
+          <section className="flex flex-col gap-2">
+            <h2 className="text-sm font-semibold text-text">
+              {t("requests", { count: requests.length })}
+            </h2>
+            <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface">
+              {requests.map((item) => (
+                <ConversationRow key={item.id} item={item} youLabel={t("you")} requestLabel={t("request")} kindLabels={kindLabels} mutedLabel={t("mutedBadge")} />
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        <section className="flex flex-col gap-2">
+          <h2 className="text-sm font-semibold text-text">{t("conversations")}</h2>
+
+          {accepted.length === 0 ? (
+            <EmptyState illustration="messages" title={te("messages.title")} description={t("empty")} />
+          ) : (
+            <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface shadow-soft">
+              {accepted.map((item) => (
+                <ConversationRow key={item.id} item={item} youLabel={t("you")} kindLabels={kindLabels} mutedLabel={t("mutedBadge")} />
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </div>
   );
 }

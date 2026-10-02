@@ -1,234 +1,253 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db, parseList, serializeList } from "@/lib/db";
-import { signOut } from "@/lib/auth";
-import { requireUser } from "@/lib/session";
-import { INTERESTS } from "@/lib/constants";
+import { requireAccount, requireUser } from "@/lib/session";
+import { INTEREST_KEYS } from "@/lib/types";
+import { FOLLOW_PENDING } from "@/lib/follow";
+import { isGender } from "@/lib/default-avatar";
 import { fail, succeed, type ActionState } from "./types";
 
-const profileSchema = z.object({
-  name: z.string().trim().min(3, "Shkruaj emrin dhe mbiemrin.").max(60),
-  username: z
-    .string()
-    .trim()
-    .min(3, "Emri i përdoruesit është shumë i shkurtër.")
-    .max(30)
-    .regex(/^[a-z0-9._]+$/, "Lejohen vetëm shkronja të vogla, numra, pikë dhe nënvijë."),
-  bio: z.string().trim().max(160, "Bio-ja duhet të jetë nën 160 shkronja.").optional(),
-  city: z.string().trim().max(40).optional(),
-  highSchool: z.string().trim().max(120).optional(),
+const preferencesSchema = z.object({
+  pushEnabled: z.boolean(),
+  emailDigest: z.boolean(),
+  showReadReceipts: z.boolean(),
+  analyticsConsent: z.boolean(),
+  showOnlineStatus: z.boolean(),
+  showLastActive: z.boolean(),
+  isPrivate: z.boolean(),
+  autoAcceptFollows: z.boolean(),
 });
 
-export async function updateProfile(input: {
-  name: string;
-  username: string;
-  bio?: string;
-  city?: string;
-  highSchool?: string;
+export async function savePreferences(input: {
+  pushEnabled: boolean;
+  emailDigest: boolean;
+  showReadReceipts: boolean;
+  analyticsConsent: boolean;
+  showOnlineStatus: boolean;
+  showLastActive: boolean;
+  isPrivate: boolean;
+  autoAcceptFollows: boolean;
 }): Promise<ActionState> {
   const me = await requireUser();
-  const parsed = profileSchema.safeParse(input);
-  if (!parsed.success) {
-    const fieldErrors: Record<string, string> = {};
-    for (const issue of parsed.error.issues) {
-      fieldErrors[String(issue.path[0] ?? "form")] = issue.message;
-    }
-    return fail("Rregullo fushat e shënuara.", fieldErrors);
+
+  const parsed = preferencesSchema.safeParse(input);
+  if (!parsed.success) return fail("errors.generic");
+
+  const before = await db.user.findUnique({ where: { id: me.id }, select: { isPrivate: true } });
+  await db.user.update({ where: { id: me.id }, data: parsed.data });
+
+  // Kalimi nga privat në publik nuk i lë njerëzit të presin: kërkesat në pritje
+  // pranohen vetë, sepse profili tani hapet për këdo.
+  if (before?.isPrivate && !parsed.data.isPrivate) {
+    await acceptAllFollowRequests(me.id);
   }
 
-  if (parsed.data.username !== me.username) {
-    const taken = await db.user.findUnique({ where: { username: parsed.data.username } });
-    if (taken) {
-      return fail("Ky emër përdoruesi është zënë.", {
-        username: "Provo një tjetër.",
-      });
-    }
-  }
-
-  await db.user.update({
-    where: { id: me.id },
-    data: {
-      name: parsed.data.name,
-      username: parsed.data.username,
-      bio: parsed.data.bio || null,
-      city: parsed.data.city || null,
-      highSchool: parsed.data.highSchool || null,
-    },
-  });
-
   revalidatePath("/cilesimet");
-  revalidatePath("/une");
-  return succeed("E ruajtëm.");
+  return succeed("settings.saved");
 }
 
-export async function updateInterests(interests: string[]): Promise<ActionState> {
+export async function saveUsername(raw: string): Promise<ActionState> {
   const me = await requireUser();
-  const valid = interests.filter((item) => (INTERESTS as readonly string[]).includes(item));
-  await db.user.update({
-    where: { id: me.id },
-    data: { interests: serializeList(valid) },
-  });
-  revalidatePath("/cilesimet");
-  return succeed("E ruajtëm.");
-}
 
-export async function updateCourses(courseIds: string[]): Promise<ActionState> {
-  const me = await requireUser();
-  const unique = [...new Set(courseIds)].slice(0, 14);
-  const academicYear = "2025/26";
+  const username = raw.trim().toLowerCase();
+  if (!/^[a-z0-9_.]{3,24}$/.test(username)) return fail("errors.generic");
 
-  const courses = await db.course.findMany({
-    where: { id: { in: unique } },
+  const taken = await db.user.findFirst({
+    where: { username, NOT: { id: me.id } },
     select: { id: true },
   });
+  if (taken) return fail("settings.usernameTaken");
 
-  await db.enrollment.deleteMany({ where: { userId: me.id, academicYear } });
-  await db.enrollment.createMany({
-    data: courses.map((course) => ({
-      userId: me.id,
-      courseId: course.id,
-      academicYear,
-    })),
-  });
-
-  for (const course of courses) {
-    const group = await db.group.findFirst({
-      where: { courseId: course.id, type: "course" },
-      select: { id: true },
-    });
-    if (group) {
-      await db.groupMember.upsert({
-        where: { groupId_userId: { groupId: group.id, userId: me.id } },
-        create: { groupId: group.id, userId: me.id },
-        update: {},
-      });
-    }
-  }
+  await db.user.update({ where: { id: me.id }, data: { username } });
 
   revalidatePath("/cilesimet");
   revalidatePath("/une");
-  revalidatePath("/materialet");
-  return succeed("Orari u rifreskua.");
-}
-
-export async function updatePreferences(input: {
-  showReadReceipts?: boolean;
-  pushEnabled?: boolean;
-  analyticsConsent?: boolean;
-}): Promise<ActionState> {
-  const me = await requireUser();
-  await db.user.update({
-    where: { id: me.id },
-    data: {
-      ...(input.showReadReceipts !== undefined
-        ? { showReadReceipts: input.showReadReceipts }
-        : {}),
-      ...(input.pushEnabled !== undefined ? { pushEnabled: input.pushEnabled } : {}),
-      ...(input.analyticsConsent !== undefined
-        ? { analyticsConsent: input.analyticsConsent }
-        : {}),
-    },
-  });
-  revalidatePath("/cilesimet");
-  return succeed("E ruajtëm.");
+  return succeed("settings.saved");
 }
 
 /**
- * E drejta e eksportit sipas Ligjit Nr. 06/L-082. Kthen gjithçka që mban
- * platforma për këtë llogari, pa të dhëna të përdoruesve të tjerë.
+ * Gjinia e avatarit të parazgjedhur: djalë, vajzë, ose pa thënë (null). Nuk
+ * përdoret për asgjë tjetër, as nuk shfaqet te profili.
+ */
+export async function saveGender(value: string | null): Promise<ActionState> {
+  const me = await requireAccount();
+  if (value !== null && !isGender(value)) return fail("errors.generic");
+
+  await db.user.update({ where: { id: me.id }, data: { gender: value } });
+
+  revalidatePath("/", "layout");
+  return succeed("settings.saved");
+}
+
+/** Fotoja e profilit dhe kopertina. */
+export async function saveProfileImages(input: {
+  avatarId?: string | null;
+  coverId?: string | null;
+}): Promise<ActionState> {
+  // Fotoja e profilit vendoset edhe te hapi i hyrjes, para se llogaria të mbyllet.
+  const me = await requireAccount();
+
+  const data: { avatar?: string | null; cover?: string | null } = {};
+
+  for (const [field, raw] of [
+    ["avatar", input.avatarId],
+    ["cover", input.coverId],
+  ] as const) {
+    if (raw === undefined) continue;
+
+    if (raw === null) {
+      data[field] = null;
+      continue;
+    }
+
+    // Vetëm skedarë që ekzistojnë vërtet dhe që i ka ngarkuar ky përdorues.
+    const asset = await db.mediaAsset.findFirst({
+      where: { id: raw, kind: "image", claims: { some: { userId: me.id } } },
+      select: { id: true },
+    });
+    if (!asset) return fail("errors.generic");
+
+    data[field] = `/api/media/${asset.id}`;
+  }
+
+  if (Object.keys(data).length === 0) return succeed();
+
+  await db.user.update({ where: { id: me.id }, data });
+
+  revalidatePath("/cilesimet");
+  revalidatePath(`/u/${me.username}`);
+  revalidatePath("/une");
+  return succeed("settings.saved");
+}
+
+/** Bio-ja. E shkruan studenti, kurrë e gjeneruar. */
+export async function saveBio(raw: string): Promise<ActionState> {
+  const me = await requireUser();
+
+  const bio = raw.trim().slice(0, 250);
+  await db.user.update({ where: { id: me.id }, data: { bio: bio || null } });
+
+  revalidatePath("/cilesimet");
+  revalidatePath(`/u/${me.username}`);
+  return succeed("settings.saved");
+}
+
+export async function saveMyInterests(interests: string[]): Promise<ActionState> {
+  const me = await requireUser();
+
+  const clean = interests.filter((item) =>
+    (INTEREST_KEYS as readonly string[]).includes(item),
+  );
+
+  await db.user.update({ where: { id: me.id }, data: { interests: serializeList(clean) } });
+
+  revalidatePath("/cilesimet");
+  return succeed("settings.saved");
+}
+
+/**
+ * Eksporti i të dhënave.
+ *
+ * E drejta sipas Ligjit Nr. 06/L-082 ushtrohet vetë, pa e shkruar askush. Dalin
+ * vetëm të dhënat e vetë përdoruesit: mesazhet e të tjerëve nuk janë të tijat.
  */
 export async function exportMyData(): Promise<ActionState & { payload?: string }> {
   const me = await requireUser();
 
-  const [user, posts, comments, materials, answers, questions, bookmarks, follows, events] =
-    await Promise.all([
-      db.user.findUnique({
-        where: { id: me.id },
-        select: {
-          email: true,
-          username: true,
-          name: true,
-          bio: true,
-          city: true,
-          highSchool: true,
-          year: true,
-          level: true,
-          xp: true,
-          dailyStreak: true,
-          interests: true,
-          createdAt: true,
-          university: { select: { name: true } },
-          faculty: { select: { name: true } },
-          department: { select: { name: true } },
-        },
-      }),
-      db.post.findMany({
-        where: { authorId: me.id },
-        select: { text: true, type: true, createdAt: true, isAnonymous: true },
-      }),
-      db.comment.findMany({
-        where: { authorId: me.id },
-        select: { text: true, createdAt: true },
-      }),
-      db.material.findMany({
-        where: { uploaderId: me.id },
-        select: { title: true, type: true, createdAt: true, downloads: true },
-      }),
-      db.answer.findMany({
-        where: { authorId: me.id },
-        select: { text: true, createdAt: true, votes: true },
-      }),
-      db.question.findMany({
-        where: { authorId: me.id },
-        select: { title: true, text: true, createdAt: true },
-      }),
-      db.bookmark.findMany({
-        where: { userId: me.id },
-        select: { targetType: true, targetId: true, createdAt: true },
-      }),
-      db.follow.findMany({
-        where: { followerId: me.id },
-        select: { following: { select: { username: true } }, createdAt: true },
-      }),
-      db.rsvp.findMany({
-        where: { userId: me.id },
-        select: { status: true, event: { select: { title: true, date: true } } },
-      }),
-    ]);
+  const [user, posts, materials, answers, notifications] = await Promise.all([
+    db.user.findUnique({
+      where: { id: me.id },
+      select: {
+        name: true,
+        username: true,
+        email: true,
+        bio: true,
+        city: true,
+        highSchool: true,
+        year: true,
+        level: true,
+        interests: true,
+        xpContribution: true,
+        xpActivity: true,
+        dailyStreak: true,
+        createdAt: true,
+      },
+    }),
+    db.post.findMany({
+      where: { authorId: me.id },
+      select: { text: true, type: true, scope: true, createdAt: true },
+    }),
+    db.material.findMany({
+      where: { uploaderId: me.id },
+      select: { title: true, type: true, downloads: true, createdAt: true },
+    }),
+    db.answer.findMany({
+      where: { authorId: me.id },
+      select: { text: true, votes: true, createdAt: true },
+    }),
+    db.notification.count({ where: { userId: me.id } }),
+  ]);
 
-  const payload = {
-    eksportuarMe: new Date().toISOString(),
-    profili: user ? { ...user, interests: parseList(user.interests) } : null,
-    postimet: posts,
-    komentet: comments,
-    materialet: materials,
-    pergjigjet: answers,
-    pyetjet: questions,
-    ruajtjet: bookmarks,
-    ndjekjet: follows.map((item) => ({
-      perdoruesi: item.following.username,
-      data: item.createdAt,
-    })),
-    eventet: events,
-  };
+  const payload = JSON.stringify(
+    {
+      exportedAt: new Date().toISOString(),
+      profile: user ? { ...user, interests: parseList(user.interests) } : null,
+      posts,
+      materials,
+      answers,
+      notificationCount: notifications,
+    },
+    null,
+    2,
+  );
 
-  return { ...succeed("Eksporti u përgatit."), payload: JSON.stringify(payload, null, 2) };
+  return { ...succeed("settings.exported"), payload };
 }
 
-/**
- * Fshirja e llogarisë. Përmbajtja e lidhur bie me cascade, prandaj nuk mbetet
- * gjurmë personale. Kryhet menjëherë, brenda afatit ligjor prej 30 ditësh.
- */
+/** Fshirja e llogarisë. Kaskada e Prisma-s merr me vetë gjithçka të lidhur. */
 export async function deleteMyAccount(confirmation: string): Promise<ActionState> {
   const me = await requireUser();
-  if (confirmation.trim().toLowerCase() !== "fshije") {
-    return fail("Shkruaj fjalën «fshije» për ta konfirmuar.");
-  }
+
+  const accepted = ["fshije", "delete"];
+  if (!accepted.includes(confirmation.trim().toLowerCase())) return fail("errors.generic");
 
   await db.user.delete({ where: { id: me.id } });
-  await signOut({ redirect: false });
-  redirect("/");
+
+  revalidatePath("/", "layout");
+  return succeed();
+}
+
+/** Kur profili bëhet publik, çdo kërkesë në pritje bëhet ndjekje. */
+async function acceptAllFollowRequests(userId: string) {
+  const pending = await db.follow.findMany({
+    where: { followingId: userId, status: FOLLOW_PENDING },
+    select: { followerId: true },
+  });
+  if (pending.length === 0) return;
+
+  await db.follow.updateMany({
+    where: { followingId: userId, status: FOLLOW_PENDING },
+    data: { status: "accepted" },
+  });
+
+  const requesterIds = pending.map((row) => row.followerId);
+  const reverse = await db.follow.findMany({
+    where: { followerId: userId, followingId: { in: requesterIds }, status: "accepted" },
+    select: { followingId: true },
+  });
+  const mutualIds = reverse.map((row) => row.followingId);
+  if (mutualIds.length > 0) {
+    await db.follow.updateMany({
+      where: { followingId: userId, followerId: { in: mutualIds } },
+      data: { isMutual: true },
+    });
+    await db.follow.updateMany({
+      where: { followerId: userId, followingId: { in: mutualIds } },
+      data: { isMutual: true },
+    });
+  }
+
+  await db.notification.deleteMany({ where: { userId, type: "follow_request" } });
 }

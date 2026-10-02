@@ -1,0 +1,3836 @@
+[
+ {
+  "nr": "1",
+  "head": "Antropologji dhe trashëgimi kulturore, BA Anthropology and cultural heritage, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "2",
+  "head": "Psikologji, BA Psychology, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Trashëgimi Kulturore, MA Cultural Heritage, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Filozofi, BA Philosophy, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Histori, BA History, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Sociologji, BA Sociology, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Punë Sociale, BA Social Work, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "8",
+  "head": "Shkencë Politike: a) Marrëdhënie Ndërkombëtare dhe Diplomaci b) Administrim Publik, BA Political Science: a) International Relations and Diplomacy b) Public Administration, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "9",
+  "head": "Psikologji Klinike dhe Komuniteti, MA Clinical and community psychology, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "10",
+  "head": "Psikologji Shkollore dhe Këshillim, MA School Psychology and Counseling, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "11",
+  "head": "Filozofi Politike, MA Political Philosophy, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "12",
+  "head": "Histori Koha e Re, MA History of Modern Time, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "45",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "13",
+  "head": "Arkivistika, MA Archivistic, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "14",
+  "head": "Sociologji, MA Sociology, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "15",
+  "head": "Marredhenie Nderkombetare dhe Diplomaci, MA International Relations and Diplomacy, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Matematikë, BSc Mathematics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "2",
+  "head": "Biologji molekulare, BSc Molecular Biology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Biologji, BSc Biology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "45",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "4",
+  "head": "Ekologji dhe Mbrojtje e Mjedisit, BSc Ecology and Environment Protection, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Kimi Inxhinierike, BSc Chemistry of Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Kimi Ushqimore, BSc Food Chemistry, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Matematikë Financiare në Banka dhe Sigurime, BSc Financial Mathematics for Banking and Insurances, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "45",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "8",
+  "head": "Shkencë Kompjuterike, BSc Computer Sciences, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "9",
+  "head": "Fizikë, BSc Physics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "10",
+  "head": "Gjeografi, BSc Geography, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "11",
+  "head": "Kimi, BSc Chemistry, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "12",
+  "head": "Biologji, MSc (me 2 specializime 1. Botanikë 2. Zoologji) Biology, MSc (with 2 specializations: 1. Botany, 2. Zoology)",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "13",
+  "head": "Shkencë Kompjuterike, MSc Computer Sciences, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "14",
+  "head": "Matematikë me zbatime, MSc Mathematics with applications, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "15",
+  "head": "Ekologji dhe Mbrojtje e Mjedisit, MSc Ecology and Environment Protection, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "16",
+  "head": "Shkenca e Materialeve, MSc Material Science, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "10",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "17",
+  "head": "Fizikë, MSc Physics, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "18",
+  "head": "Gjeografi, MSc Geography, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "19",
+  "head": "Kimi Analitike dhe Kimi Mjedisore, MSc Analytical Chemistry & Environmental Chemistry, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "15",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "20",
+  "head": "Kimi Organike, MSc Organic Chemistry, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "15",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "21",
+  "head": "Kimi, PhD Chemistry , PhD",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "5",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Letërsi Shqipe, BA Albanian Literature, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Gjuhë dhe Letërsi Angleze, BA English Language and Literature, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "120",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "3",
+  "head": "Gjuhë dhe Letërsi Frënge, BA French Language and Literature, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "35",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Gjuhë dhe Letërsi Gjermane, BA German Language and Literature, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "120",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "5",
+  "head": "Gazetari, BA Journalism, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "6",
+  "head": "Gjuhë Shqipe, BA Albanian Language, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Orientalistike, BA Orientalistics, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "30",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "8",
+  "head": "Gjuhe dhe Letersi Turke, BA Turkish Language and Literature, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "35",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "9",
+  "head": "Ballkanistikë Balkanistics",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "10",
+  "head": "Gazetari dhe Marrëdhënie me Publikun, MA ​Journalism and Public Relations, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "25",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "11",
+  "head": "Gjuhë dhe Letërsi Frënge, MA French Language and Literature, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "12",
+  "head": "Gjuhë dhe Letërsi Turke, MA Turkish Language and Literature, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "15",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "13",
+  "head": "Gjuhë Shqipe, MA Albanian Language, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "14",
+  "head": "Letërsi Shqipe, MA Albanian Literature, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "25",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "15",
+  "head": "Studime Kulturore Orientale, MA Oriental Cultural Studies, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "15",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "16",
+  "head": "Gjuhë dhe Letërsi Gjermane, MA German Language and Literature, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "17",
+  "head": "Gjermanishtja si Gjuhë e Huaj, MA German as a Foreign Language, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "15",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "18",
+  "head": "Letërsi Angleze, MA English Literature, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "19",
+  "head": "Gjuhë angleze (Program i Integruar i Gjuhësisë), MA English Language (Integrated programme in Linguistics), MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "20",
+  "head": "Gjuhesi, PhD Linguistics, PhD",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "5",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "21",
+  "head": "Letërsi, PhD Literature, PhD",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "5",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Juridik, LLB Law, LLB",
+  "campus": "Prishtinë",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "600",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "E Drejta Civile dhe Pronësore, LLM Civil and Property Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "E Drejta Ndërkombëtare, LLM International Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "35",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "E Drejta Kushtetuese Administrative, LLM Constitutional and Administrative Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "35",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "5",
+  "head": "E Drejta Penale, LLM Penal Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "6",
+  "head": "Të Drejtat e Njeriut, E Drejtë Penale Ndërkombëtare dhe Drejtësi Tranzicionale, LLM Human Rights, International Criminal Law and Transitional Justice, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "40",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "7",
+  "head": "E Drejta Financiare, LLM Financial Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "35",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "8",
+  "head": "Kontrata dhe e Drejta Komerciale, LLM Contracts and Commercial Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "9",
+  "head": "Studime të Avancuara Evropiane, LLM Advanced European Studies, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "25",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "1",
+  "head": "Ekonomi e Aplikuar dhe Menaxhment (në Gjuhën Angleze), BSc Applied Economics and Management (in English Language), BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "2",
+  "head": "Banka dhe Financa, BSc Banking and Accounting, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "300",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Ekonomiks, BSc Economics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "4",
+  "head": "Kontabilitet, BSc Accounting, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "220",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "5",
+  "head": "Marketing, BSc Marketing, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "6",
+  "head": "Menaxhment, BSc Management, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "250",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Banka dhe Financa, MSc Banking and Accounting, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "8",
+  "head": "Ekonomiks, MSc Economics, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "80",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "9",
+  "head": "Kontabilitet, MSc Accounting, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "80",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "10",
+  "head": "Marketing, MSc Marketing, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "11",
+  "head": "Menaxhment, MSc Management, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "120",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Gjeodezi, BSc Geodesy, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "2",
+  "head": "Inxhinieria e Ambientit, BSc Environmental Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "3",
+  "head": "Konstruktiv, BSc Construction, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "120",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Hidroteknike, BSc Hydrotechnics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Menaxhimi i Integruar i Resurseve Ujore, MSc Integrated Water Resource Management, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "6",
+  "head": "Gjeodezi, MSc Geodesy, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Konstruktiv, MSc Construction, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Elektroenergjetikë, BSc Power Systems, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Elektronikё, Automatikё dhe Robotikë, BSc Electronics, Automation and Robotics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "120",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "3",
+  "head": "Inxhineri Kompjuterike dhe Softuerike, BSc Computer and Software Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "250",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "4",
+  "head": "Teknologjitë e Informacionit dhe Komunikimit, BSc Information and Communication Technologies, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Elektroenergjetika dhe Menaxhimi i Energjisë, MSc Power Systems and Energy Management, MSc",
+  "campus": "Prishtinë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "6",
+  "head": "Elektronikё, Automatikё dhe Robotikë, MSc Electronics, Automation and Robotics, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Inxhineri Kompjuterike dhe Softuerike, MSc Computer and Software Engineering, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "8",
+  "head": "Teknologjitë e Informacionit dhe Komunikimit, MSc Information and Communication Technologies, MSc",
+  "campus": "Prishtinë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "9",
+  "head": "Inxhinieri Elektrike dhe Kompjuterike, PhD Doctoral studies in Electrical and Computer Engineering",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "12",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "1",
+  "head": "Prodhimtari dhe Inxhinieri Industriale me Menaxhment, BSc Manufacturing and Industrial Engineering with Management, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "2",
+  "head": "Mekatronikë, BSc Mechatronics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Termoenergjetika dhe Energjia e Ripërtërishme, BSc Thermoenergetics and Renewable Energy, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "4",
+  "head": "Dizajn Inxhinierik dhe Automjete, BSc Engineering Design and Vehicles, BSc",
+  "campus": "Prishtinë",
+  "level": "Bsc",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "5",
+  "head": "Komunikacion dhe Transport, BSc Traffic and Transport, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "6",
+  "head": "Dizajn Inxhinierik dhe Automjete, MSc Engineering Design and Vehicles, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "7",
+  "head": "Mekatronikë, MSc Mechatronics, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "8",
+  "head": "Komunikacion Rrugor, MSc Road Traffic, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "9",
+  "head": "Termoenergjetika dhe Energjia e Ripërtërishme, MSc (me 2 specializime) Thermoenergetics and Renewable Energy, MSc (with 2 specializations)",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "1",
+  "head": "Infermieri, BSc Nursing, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Fizioterapi dhe rehabilitim, BSc Physiotherapy and Rehabilitation, Bsc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "240",
+  "quota": "32",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "3",
+  "head": "Stomatologji, Dr. Dent Dentistry, Dr. Dent",
+  "campus": "Prishtinë",
+  "level": "Dr. Dent",
+  "ects": "360",
+  "quota": "80",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "4",
+  "head": "Mjekësi e Përgjithshme, Dr. Med General Medicine, Dr. Med",
+  "campus": "Prishtinë",
+  "level": "Dr. Med",
+  "ects": "360",
+  "quota": "200",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Farmaci MPh. Pharmacy MPh.",
+  "campus": "Prishtinë",
+  "level": "MPh",
+  "ects": "300",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "6",
+  "head": "Fizioterapi, MSc Physiotherapy, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Shëndet Publik, PhD Public Health, PhD",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "4",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "8",
+  "head": "Mjekësi Paraklinike, PhD Preclinical Medicine, PhD",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "10",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "9",
+  "head": "Mjekësi Klinike, PhD Clinical Medicine, PhD",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "10",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "10",
+  "head": "Stomatologji, PhD Stomatology, PhD",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "5",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "1",
+  "head": "Bachelor i Muzikës në Performim, BMus (me 5 specializime) Bachelor of Music in Performance, BMus (with 5 specializations)",
+  "campus": "Prishtinë",
+  "level": "BMus",
+  "ects": "240",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "2",
+  "head": "Artet Vizuale, BA (me 6 specializime) Visual Arts, BA (with 6 specializations)",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "3",
+  "head": "Artet Vizuale, MA (me 6 specializime) Visual Arts, MA (with 6 specializations)",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "100",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "4",
+  "head": "Master i Muzikës në Performim (me 5 specializime) Master of Music in Performance (with 5 specializations), Mmus",
+  "campus": "Prishtinë",
+  "level": "MMus",
+  "ects": "60",
+  "quota": "25",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "5",
+  "head": "Master i Muzikës në Kompozim (me specializim në Kompozim), MMus Master of Music in Composition (with specialization in Composition), Mmus",
+  "campus": "Prishtinë",
+  "level": "MMus",
+  "ects": "120",
+  "quota": "4",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "6",
+  "head": "Bachelor i Muzikës (me specializim në Kompozim), BMus Bachelor of Music (with specialization in Composition), BMus",
+  "campus": "Prishtinë",
+  "level": "BMus",
+  "ects": "240",
+  "quota": "25",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "7",
+  "head": "Artet Dramatike (me 7 specializime), MA Dramatic Arts, MA (with 7 specializations)",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "85",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "8",
+  "head": "Artet Dramatike (me 7 specializime), BA Dramatic Arts, BA (with 7 specializations)",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "85",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "9",
+  "head": "Master i Muzikes ne Edukim, MMus Master of Music in Ediucation, MMus",
+  "campus": "Prishtinë",
+  "level": "MMus",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Ekonomi e Bujqësisë, BSc Agriculture Economics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Prodhim Shtazor, BSc Animal Production, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "3",
+  "head": "Teknologji Ushqimore me Bioteknologji, BSc Food Technology and Biotechnology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "4",
+  "head": "Prodhim Bimor, BSc Plant Production, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "5",
+  "head": "Mjekësi Veterinare, DMV Veterinary Medicine, DVM",
+  "campus": "Prishtinë",
+  "level": "DMV",
+  "ects": "300",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "6",
+  "head": "Shkenca Bimore, MSc Plant Sciences, Msc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "10",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "7",
+  "head": "Ekonomia e Bujqësisë dhe Ushqimit, MSc Agriculture and Food Economics, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "15",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "8",
+  "head": "Shkencat e Aplikuara në Zootekni, MSc Applied Animal Sciences, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "10",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "9",
+  "head": "Shkencat e Ushqimit, MSc Food Science, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "10",
+  "head": "Pemëtari-Vreshtari, MSc Pomology and Viticulture, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "10",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "11",
+  "head": "Mbrojtje e Bimëve, Fitomedicine, MSc Plant Protection-Fitomedicine, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "10",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "1",
+  "head": "Edukimi Fizik dhe Sport, BA Physical Education and Sport, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Edukimi Fizik dhe Sport, MA Physical Education and Sport, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "37",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "3",
+  "head": "Trajner Sportiv, MA Sport Coaching, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Edukimi në Fëmijëri të Hershme, BA Early Childhood Education, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Edukimi Fillor, BA Primary Education, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "120",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Teknologjia Arsimore, BSc Education Technology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Master i Edukimit për STEAM Master of Education for STEAM",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "5",
+  "head": "Master në Inovacion dhe Cilësi në Edukim Master of Innovation and Quality in Education",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Master i Shkencave të Edukimit (me 4 specializime) Master in Educational Sciences (with 4 specialisations)",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "160",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Master i Mësimdhënies Lëndore (me 7 specializime) Master in Subject Teaching (with 7 specializations)",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "175",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "8",
+  "head": "Doktoratë në Shkencat e Edukimit (Program i përbashkët/ Doktoratë e dyfishtë) Doctoral for Educational Sciences (Double degree)",
+  "campus": "Prishtinë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "5",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "1",
+  "head": "Arkitekturë, BSc Architecture, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Efiçiencë e Energjisë, MSc Energy Efficiency, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "25",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Arkitekturë, MSc (5 specializime) Architecture, MSc (5 specializations)",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "75",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Gjuhë dhe Letërsi Angleze, BA English Language and Literature, BA",
+  "campus": "Prizren",
+  "level": "BA",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "2",
+  "head": "Gjuhë dhe Letërsi Gjermane, BA German Language and Literature, BA",
+  "campus": "Prizren",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Gjuhë dhe Letërsi Shqipe, BA Albanian Language and Literature, BA",
+  "campus": "Prizren",
+  "level": "BA",
+  "ects": "240",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Programi Fillor, BA (në Gjuhën Shqipe, Boshnjake dhe Turke) Primary Education, BA (in Albanian, Bosnian and Turkish)",
+  "campus": "Prizren",
+  "level": "BA",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "5",
+  "head": "Dizajn Softueri, Bachelor Profesional Software Design, Bachelor Professional",
+  "campus": "Prizren",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "180",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Administrim Biznesi, BSc Business Administration, BSc",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "7",
+  "head": "Menaxhment Nderkombëtar, BSc International Management, BSc",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "8",
+  "head": "Shkencat e Pyjeve dhe të Mjedisit, BSc Forest and Environmental Sciences, BSc.",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "9",
+  "head": "Teknologjitë e Informacionit dhe Telekomunikim (në gjuhën shqipe, turke dhe boshnjake), BSc Information Technologies and Telecommunication (in Albanian, Turkish and Bosnian Language), BSc",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "180",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "10",
+  "head": "Agrobiznes, BSc Agribusiness. BSc",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "11",
+  "head": "Juridik i Përgjithshëm, LLB General Law, LLB",
+  "campus": "Prizren",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "180",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "12",
+  "head": "Qeverisje Demokratike dhe Sundim i Ligjit, LLM Democratic Governence and Rule of Law, LLM",
+  "campus": "Prizren",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "13",
+  "head": "Legjislacion dhe Institucionet e Bashkimit Europian, LLM European Union Legislation and Institutions, LLM",
+  "campus": "Prizren",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "14",
+  "head": "Shkencat e Edukimit, specializimi Mesimdhenie dhe Kurrikule, MA Education Sciences, profile Teaching and Curriculum, MA",
+  "campus": "Prizren",
+  "level": "MA",
+  "ects": "120",
+  "quota": "70",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "15",
+  "head": "Edukim dhe Mësimdhënie në Matematikë në Gjuhën Turke, MA Education and Teaching in Mathematics in the Turkish Language, MA",
+  "campus": "Prizren",
+  "level": "MA",
+  "ects": "60",
+  "quota": "10",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "16",
+  "head": "Gjuhësi Aplikative, MA Applied Linguistics, MA",
+  "campus": "Prizren",
+  "level": "MA",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "17",
+  "head": "Administrim Biznesi, MSc Business Administration, MSc",
+  "campus": "Prizren",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "70",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "18",
+  "head": "Shkenca Kompjuterike dhe Teknologji Komunikim, MSc Computer Science and Communication Technologies, MSc",
+  "campus": "Prizren",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "45",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "19",
+  "head": "Menaxhim në Agrobiznes, MSc Agribusiness Management, MSc",
+  "campus": "Prizren",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "15",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "20",
+  "head": "Shkencat Pyjore dhe Ekologji Pyjore, MSc Forest Science and Forest Ecology, MSc",
+  "campus": "Prizren",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "15",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "1",
+  "head": "Art Performues, BA Performing Arts, BA",
+  "campus": "Pejë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "20",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "2",
+  "head": "Arti Muzikor, BA Music Art, BA",
+  "campus": "Pejë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Ekologji e Aplikuar ne Agrobiznes, BSc Applied Ecology in Agribusiness, BSc",
+  "campus": "Pejë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "4",
+  "head": "Menaxhim në Turizëm dhe Hotelieri (Gjuhë Shqipe dhe Gjuhë Boshnjake), BSc Management in Tourism and Hospitality (in Albanian language and Bosnian Language), BSc",
+  "campus": "Pejë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "105",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "5",
+  "head": "Teknologji e Prodhimit Bimor, BSc Plant Production Technology, BSc",
+  "campus": "Pejë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "6",
+  "head": "Teknologji Ushqimore, BSc Food Technology, BSc",
+  "campus": "Pejë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "7",
+  "head": "Menaxhim Biznesi, (në Gjuhën Shqipe dhe Boshnjake), BSc, me specializim ne 1. Banka dhe Financa dhe 2. Administrim Biznesi Business Management, (in Albanian and Bosnian Language), BSc, with specialization in 1. Banking and Finance and 2. Business Administration",
+  "campus": "Pejë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "200",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "8",
+  "head": "Teknologji Informacioni në Biznes dhe Ekonomi, BSc Information Technology in Business and Economy, BSc",
+  "campus": "Pejë",
+  "level": "Bsc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "9",
+  "head": "Juridik i Përgjithshëm, LLB General Law, LLB",
+  "campus": "Pejë",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "10",
+  "head": "E Drejta Civile dhe Biznesore, LLM Civil and Business Law, LLM",
+  "campus": "Pejë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "25",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "11",
+  "head": "E Drejta dhe Siguria, LLM Law and Security, LLM",
+  "campus": "Pejë",
+  "level": "LLM",
+  "ects": "120",
+  "quota": "25",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "12",
+  "head": "Art Performues, MA Performing Arts, MA",
+  "campus": "Pejë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "10",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "13",
+  "head": "Edukim Muzikor, MA Music Education, MA",
+  "campus": "Pejë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "5",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "14",
+  "head": "Menaxhim Biznesi (në Gjuhën Shqipe dhe Boshnjake), MSc, 2 specializime: 1. Menaxhim Biznesi, 2. Banka dhe Financa Business Management (in Albanian Language and Bosnian Language), MSc, 2 specializations: 1. Business Management 2. Banking and Finance",
+  "campus": "Pejë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "120",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "15",
+  "head": "Sistemet e Qëndrueshme të Prodhimit Ushqimor, MSc Sustainable Food Production Systems, MSc",
+  "campus": "Pejë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "25",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "16",
+  "head": "Menaxhimi i Riskut dhe Sigurimet, MSc Insurance and Risk Management, MSc",
+  "campus": "Pejë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "25",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "17",
+  "head": "Menaxhment dhe Turizëm te Qëndrueshëm, MSc Management and Sustainable Turism, MSc",
+  "campus": "Pejë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "25",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "18",
+  "head": "Menaxhim Mjedisi, MSc Environmental Management, MSc",
+  "campus": "Pejë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "19",
+  "head": "Menaxhimi i Marketingut Turistik (gjuhe shqipe dhe gjuhe boshnjake), MSc Tourism, Marketing Management (in Albanian language and Bosnian Language), MSc",
+  "campus": "Pejë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "45",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "20",
+  "head": "Menaxhim i Burimeve Njerëzore, MSc Human Resource Management, MSc",
+  "campus": "Pejë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "80",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "21",
+  "head": "Informatikë në Biznes, MSc Business Informatics, MSc",
+  "campus": "Pejë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "22",
+  "head": "Biznes dhe Ekonomi, PhD Business and Economics, PhD",
+  "campus": "Pejë",
+  "level": "PhD",
+  "ects": "180",
+  "quota": "9",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "1",
+  "head": "Biznes dhe Menaxhment, Bsc (Me specializime 1. Banka, Business and Management, Bsc (With specializations 1. Banks,",
+  "campus": "Mitrovicë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "120",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Inxhinieri dhe Tekonologji Ushqimore, BSc Food Engineering and Technology, BSc",
+  "campus": "Mitrovicë",
+  "level": "Bsc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "3",
+  "head": "Teknologji, BSc (Me specializime 1. Inxhinieri Mjedisore dhe 2. Inxhinieri Kimike) Technology, BSc (With specializations 1. Environmental Engineering and Chemical Engineering)",
+  "campus": "Mitrovicë",
+  "level": "Bsc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "4",
+  "head": "Inxhinieri Ekonomike, BSc Economics Engineering, BSc",
+  "campus": "Mitrovicë",
+  "level": "Bsc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Gjeologji, BSc Geology, BSc",
+  "campus": "Mitrovicë",
+  "level": "Bsc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "6",
+  "head": "Materiale dhe Metalurgji, BSc Materials and Metalurgy, BSc",
+  "campus": "Mitrovicë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "20",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Inxhinieri Mekanike, BSc Mechanical Engineering, BSc",
+  "campus": "Mitrovicë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "8",
+  "head": "Shkenca Kompjuterike dhe Inxhinieri, BSc Computer Sciences and Engineering, BSc",
+  "campus": "Mitrovicë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "160",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "9",
+  "head": "Inxhinieria Minerare, BSc Mining Engineering, BSc",
+  "campus": "Mitrovicë",
+  "level": "BSc",
+  "ects": "240",
+  "quota": "20",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "10",
+  "head": "Juridik, LLB Law, LLB",
+  "campus": "Mitrovicë",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "11",
+  "head": "Teknologji, MSc (me specializim Inxhinieri e Mbrojtjes Mjedisore) Technology, (with specialization in Environmental Protection Engeeniering), MSc",
+  "campus": "Mitrovicë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "20",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "12",
+  "head": "Vendburimet Minerale, MSc Mineral Deposits, MSc",
+  "campus": "Mitrovicë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "10",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "13",
+  "head": "Hidrogjeologji dhe Gjeologji Inxhinierike, MSc Hydrogeology and Engineering Geology, MSc",
+  "campus": "Mitrovicë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "15",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "14",
+  "head": "Zhvillimi i Qëndrueshëm i Minierave, MSc Sustainable Mining Development, MSc",
+  "campus": "Mitrovicë",
+  "level": "Msc",
+  "ects": "60",
+  "quota": "10",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "15",
+  "head": "Materiale dhe Metalurgji, MSc Materials and Metalurgy, MSc",
+  "campus": "Mitrovicë",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "10",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "16",
+  "head": "Inxhinieri dhe Tekonologji Ushqimore, MSc Engineering and Food Technology, MSc",
+  "campus": "Mitrovicë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "17",
+  "head": "Cloud and Edge Computing, MSc Cloud and Edge Computing, MSc",
+  "campus": "Mitrovicë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "35",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "18",
+  "head": "Teknologji Prodhuese dhe Menaxhment, MSc Manufacturing Technology and Management, MSc",
+  "campus": "Mitrovicë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "35",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "1",
+  "head": "Dizajn Grafik dhe Multimedia, Bachelor Profesional Graphic Design and Multimedia, Bachelor Professional",
+  "campus": "Ferizaj",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Informatika e Aplikuar, BSc Applied Informatics, BSc",
+  "campus": "Ferizaj",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "3",
+  "head": "Menaxhimi i Biznesit dhe Ndermarresia, BSc Business Management and Entrepreneurship, BSc",
+  "campus": "Ferizaj",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "120",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "4",
+  "head": "Inxhinieria Industriale me Informatikë, BSc Industrial Engineering with Informatics, BSc",
+  "campus": "Ferizaj",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Arkitekturë e Interierit dhe Dizajni i Mobilieve, BSc Interior Architecture and Furniture Design, BSc",
+  "campus": "Ferizaj",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "6",
+  "head": "Menaxhment i Hotelierisë dhe Turizmit, BSc Management of Tourism and Hospitality, BSc",
+  "campus": "Ferizaj",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "7",
+  "head": "Menaxhimi dhe Inovacioni ne Turizëm, MSc Management and Innovation in Tourism, MSc",
+  "campus": "Ferizaj",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "8",
+  "head": "Inxhinieria dhe Menaxhimi i Prodhimit, MSc Engineering and Production Management, MSc",
+  "campus": "Ferizaj",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "9",
+  "head": "Arkitektura e Gjelber dhe Dizajni i Interierit, MSc Green Architecture and Interior Design, MSc",
+  "campus": "Ferizaj",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "10",
+  "head": "Menaxhimi i Ndërmarrësisë dhe Inovacionit, MSc Entrepreneurship and Innovation Management, MSc",
+  "campus": "Ferizaj",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "70",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Marrëdhënie Ndërkombëtare dhe Studime Europiane, BA International Relations and European Studies, BA",
+  "campus": "Gjilan",
+  "level": "BA",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Arsimi Parashkollor, BA Preschool Education, BA",
+  "campus": "Gjilan",
+  "level": "BA",
+  "ects": "240",
+  "quota": "35",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "3",
+  "head": "Edukim Fillor, BA Primary Education, BA",
+  "campus": "Gjilan",
+  "level": "BA",
+  "ects": "240",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Shkenca Kompjuterike, BSc Computer Sciences, BSc",
+  "campus": "Gjilan",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "200",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "5",
+  "head": "Financë dhe Kontabilitet i Aplikuar, BSc Finance and Applied Accounting, BSc",
+  "campus": "Gjilan",
+  "level": "Bsc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Marketing dhe Menaxhim i Shitjes, BSc Marketing and Sales Management, BSc",
+  "campus": "Gjilan",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "75",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Juridik Penal, LLM Criminal Law, LLM",
+  "campus": "Gjilan",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "25",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "8",
+  "head": "Mësimdhënie dhe Kurrikula në Programin Fillor, MA Teaching and Curriculum in Primary Education, MA",
+  "campus": "Gjilan",
+  "level": "MA",
+  "ects": "60",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "9",
+  "head": "Mësimdhënie e Gjuhës dhe Letërsisë Shqipe, MA Teaching in Albanian Language and Literature, MA",
+  "campus": "Gjilan",
+  "level": "MA",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "10",
+  "head": "Mësimdhënie e Gjuhës Angleze, MA English Language Teaching, MA",
+  "campus": "Gjilan",
+  "level": "MA",
+  "ects": "60",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "11",
+  "head": "Analizat Ekonomika dhe Politikat Zhvillimore, MSc Economic Analysis and Development Policy, MSc",
+  "campus": "Gjilan",
+  "level": "Msc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "12",
+  "head": "E-Qeverisja, MSc E-Governance, MSc",
+  "campus": "Gjilan",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "13",
+  "head": "Sistemet e Kontrollit dhe Inteligjenca Artificiale, MSc Control Systems and Artificial Intelligence, MSc",
+  "campus": "Gjilan",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Gjuhë Angleze – Përkthim dhe Interpretim, BA English Language – Translation and Interpretation, BA",
+  "campus": "Gjakovë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "2",
+  "head": "Gjuhe Shqipe dhe Letersi, BA Albanian Language and Literature, BA",
+  "campus": "Gjakovë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "3",
+  "head": "Kujdesi dhe Mireqenia Sociale, BA Social care and Welfare, BA",
+  "campus": "Gjakovë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "4",
+  "head": "Edukim Fillor, BA Primary Education, BA",
+  "campus": "Gjakovë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "70",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "5",
+  "head": "Kujdesi Shëndetësor në Komunitet, BSc Community Health Care, BSc",
+  "campus": "Gjakovë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "6",
+  "head": "Shkencat Shëndetësore në Sport dhe Turizëm, BSc Health Sciences in Sport and Tourism, BSc",
+  "campus": "Gjakovë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "7",
+  "head": "Shëndeti Publik, BSc Public Health, BSc",
+  "campus": "Gjakovë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "8",
+  "head": "Informatikë Inxhinierike, BSc Informatics Engineering, BSc",
+  "campus": "Gjakovë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "9",
+  "head": "Gjuhë Shqipe, MA Albanian Language, MA",
+  "campus": "Gjakovë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "10",
+  "head": "Studime Letrare, MA Literary Studies, MA",
+  "campus": "Gjakovë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "20",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "11",
+  "head": "Menaxhimi Shëndetsor, MA Health Management, MA",
+  "campus": "Gjakovë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Siguri Publike, BSc Public Safety, BSc",
+  "campus": "Vushtrri",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "55",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "1",
+  "head": "Teologji Islame, BA Islamic Theology, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "90",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "2",
+  "head": "Teologji Islame, MA Islamic Theology, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "1",
+  "head": "Administratë Publike, BA Public Administration, BA",
+  "campus": "Mitrovicë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Menaxhim i Biznesit, BA Business Management, BA",
+  "campus": "Mitrovicë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "3",
+  "head": "Menaxhimi i Mjedisit dhe Teknologji, BSc Environment Management and Technology, BSc",
+  "campus": "Mitrovicë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "4",
+  "head": "Psikologji, BSc Psychology, BSc",
+  "campus": "Mitrovicë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "31-Dec-2029"
+ },
+ {
+  "nr": "5",
+  "head": "Menaxhim Ndërkombëtar dhe Qëndrueshmëri, MSc (me 3 specializime) International Management and Sustainability, MSc (with 3 specializations)",
+  "campus": "Mitrovicë",
+  "level": "MSc",
+  "ects": "180",
+  "quota": "90",
+  "until": "31-Dec-2030"
+ },
+ {
+  "nr": "1",
+  "head": "Muzika Moderne, Prodhimi Digjital dhe Menaxhimi, BA Modern Music, Digital Production and Management BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Gjuhë Angleze, BA English Language, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Media dhe Komunikim, BA Media and Communication, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Menaxhimi i Patundshmërive dhe Infrastrukturës, BA Real Estate and Infrastructure Management, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "5",
+  "head": "Shkenca Politike, BA Political Sciences, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "6",
+  "head": "Turizëm, BA Tourism, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Arte Dramatike, Bachelor profesional Dramatic Arts, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "8",
+  "head": "Dizajn i Modës, Bachelor Professional Fashion Design, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "25",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "9",
+  "head": "Dizajn, Bachelor Professional Design, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "10",
+  "head": "Arkitekturë dhe Planifikim Hapsinor, BSc Architecture and Spatial Planning, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "280",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "11",
+  "head": "Arte dhe Media Digjitale, BA Arts and Digital Media, BA",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "12",
+  "head": "Biokimi Mjekësore, BSc Medical Biochemistry, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "13",
+  "head": "Fintech dhe Analitika e Biznesit, BSc Fintech and Business Analytics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "14",
+  "head": "Inxhineri Ndërtimore (Ndërtimtari) dhe Infrastrukture, BSc Civil Engineerind and Infrastructure, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "200",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "15",
+  "head": "Inxhinieri e Agrikulturës dhe Mjedisit, BSc Agriculture and Environmental Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "16",
+  "head": "Inxhinieri e Energjisë, BSc Energy Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "17",
+  "head": "Inxhinieri e Mekatronikës, BSc Mechatronics Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "200",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "18",
+  "head": "Inxhinieri Mjedisore dhe Infrastrukturë e Qëndrueshme, BSc Environmental Engineering and Sustainable Infrastructure, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "19",
+  "head": "Menaxhment, Biznes dhe Ekonomi, BSc Management, Business and Economics, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "250",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "20",
+  "head": "Psikologji, BSc Psychology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "21",
+  "head": "Shendet Publik dhe Shkenca Mjekesore, BSc Public Health and Medical Sciences, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "22",
+  "head": "Shkenca Kompjuterike dhe Inxhinieri, BSc Computer Science and Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "550",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "23",
+  "head": "Shkencat e Sportit dhe Lëvizjes, BSc Sports Science and Movement, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "24",
+  "head": "Shkencat e Ushqimit dhe Bioteknologji, BSc, me specializimet: 1. Teknologjia e Uhqimit, 2. Nutricion Food Science and Biotechnology, BSc, with specializations: 1. Food Technology, 2. Nutrition",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "25",
+  "head": "Sistemet e informacionit, BSc Information Systems, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "250",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "26",
+  "head": "Studime t137 Sigurisë, BSc Security Studies, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "27",
+  "head": "Teknik Dentar, BSc Dental Technician, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "28",
+  "head": "Teknik i Radiologjisë, BSc Radiology Technician, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "29",
+  "head": "Estetikë dhe Kozmetologji, BSc Aesthetics and Cosmetology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "30",
+  "head": "Inxhinieri e Ndërtimit dhe Infrastrukturës MSc Civil Engineerind and Infrastructure, MSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "120",
+  "quota": "150",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "31",
+  "head": "Inxhinieri Mekanike, BSc Mechanical Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "32",
+  "head": "Kimi Aplikative, BSc Applied Chemistry, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "33",
+  "head": "Stomatologji, Dr. Dent Stomatology, Dr. Dent",
+  "campus": "Prishtinë",
+  "level": "Dr. Dent",
+  "ects": "360",
+  "quota": "35",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "34",
+  "head": "Juridik, LLB Law, LLB",
+  "campus": "Prishtinë",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "35",
+  "head": "E Drejta Civile dhe e Pronës, LLM Civil Law and Property Rights, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "36",
+  "head": "E Drejta Komerciale, LLM Commercial Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "37",
+  "head": "E Drejta Penale, LLM Criminal Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "38",
+  "head": "Gjuhë, Media dhe Komunikim, MA Language, Media and Communication, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "39",
+  "head": "Politika Publike dhe Menaxhment, MA Public Policy and Management, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "40",
+  "head": "Shkenca Politike, MA Political Science, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "41",
+  "head": "Studime të Sigurisë, MA Security Studies, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "42",
+  "head": "Farmaci, MPh Pharmacy MPh.",
+  "campus": "Prishtinë",
+  "level": "MPh",
+  "ects": "300",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "43",
+  "head": "Agrikulturë dhe Mjedis, MSc Agriculture and Environmental, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "44",
+  "head": "Arkitekturë dhe Planifikim Hapsinor, MSc Architecture and Spatial Planning, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "120",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "45",
+  "head": "Biokimi, MSc Biochemistry, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "46",
+  "head": "Fintech dhe Menaxhimi i Inovacionit, MSc Fintech and Innovation Management, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "47",
+  "head": "Inxhinieri e Energjisë dhe Mjedisit, MSc Energy Engineering and Environment, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "48",
+  "head": "Inxhinieri e Mekatronikës, MSc Mechatronics Engineering, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "49",
+  "head": "Menaxhment, Biznes dhe Ekonomi, MSc Management, Business and Economics, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "200",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "50",
+  "head": "Psikologji, MSc Psychology, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "51",
+  "head": "Shëndeti dhe Aktiviteti Fizik, MSc Health and Physical Activity, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "52",
+  "head": "Shëndeti Publik dhe Menaxhment, MSc Public Health and Management, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "53",
+  "head": "Shkenca dhe Teknologji e Ushqimit, MSc Food Science and Technology, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "100",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "54",
+  "head": "Shkenca Kompjuterike dhe Inxhinieri, MSc Computer Science and Engineering, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "55",
+  "head": "Shkenca Paramjekësore, MSc Paramedical Science, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "56",
+  "head": "Sistemet e Informacionit dhe Menaxhment, MSc Information Systems and Management, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "150",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "57",
+  "head": "Trafiku dhe Inxhinieria e Transportit, MSc Traffic and Transport Engineering, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "35",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "1",
+  "head": "Menaxhment, Biznes dhe Ekonomi, BSc Management, Business and Economics, BSc",
+  "campus": "Ferizaj",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "90",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "2",
+  "head": "Arkitekturë dhe Planifikim Hapsinor, BSc Architecture and Spatial Planning, BSc",
+  "campus": "Ferizaj",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "3",
+  "head": "Shkenca Kompjuterike dhe Inxhinieri, BSc Computer Sciences and Engineering, BSc",
+  "campus": "Ferizaj",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Dizajn, Bachelor Professional Design, Bachelor Professional",
+  "campus": "Prizren",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Shkenca Kompjuterike dhe Inxhinieri, BSc Computer Science and Engineering, BSc",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "3",
+  "head": "Shkencat e Ushqimit dhe Bioteknologji, BSc (me 2 specializime) Food Science and Biotechnology, BSc (with 2 specializations)",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "4",
+  "head": "Arkitekturë dhe Planifikim Hapsinor, BSc Architecture and Spatial Planning, BSc",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Menaxhment, Biznes dhe Ekonomi, BSc Management, Business and Economics, BSc",
+  "campus": "Prizren",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Juridik, LLB Law, LLB",
+  "campus": "Prizren",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "1",
+  "head": "Dizajn Grafik dhe Arte Vizuele, BA Graphic Design and Visual Arts, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "140",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Administratë Publike (me dy specializime), BA Public Administration (2 specialisaions), BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "200",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "3",
+  "head": "Arkitekturë, BA Architecture, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "4",
+  "head": "Arte Aplikative ne Dizajnimin e Hapesirave te Brendshme, BA Applied Arts in Spatial Design, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "110",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "5",
+  "head": "Dizajn i Modës, BA Fashion Design, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "6",
+  "head": "Gjuhe Angleze, BA English Language, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "250",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "7",
+  "head": "Komunikim Masiv dhe Gazetari, BA Mass Communication and Journalism, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "8",
+  "head": "Kulturë Fizike dhe Sport, BA Physical Education and Sports, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "9",
+  "head": "Marketing dhe Biznes, BA Marketing and Business, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "200",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "10",
+  "head": "Menaxhment, BA Management, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "240",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "11",
+  "head": "Perkujdesje dhe Mirëqenie e Fëmijëve, BA Child Care and Welfare, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "240",
+  "quota": "300",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "12",
+  "head": "Pikture dhe Arte Vizuele, BA Painting and Visual Arts, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "25",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "13",
+  "head": "Psikologji, BA Psychology, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "300",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "14",
+  "head": "Biznes Digjital (me dy specializime), Bachelor profesional Digital Business, (2 specializations), Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "120",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "15",
+  "head": "Dizajn Grafik, Bachelor profesional Graphic Design, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "16",
+  "head": "Gjuhë Gjermane, Përkthim dhe Interpretim, Bachelor Profesional German Language, Translation and Interpretation, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "17",
+  "head": "Logopedi, Bachelor Profesional Logopedics, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "18",
+  "head": "Marketing Digjital dhe Inteligjencë Artificiale, Bachelor Profesional Digital Marketing and Artificial Intelligence, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "130",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "19",
+  "head": "Produksion Medial, Bachelor profesional Media Production, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "20",
+  "head": "Programim dhe Intelegjencë Artificiale, Bachelor professional Programming and Artificial Intelligence, Bachelor professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "125",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "21",
+  "head": "Programim dhe Multimedia, Bachelor profesional Programing and Multimedia, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "65",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "22",
+  "head": "Programim i Lojërave Kompjuterike, Bachelor profesional Computer Games Programing, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "23",
+  "head": "Programim, Bachelor profesional Programming, Bachelor professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "24",
+  "head": "Siguri Kibernetike, Bachelor Profesional Cyber Security, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "70",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "25",
+  "head": "Teknik i Radiologjisë, Bachelor profesional Radiology Technician, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "26",
+  "head": "Infermieri, BSc Nursing, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "280",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "27",
+  "head": "Teknik Dentar, BSc Dental Technician, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "28",
+  "head": "Banka, Financa dhe Kontabilitet, BSc Banking, Finance and Accounting, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "29",
+  "head": "Estetikë dhe Kozmetologji, BSc Aesthetics and Cosmetology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "75",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "30",
+  "head": "Kompjuterikë dhe FinTech, BSc (me 2 specializime) Computer Science and FinTech, BSc (with 2 specializations)",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "130",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "31",
+  "head": "Shkenca Kompjuterike dhe Inxhinieri Softuerike, BSc Computer Science and Software Engineering, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "275",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "32",
+  "head": "Teknik i Laboratorit, BSc Laboratory Technician, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "33",
+  "head": "Stomatologji, Dr. Dent Dentistry, Dr. Dent",
+  "campus": "Prishtinë",
+  "level": "Dr. Dent",
+  "ects": "360",
+  "quota": "45",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "34",
+  "head": "Juridik i Përgjithshëm, LLB General Law, LLB",
+  "campus": "Prishtinë",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "250",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "35",
+  "head": "Juridik Civil, LLM Civil Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "35",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "36",
+  "head": "Juridik Penal, LLM Criminal Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "35",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "37",
+  "head": "Administratë Publike, MA Public Administration, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "120",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "38",
+  "head": "Arkitekturë, MA Architecture, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "39",
+  "head": "Dizajn Grafik, MA Graphic Design, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "40",
+  "head": "Gjuhë Angleze, MA English Language, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "200",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "41",
+  "head": "Komunikim Masiv dhe Gazetari, MA Mass Communication and Journalism, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "42",
+  "head": "Kontabilitet dhe Auditim, MA Accounting and Auditing, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "43",
+  "head": "Kulturë Fizike dhe Sport, MA Physical Education and Sports, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "44",
+  "head": "Marketing dhe Menaxhimi i Biznesit, MA Marketing and Business Management, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "100",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "45",
+  "head": "Menaxhment, MA Management, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "200",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "46",
+  "head": "Perkujdesje dhe Mirëqenie e Fëmijeve MA Child Care and Welfare, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "60",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "47",
+  "head": "Menaxhment Shëndetësor, MSc Health Management, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "100",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "48",
+  "head": "Shëndeti Mendor, MSc Mental Health, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "49",
+  "head": "Shkenca Kompjuterike, MSc Computer Science, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Informatikë dhe Teknologjitë Informative, BSc Computing and Information Technologies, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "252",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "2",
+  "head": "Program i Individualizuar, BSc Individualized Program, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "240",
+  "quota": "150",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "3",
+  "head": "Teknologjitë e Inxhinierisë Elektrike, BSc Electrical Engineering Technology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "254",
+  "quota": "25",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Studime profesionale, MSc Professional Studies, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "66",
+  "quota": "50",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "1",
+  "head": "Biznes dhe Menaxhment, BA Business and Management, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "200",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "2",
+  "head": "Gjuhë Angleze me Specializim në Gjuhë Gjermane, BA English Language with Specialization in Germanistic, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "120",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Dizajn Enterieri, Bachelor Profesional Interior Design, Bachelor profesional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "75",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Dizajn Grafik, Bachelor Profesional Graphic Design, Bachelor profesional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Gazetari Digjitale, Bachelor Profesional Digital Journalism, Bachelor profesional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "3",
+  "head": "Higjiene Dentare, Bachelor Profesional Dental Hygiene, Bachelor profesional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "40",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "16",
+  "head": "Inteligjenca Artificiale në Biznes, Bachelor Profesional Artificial Intelligence in Business, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "4",
+  "head": "Kozmetologji, Bachelor Profesional Cosmetology, Bachelor profesional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "18",
+  "head": "Marketing Digjital, Bachelor Profesional Professional Bachelor in Digital Marketing",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "8",
+  "head": "Siguri Kibernetike, Bachelor Profesional Cyber Security, Bachelor Professional",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "19",
+  "head": "Teknik Dentar, Bachelor Profesional Professional Bachelor Dental Technician",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "45",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "11",
+  "head": "Biomjekesi Laboratorike, BSc Laboratory Biomedicine, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "9",
+  "head": "Psikologji, BSc Psychology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "10",
+  "head": "Shkenca Kompjuterike, BSc Computer Sciences, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "250",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "12",
+  "head": "Juridik LLB Law LLB",
+  "campus": "Prishtinë",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "17",
+  "head": "Juridik LLM Law, LLM",
+  "campus": "Prishtinë",
+  "level": "LLM",
+  "ects": "60",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "13",
+  "head": "Menaxhment, MA (Specializim në Marketing dhe Komunikim Kreativ) Management, MA (Specialization in Marketing and Creative Communication)",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "100",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "14",
+  "head": "Qeverisje dhe Siguri Kombetare, MA Governance and National Security, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "15",
+  "head": "Shkenca dhe Analizë e të Dhënave, MSc Data Science and Analytics, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "75",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Biznes dhe Menaxhment, BA Business and Management, BA",
+  "campus": "Ferizaj",
+  "level": "BA",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Dizajn Mode, BA Fashion Design, BA",
+  "campus": "Ferizaj",
+  "level": "BA",
+  "ects": "180",
+  "quota": "75",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "3",
+  "head": "Teknik Dentar, Bachelor profesional Dental Technician, Bachelor profesional",
+  "campus": "Ferizaj",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "25",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "4",
+  "head": "Nutricion dhe Fitnes, Bachelor profesional Nutrition and Fitness, Bachelor profesional",
+  "campus": "Ferizaj",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Marketing Digjital, Bachelor Profesional Digital marketing, Bachelor Professional",
+  "campus": "Ferizaj",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "6",
+  "head": "Dizajn Grafik, Bachelor Profesional Graphic Design, Bachelor Professional",
+  "campus": "Ferizaj",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "8",
+  "head": "Zhvillim i Softuerit, Bachelor Profesional Software Development, Bachelor Professional",
+  "campus": "Ferizaj",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "1",
+  "head": "Biokimi Laboratorike, BSc Biochemistry Laboratory, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Farmaci Komunitare, BSc Community Pharmacy, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "120",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "3",
+  "head": "Infermieri, BSc Nursing, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "4",
+  "head": "Radiologji Diagnostike, BSc Diagnostic Radiology, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Fizioterapi, Bsc Physiotherapy, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "240",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Stomatologji, Dr. Dent Dentistry, Dr. Dent",
+  "campus": "Prishtinë",
+  "level": "Dr. Dent",
+  "ects": "300",
+  "quota": "85",
+  "until": "30-Sep-2031"
+ },
+ {
+  "nr": "7",
+  "head": "Menaxhim i Kujdesit Shëndetësor dhe Ekonomi Shëndetësore,MSc Health Care Management and Health Economics, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "8",
+  "head": "Farmaci, MSc Pharmacy, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "100",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "9",
+  "head": "Fizioterapi dhe Mjekësi Sportive, MSc Physiotherapy and Sport Medicine, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Shkencat Shëndetësore për Profile Terapeutike - Logopedi dhe Ergoterapi, BSc Health Sciences for Therapeutic Profiles (Speech Therapy, and Occupational Therapy), BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "180",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Psikologji, BSc Psychology BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "3",
+  "head": "Shkencat Shëndetësore për Profile Diagnostike - Teknik Laboratori, BSc Health Sciences for Diagnostic Profiles - Laboratory Technician, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "4",
+  "head": "Infermieri, BSc Nursing, BSc",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "250",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "5",
+  "head": "Infermieri - Praktika e avancuar Infermierore (ANP), MSc Nursing - Advanced Nursing Practice (ANP), MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "6",
+  "head": "Shkenca Mjekësore Laboratorike, MSc Medical Laboratory Science, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "30",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "7",
+  "head": "Menaxhim i Institucioneve dhe Shërbimeve Shëndetësore, MSc Management of Health Institutions and Services, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "8",
+  "head": "Kujdesi Shendetesor Digjital, MSc Digital Healthcare, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "40",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "9",
+  "head": "Psikologji Klinike, MSc Clinical Psychology, MSc",
+  "campus": "Prishtinë",
+  "level": "MSc",
+  "ects": "120",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "1",
+  "head": "Dizajn i Modës, BA Fashion Design, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "2",
+  "head": "Stilizëm dhe Komunikim në Modë, BA Styling and Fashion Communication, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "3",
+  "head": "Dizajn i Komunikimit, BA Communication Design, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "60",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "4",
+  "head": "Dizajn i Modës, MA Fashion Design, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "60",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "1",
+  "head": "Sigurimet, Menaxhimi dhe Inovacioni, Bachelor Profesional (me 3 specializime) Insurance, management and innovation, BA Proff. (with 3 specializations)",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Inxhinieria e Trafikut dhe Transportit, Bachelor Profesional (me 3 specializime) Traffic and Transport Engineering, Bachelor profesional (with 3 specializations)",
+  "campus": "Prishtinë",
+  "level": "Bachelor profesional",
+  "ects": "180",
+  "quota": "80",
+  "until": "30-Sep-2029"
+ },
+ {
+  "nr": "1",
+  "head": "Doganë dhe Shpedicion, BA Customs and Freight Forwarding, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "100",
+  "until": "30-Sep-2030"
+ },
+ {
+  "nr": "1",
+  "head": "Menaxhment dhe Ekonomiks, BA Management and Economics, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "2",
+  "head": "Menaxhimi i Emergjencave, BA Emergency Management, BA",
+  "campus": "Prishtinë",
+  "level": "BSc",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "3",
+  "head": "Juridik LLB Law LLB",
+  "campus": "Prishtinë",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "4",
+  "head": "Menaxhment dhe Financa, MA Management and Finance, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "100",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "5",
+  "head": "Menaxhimi i Emergjencave MA Emergency Management, MA",
+  "campus": "Prishtinë",
+  "level": "MA",
+  "ects": "120",
+  "quota": "67",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Banka dhe Financane Biznes, BA Banks and Finance in Business, BA",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2027"
+ },
+ {
+  "nr": "1",
+  "head": "Juridik i Përgjithshëm, LLB General Law, LLB",
+  "campus": "Prishtinë",
+  "level": "LLB",
+  "ects": "240",
+  "quota": "50",
+  "until": "30-Sep-2028"
+ },
+ {
+  "nr": "2",
+  "head": "Ekonomi e Pergjithshme, BA Management and Economics BA (General Economy)",
+  "campus": "Prishtinë",
+  "level": "BA",
+  "ects": "180",
+  "quota": "150",
+  "until": "30-Sep-2028"
+ }
+]

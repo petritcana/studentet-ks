@@ -1,0 +1,17 @@
+# Asgjë lokale nuk shkon te Vercel: sekretet, baza SQLite, ngarkimet, ndërtimet.
+.env
+.env.*
+!.env.example
+.data
+prisma/dev.db
+prisma/dev.db-journal
+prisma/postgres
+.next
+.next-dev
+.netlify
+node_modules
+.git
+shots
+test-results
+*.log
+.tmp-*

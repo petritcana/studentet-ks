@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast as sonnerToast } from "sonner";
 
 /**
- * Njoftime të shkurtra. Toni: thuaj çfarë ndodhi, jo "operacioni u krye".
+ * Njoftime të shkurtra. Toni: thuaj çfarë ndodhi, jo «operacioni u krye».
  * Gabimet gjithmonë ofrojnë hapin tjetër.
  */
 export function Toaster() {
@@ -12,7 +12,7 @@ export function Toaster() {
 
   return (
     <Sonner
-      theme={resolvedTheme === "dark" ? "dark" : "light"}
+      theme={resolvedTheme === "light" ? "light" : "dark"}
       position="top-center"
       offset={16}
       duration={4000}
@@ -20,14 +20,14 @@ export function Toaster() {
       toastOptions={{
         classNames: {
           toast:
-            "!rounded-md !border !border-border !bg-surface !text-text !shadow-lifted !font-sans",
+            "!rounded-md !border !border-border !bg-surface-solid !text-text !shadow-lifted !font-sans",
           title: "!text-sm !font-medium",
           description: "!text-xs !text-text-muted",
-          actionButton: "!rounded-sm !bg-brand-500 !text-white !text-xs",
+          actionButton: "!rounded-sm !bg-brand-500 !text-brand-contrast !text-xs",
           cancelButton: "!rounded-sm !bg-surface-2 !text-text-muted !text-xs",
-          success: "[&_[data-icon]]:!text-success",
-          error: "[&_[data-icon]]:!text-danger",
-          warning: "[&_[data-icon]]:!text-warning",
+          success: "[&_[data-icon]]:!text-success-text",
+          error: "[&_[data-icon]]:!text-danger-text",
+          warning: "[&_[data-icon]]:!text-warning-text",
         },
       }}
     />

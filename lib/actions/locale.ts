@@ -2,19 +2,21 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { LOCALES, LOCALE_COOKIE, type Locale } from "@/i18n/request";
-import { succeed, type ActionState } from "./types";
+import { LOCALE_COOKIE, LOCALE_MAX_AGE, resolveLocale } from "@/i18n/config";
 
-export async function setLocale(locale: string): Promise<ActionState> {
-  const value: Locale = LOCALES.includes(locale as Locale) ? (locale as Locale) : "sq";
+/**
+ * Gjuha ruhet në cookie. Në Fazën 3, kur ekziston llogaria, e njëjta zgjedhje
+ * shkruhet edhe te `User.locale`, që të ndjekë përdoruesin në çdo pajisje.
+ */
+export async function setLocale(value: string) {
+  const locale = resolveLocale(value);
 
   const jar = await cookies();
-  jar.set(LOCALE_COOKIE, value, {
+  jar.set(LOCALE_COOKIE, locale, {
     path: "/",
-    maxAge: 60 * 60 * 24 * 365,
+    maxAge: LOCALE_MAX_AGE,
     sameSite: "lax",
   });
 
   revalidatePath("/", "layout");
-  return succeed();
 }

@@ -1,16 +1,3 @@
-/**
- * Renditja e feed-it.
- *
- *   Score = 0.30 afërsi sociale
- *         + 0.25 relevancë akademike
- *         + 0.20 freski (kalbje eksponenciale, gjysmë-jeta 8 orë)
- *         + 0.15 cilësi angazhimi (ruajtje dhe komente 3x më shumë se pëlqime)
- *         + 0.10 shumëllojshmëri
- *         - penalizime
- *
- * Funksionet janë të pastra me qëllim: testohen pa bazë të dhënash dhe
- * ndryshimi i peshave nuk kërkon prekje të query-ve.
- */
 
 export const FEED_WEIGHTS = {
   socialAffinity: 0.3,
@@ -25,7 +12,6 @@ export const FRESHNESS_HALF_LIFE_HOURS = 8;
 export const FEED_PENALTIES = {
   reported: 0.35,
   unverifiedNewAuthor: 0.15,
-  spamSuspicion: 0.5,
 } as const;
 
 export type RankablePost = {
@@ -34,15 +20,18 @@ export type RankablePost = {
   createdAt: Date;
   courseId: string | null;
   facultyId: string | null;
-  authorFacultyId: string | null;
   authorYear: number | null;
   authorIsVerified: boolean;
   authorCreatedAt: Date;
   likeCount: number;
+  /** Numëruesit sipas llojit. Kur mungon, bihet te `likeCount`. */
+  reactions?: Record<string, number>;
   commentCount: number;
   saveCount: number;
   reportCount: number;
   type: string;
+  /** Veçuar nga autori me Pro, derisa t'i kalojë afati. */
+  featuredUntil?: Date | null;
 };
 
 export type RankingContext = {
@@ -56,7 +45,6 @@ export type RankingContext = {
   now?: Date;
 };
 
-/** 0..1 — sa afër është autori në grafin social. */
 export function socialAffinity(post: RankablePost, context: RankingContext): number {
   if (post.authorId === context.viewerId) return 0.9;
   if (context.mutualIds.has(post.authorId)) return 1;
@@ -67,7 +55,6 @@ export function socialAffinity(post: RankablePost, context: RankingContext): num
   return 0;
 }
 
-/** 0..1 — sa i takon postimi lëndëve, fakultetit dhe vitit tim. */
 export function academicRelevance(post: RankablePost, context: RankingContext): number {
   let score = 0;
   if (post.courseId && context.courseIds.has(post.courseId)) score += 0.6;
@@ -77,31 +64,58 @@ export function academicRelevance(post: RankablePost, context: RankingContext): 
   return Math.min(1, score);
 }
 
-/** Kalbje eksponenciale me gjysmë-jetë 8 orë. */
 export function freshness(post: RankablePost, now: Date = new Date()): number {
   const hours = Math.max(0, (now.getTime() - post.createdAt.getTime()) / 3_600_000);
   return 2 ** (-hours / FRESHNESS_HALF_LIFE_HOURS);
 }
 
 /**
- * Ruajtja dhe komenti peshojnë tri herë më shumë se pëlqimi, sepse tregojnë
- * dobi reale, jo miratim kalimtar.
+ * Pesha e çdo reagimi. Sot ka vetëm pëlqim; dobia matet nga ruajtjet dhe
+ * komentet, që peshojnë tri herë më shumë te `engagementQuality`.
  */
-export function engagementQuality(post: RankablePost): number {
-  const weighted = post.likeCount + 3 * post.commentCount + 3 * post.saveCount;
-  return weighted / (weighted + 12);
-}
+export const REACTION_WEIGHTS: Record<string, number> = {
+  like: 1,
+};
 
-export function penalty(post: RankablePost): number {
+export function reactionScore(reactions: Record<string, number> | undefined): number {
+  if (!reactions) return 0;
   let total = 0;
-  if (post.reportCount > 0) total += FEED_PENALTIES.reported * Math.min(1, post.reportCount / 3);
-
-  const authorAgeDays = (Date.now() - post.authorCreatedAt.getTime()) / 86_400_000;
-  if (!post.authorIsVerified && authorAgeDays < 7) {
-    total += FEED_PENALTIES.unverifiedNewAuthor;
+  for (const [type, count] of Object.entries(reactions)) {
+    total += (REACTION_WEIGHTS[type as keyof typeof REACTION_WEIGHTS] ?? 1) * count;
   }
   return total;
 }
+
+/**
+ * Cilësia e angazhimit.
+ *
+ * Ruajtjet dhe komentet peshojnë tre herë më shumë se një reagim i thjeshtë,
+ * sepse ruajtja është premtimi më i fortë që përmbajtja do të rilexohet.
+ */
+export function engagementQuality(post: RankablePost): number {
+  const reactions = post.reactions ? reactionScore(post.reactions) : post.likeCount;
+  const weighted = reactions + 3 * post.commentCount + 3 * post.saveCount;
+  return weighted / (weighted + 12);
+}
+
+export function penalty(post: RankablePost, now: Date = new Date()): number {
+  let total = 0;
+  if (post.reportCount > 0) total += FEED_PENALTIES.reported * Math.min(1, post.reportCount / 3);
+
+  const authorAgeDays = (now.getTime() - post.authorCreatedAt.getTime()) / 86_400_000;
+  if (!post.authorIsVerified && authorAgeDays < 7) total += FEED_PENALTIES.unverifiedNewAuthor;
+
+  return total;
+}
+
+/*
+  Shtysa e veçimit.
+
+  E matur me qëllim: e ngre postimin brenda atyre që studenti do t'i shihte
+  gjithsesi, nuk e fut me forcë mbi gjithçka tjetër. Një shtysë e madhe do ta
+  kthente feed-in në listë të paguar, dhe atëherë askush nuk do t'i besonte.
+*/
+const FEATURED_BOOST = 0.12;
 
 export function scorePost(post: RankablePost, context: RankingContext): number {
   const now = context.now ?? new Date();
@@ -111,16 +125,14 @@ export function scorePost(post: RankablePost, context: RankingContext): number {
     FEED_WEIGHTS.freshness * freshness(post, now) +
     FEED_WEIGHTS.engagementQuality * engagementQuality(post);
 
-  return Math.max(0, base - penalty(post));
+  const featured =
+    post.featuredUntil && post.featuredUntil.getTime() > now.getTime() ? FEATURED_BOOST : 0;
+
+  return Math.max(0, base + featured - penalty(post, now));
 }
 
-/**
- * Shumëllojshmëria zbatohet pas renditjes: dy postime radhazi nga i njëjti
- * autor ndëshkohen, kështu që një person i vetëm nuk e zë feed-in.
- */
-export function applyDiversity<T extends { authorId: string; score: number }>(
-  posts: T[],
-): T[] {
+/** Dy postime radhazi nga i njëjti autor ndëshkohen, që një person të mos e zërë feed-in. */
+export function applyDiversity<T extends { authorId: string; score: number }>(posts: T[]): T[] {
   const result: T[] = [];
   const pool = [...posts].sort((a, b) => b.score - a.score);
 
@@ -137,41 +149,53 @@ export function rankPosts<T extends RankablePost>(
   posts: T[],
   context: RankingContext,
 ): (T & { score: number })[] {
-  const scored = posts.map((post) => ({ ...post, score: scorePost(post, context) }));
-  return applyDiversity(scored);
+  return applyDiversity(posts.map((post) => ({ ...post, score: scorePost(post, context) })));
 }
 
 /**
- * Rregull i artë: çdo 5 postime futet një njësi jo-postuese, që feed-i të mbetet
- * i gjallë edhe kur komuniteti është i vogël.
+ * Rregull i artë: çdo 5 postime futet një njësi jo-postuese, dhe çdo 12 një
+ * reklamë native. Reklama nuk shfaqet kurrë për përdoruesit Pro.
  */
 export type FeedUnit<TPost> =
   | { kind: "post"; post: TPost }
   | { kind: "people" }
   | { kind: "material" }
   | { kind: "event" }
-  | { kind: "question" };
+  | { kind: "question" }
+  | { kind: "ad" };
 
-const INTERSTITIAL_ORDER = ["people", "material", "question", "event"] as const;
+const INTERSTITIALS = ["people", "material", "question", "event"] as const;
 
 export function interleave<TPost>(
   posts: TPost[],
-  options: { every?: number; available?: Set<(typeof INTERSTITIAL_ORDER)[number]> } = {},
+  options: {
+    every?: number;
+    adEvery?: number;
+    showAds?: boolean;
+    available?: Set<(typeof INTERSTITIALS)[number]>;
+  } = {},
 ): FeedUnit<TPost>[] {
   const every = options.every ?? 5;
-  const available = options.available ?? new Set(INTERSTITIAL_ORDER);
+  const adEvery = options.adEvery ?? 12;
+  const available = options.available ?? new Set(INTERSTITIALS);
   const units: FeedUnit<TPost>[] = [];
-  let interstitialIndex = 0;
+  let cursor = 0;
 
   posts.forEach((post, index) => {
     units.push({ kind: "post", post });
+    const position = index + 1;
 
-    if ((index + 1) % every === 0) {
-      for (let attempt = 0; attempt < INTERSTITIAL_ORDER.length; attempt += 1) {
-        const kind = INTERSTITIAL_ORDER[(interstitialIndex + attempt) % INTERSTITIAL_ORDER.length];
+    if (options.showAds && position % adEvery === 0) {
+      units.push({ kind: "ad" });
+      return;
+    }
+
+    if (position % every === 0) {
+      for (let attempt = 0; attempt < INTERSTITIALS.length; attempt += 1) {
+        const kind = INTERSTITIALS[(cursor + attempt) % INTERSTITIALS.length];
         if (available.has(kind)) {
           units.push({ kind });
-          interstitialIndex += attempt + 1;
+          cursor += attempt + 1;
           break;
         }
       }

@@ -2,12 +2,11 @@
 
 import * as React from "react";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
-import { BadgeCheck } from "lucide-react";
 import { cn, initialsOf, stableHash } from "@/lib/utils";
 
 /**
- * Gradientë të ngrohtë, të zgjedhur që teksti i bardhë sipër tyre të kalojë
- * kontrastin AA. I njëjti emër jep gjithmonë të njëjtin gradient.
+ * Gradientë të zgjedhur që teksti i bardhë mbi ta të kalojë kontrastin AA.
+ * I njëjti emër jep gjithmonë të njëjtin gradient, në server dhe në klient.
  */
 const AVATAR_GRADIENTS = [
   ["#4F46E5", "#7C3AED"],
@@ -39,59 +38,35 @@ export function Avatar({
   name,
   src,
   size = "md",
-  verified = false,
   className,
   ring = false,
 }: {
   name: string;
   src?: string | null;
   size?: AvatarSize;
-  verified?: boolean;
   className?: string;
   ring?: boolean;
 }) {
-  const initials = initialsOf(name);
-
   return (
-    <span className={cn("relative inline-flex shrink-0", className)}>
-      <AvatarPrimitive.Root
-        className={cn(
-          "inline-flex select-none items-center justify-center overflow-hidden rounded-full",
-          ring && "ring-2 ring-brand-500/40 ring-offset-2 ring-offset-bg",
-          SIZES[size],
-        )}
-      >
-        {src ? (
-          <AvatarPrimitive.Image
-            src={src}
-            alt={name}
-            className="size-full object-cover"
-          />
-        ) : null}
-        <AvatarPrimitive.Fallback
-          delayMs={src ? 200 : 0}
-          className="flex size-full items-center justify-center font-semibold text-white"
-          style={{ backgroundImage: gradientFor(name) }}
-        >
-          {initials}
-        </AvatarPrimitive.Fallback>
-      </AvatarPrimitive.Root>
-
-      {verified ? (
-        <span
-          className="absolute -bottom-0.5 -right-0.5 rounded-full bg-bg p-px"
-          title="Studente ose student i verifikuar"
-        >
-          <BadgeCheck
-            className={cn(
-              "text-brand-500",
-              size === "xs" || size === "sm" ? "size-3" : "size-4",
-            )}
-            aria-label="I verifikuar"
-          />
-        </span>
+    <AvatarPrimitive.Root
+      className={cn(
+        "inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full",
+        ring && "ring-2 ring-brand-500/40 ring-offset-2 ring-offset-bg",
+        SIZES[size],
+        className,
+      )}
+    >
+      {src ? (
+        <AvatarPrimitive.Image src={src} alt={name} className="size-full object-cover" />
       ) : null}
-    </span>
+      <AvatarPrimitive.Fallback
+        delayMs={src ? 200 : 0}
+        className="flex size-full items-center justify-center font-semibold text-white"
+        style={{ backgroundImage: gradientFor(name) }}
+      >
+        {initialsOf(name)}
+      </AvatarPrimitive.Fallback>
+    </AvatarPrimitive.Root>
   );
 }
 
@@ -113,7 +88,7 @@ export function AvatarStack({
   return (
     <span className={cn("flex items-center", className)}>
       {shown.map((person) => (
-        <span key={person.name} className="-ml-2 first:ml-0 rounded-full ring-2 ring-bg">
+        <span key={person.name} className="-ml-2 rounded-full ring-2 ring-bg first:ml-0">
           <Avatar name={person.name} src={person.avatar} size={size} />
         </span>
       ))}

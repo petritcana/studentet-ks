@@ -1,37 +1,42 @@
 "use server";
 
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { signIn, signOut } from "@/lib/auth";
+import { isDemoMode, signIn, signOut } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { isInstitutionalEmail, MIN_AGE } from "@/lib/constants";
-import { rateLimit, rateLimitMessage } from "@/lib/rate-limit";
-import { awardXp } from "@/lib/xp";
-import { fail, succeed, type ActionState } from "./types";
+import { checkBirthDate } from "@/lib/age";
+import { canContinue } from "@/lib/password-rules";
+import { issueStudentCode } from "@/lib/registration";
+import { isStudentEmail, upcomingInstitutionFor } from "@/lib/student-domains";
+import { looksLikeStudentId, validateFullName } from "@/lib/identity";
+import { rateLimit, rateLimitKey } from "@/lib/rate-limit";
+import { createWithUniqueUsername } from "@/lib/queries/username";
+import { usernameBase } from "@/lib/username";
+import { fail, type ActionState } from "./types";
 
 const registerSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(3, "Shkruaj emrin dhe mbiemrin.")
-    .max(60, "Emri është shumë i gjatë."),
-  email: z.string().trim().toLowerCase().email("Ky email s'duket i saktë."),
-  password: z
-    .string()
-    .min(8, "Fjalëkalimi duhet të ketë të paktën 8 shkronja.")
-    .max(72, "Fjalëkalimi është shumë i gjatë."),
-  ageConfirmed: z.literal("on", {
-    message: `Platforma është për ${MIN_AGE} vjeç e lart.`,
-  }),
+  firstName: z.string().trim().min(2, "errorFirstName").max(30, "errorFirstName"),
+  lastName: z.string().trim().min(2, "errorLastName").max(30, "errorLastName"),
+  birthDate: z.string().trim().min(1, "errorBirthInvalid"),
+  email: z.string().trim().toLowerCase().email("errorEmail"),
+  password: z.string().max(72, "errorPassword"),
+  confirm: z.string(),
+  terms: z.literal("on", { message: "errorTerms" }),
   inviteCode: z.string().trim().optional(),
 });
 
+/**
+ * Hyrja pranon email ose emër përdoruesi te e njëjta fushë.
+ *
+ * Prandaj këtu nuk kërkohet format emaili: kontrolli i vërtetë bëhet te
+ * `lib/auth.ts`, ku shihet nëse vargu ka @ dhe kërkohet aty ku duhet.
+ */
 const loginSchema = z.object({
-  email: z.string().trim().toLowerCase().email("Ky email s'duket i saktë."),
-  password: z.string().min(1, "Shkruaj fjalëkalimin."),
+  email: z.string().trim().toLowerCase().min(3, "errorEmail").max(120, "errorEmail"),
+  password: z.string().min(1, "errorPassword"),
 });
 
 async function clientKey() {
@@ -43,28 +48,25 @@ async function clientKey() {
   );
 }
 
-function usernameFrom(name: string, email: string) {
-  const base = `${name}`
-    .toLowerCase()
-    .replace(/ë/g, "e")
-    .replace(/ç/g, "c")
-    .replace(/\s+/g, ".")
-    .replace(/[^a-z0-9.]/g, "");
-  return base.length >= 3 ? base : email.split("@")[0].replace(/[^a-z0-9.]/g, "");
-}
-
+/**
+ * Regjistrimi me email studentor.
+ *
+ * Emri, mbiemri, data e lindjes (nga 16 vjeç), emaili studentor dhe password-i.
+ * Llogaria hapet, por emaili provohet me kod para çdo hapi tjetër, dhe pastaj
+ * vjen fotoja e ID-së. Deri sa admini ta miratojë, llogaria vetëm shikon.
+ */
 export async function registerAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const limit = rateLimit("register", await clientKey());
-  if (!limit.ok) return fail(rateLimitMessage(limit));
-
   const parsed = registerSchema.safeParse({
-    name: formData.get("name"),
+    firstName: formData.get("firstName"),
+    lastName: formData.get("lastName"),
+    birthDate: formData.get("birthDate"),
     email: formData.get("email"),
     password: formData.get("password"),
-    ageConfirmed: formData.get("ageConfirmed"),
+    confirm: formData.get("confirm"),
+    terms: formData.get("terms"),
     inviteCode: formData.get("inviteCode") ?? undefined,
   });
 
@@ -74,53 +76,89 @@ export async function registerAction(
       const key = String(issue.path[0] ?? "form");
       if (!fieldErrors[key]) fieldErrors[key] = issue.message;
     }
-    return fail("Diçka s'është plotësuar si duhet.", fieldErrors);
+    return fail("auth.errorForm", fieldErrors);
   }
 
-  const { name, email, password, inviteCode } = parsed.data;
+  const { email, password, confirm, inviteCode } = parsed.data;
 
-  const existing = await db.user.findUnique({ where: { email } });
-  if (existing) {
-    return fail("Ky email është i regjistruar tashmë.", {
-      email: "Provo të hysh me këtë email ose përdor një tjetër.",
+  // Emri kontrollohet si një i tërë, me të njëjtat rregulla si kudo tjetër.
+  const named = validateFullName(`${parsed.data.firstName} ${parsed.data.lastName}`);
+  if (!named.ok) return fail("auth.errorForm", { firstName: named.reason });
+
+  const birth = checkBirthDate(parsed.data.birthDate);
+  if (!birth.ok) return fail("auth.errorForm", { birthDate: birth.reason });
+
+  // Vetëm email studentor: kodi provon që e mban, ID-ja që është student.
+  if (!isStudentEmail(email)) {
+    const upcoming = upcomingInstitutionFor(email);
+    return upcoming
+      ? fail("auth.errorForm", { email: "errorEmailUpcoming" }, { institution: upcoming.name })
+      : fail("auth.errorForm", { email: "errorEmailNotStudent" });
+  }
+
+  if (!canContinue(password, confirm)) return fail("auth.errorForm", { password: "errorPasswordRules" });
+
+  if (await db.user.findFirst({ where: { OR: [{ email }, { studentEmail: email }] }, select: { id: true } })) {
+    return fail("auth.errorEmailTaken", { email: "errorEmailTakenHint" });
+  }
+
+  /*
+    Kufiri numërohet vetëm te një regjistrim i vërtetë.
+
+    Dikur numërohej te çdo dërgim i formularit, prandaj pesë gabime shkrimi e
+    mbyllnin regjistrimin për një orë. Tani kur bie kufiri, mesazhi e thotë edhe
+    sa duhet pritur, që studenti të mos hamendësojë.
+  */
+  const limit = rateLimit("register", rateLimitKey(await clientKey()));
+  if (!limit.ok) {
+    return fail("errors.rateLimitedMinutes", undefined, {
+      minutes: Math.max(1, limit.retryAfterMinutes),
     });
   }
 
-  let username = usernameFrom(name, email);
-  let attempt = 1;
-  while (await db.user.findUnique({ where: { username } })) {
-    attempt += 1;
-    username = `${usernameFrom(name, email)}${attempt}`;
-  }
+  const { firstName, lastName } = named;
+  const passwordHash = await bcrypt.hash(password, 10);
+  const now = new Date();
 
-  const verified = isInstitutionalEmail(email);
+  /*
+    Emri i përdoruesit del nga emri, jo nga adresa.
 
-  const user = await db.user.create({
-    data: {
-      email,
-      username,
-      name,
-      passwordHash: await bcrypt.hash(password, 10),
-      isVerified: verified,
-      emailVerified: verified ? new Date() : null,
-    },
-  });
+    Një email studentor si `pc12345@student.uni-pr.edu` do të jepte emrin
+    «pc12345», të pakuptueshëm për këdo. Adresa përdoret vetëm kur emri nuk jep
+    dot asgjë të lexueshme. Krijimi e rezervon: dy regjistrime në të njëjtin
+    çast nuk marrin dot të njëjtin emër, sepse baza e refuzon të dytin.
+  */
+  const user = await createWithUniqueUsername(
+    usernameBase(firstName, lastName, looksLikeStudentId(email) ? undefined : email),
+    (username) =>
+      db.user.create({
+        data: {
+          email,
+          username,
+          name: `${firstName} ${lastName}`.trim(),
+          firstName,
+          lastName: lastName || null,
+          birthDate: birth.date,
+          passwordHash,
+          isVerified: false,
+          // Emaili provohet me kod te hapi tjetër, ID-ja pas tij.
+          emailVerified: null,
+          awaitingReview: true,
+          termsAcceptedAt: now,
+          ageConfirmedAt: now,
+        },
+      }),
+  );
 
   await db.invite.create({
     data: {
       inviterId: user.id,
-      code: `${username.split(".")[0].slice(0, 4).toUpperCase()}${Math.floor(1000 + Math.random() * 9000)}`,
+      code: `${user.username.split(".")[0].slice(0, 4).toUpperCase()}${Math.floor(1000 + Math.random() * 9000)}`,
     },
   });
 
-  if (verified) {
-    const badge = await db.badge.findUnique({ where: { code: "verified" } });
-    if (badge) {
-      await db.userBadge.create({ data: { userId: user.id, badgeId: badge.id } });
-    }
-  }
-
-  // Ftesa virale: të dy fitojnë dhe lidhen automatikisht si shokë.
+  // Ftesa lidh dy njerëz menjëherë. XP-ja e ftuesit jepet vetëm pas shtatë
+  // ditësh aktiviteti, prandaj këtu shënohet vetëm përdorimi.
   const code = inviteCode?.trim().toUpperCase();
   if (code) {
     const invite = await db.invite.findUnique({
@@ -133,73 +171,88 @@ export async function registerAction(
         data: { invitedUserId: user.id, usedAt: new Date() },
       });
       await db.follow.createMany({
+        // Ftesa i lidh të dy menjëherë: kërkesa këtu nuk ka kujt t'i shkojë.
         data: [
-          { followerId: user.id, followingId: invite.inviterId, isMutual: true },
-          { followerId: invite.inviterId, followingId: user.id, isMutual: true },
+          { followerId: user.id, followingId: invite.inviterId, isMutual: true, status: "accepted" },
+          { followerId: invite.inviterId, followingId: user.id, isMutual: true, status: "accepted" },
         ],
       });
-      await awardXp(invite.inviterId, "successfulInvite");
       await db.notification.create({
         data: {
           userId: invite.inviterId,
-          type: "mutual",
+          category: "social",
+          type: "invite_used",
           actorId: user.id,
-          text: "u regjistrua me ftesën tënde",
-          context: "U bëtë shokë automatikisht. +100 XP",
+          payload: JSON.stringify({}),
         },
       });
     }
   }
 
+  // Kodi niset menjëherë: faqja tjetër është ajo ku shkruhet.
+  await issueStudentCode({ id: user.id, firstName, name: user.name }, email);
+
   try {
     await signIn("credentials", { email, password, redirect: false });
   } catch (error) {
-    if (error instanceof AuthError) {
-      return fail("Llogaria u krijua, por hyrja dështoi. Provo të hysh manualisht.");
-    }
+    if (error instanceof AuthError) return fail("auth.errorSignIn");
     throw error;
   }
 
-  const jar = await cookies();
-  jar.delete("invite_code");
-  return succeed("Llogaria u krijua.");
+  redirect("/regjistrohu");
 }
 
-export async function loginAction(
-  _prev: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
+export async function loginAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const parsed = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
   });
+  if (!parsed.success) return fail("auth.errorForm");
 
-  if (!parsed.success) {
-    const fieldErrors: Record<string, string> = {};
-    for (const issue of parsed.error.issues) {
-      fieldErrors[String(issue.path[0] ?? "form")] = issue.message;
-    }
-    return fail("Plotëso të dyja fushat.", fieldErrors);
-  }
+  /*
+    Llogaria e hapur me Google, që ende s'e ka vendosur password-in e platformës,
+    nuk ka çfarë të krahasojë. Në vend të «password i pasaktë», i thuhet hapur
+    rruga: «Vazhdo me Google», ku vendoset edhe password-i.
+  */
+  const identifier = parsed.data.email;
+  const account = await db.user.findFirst({
+    where: identifier.includes("@") ? { email: identifier } : { username: identifier },
+    select: { passwordHash: true, accounts: { where: { provider: "google" }, select: { id: true }, take: 1 } },
+  });
+  if (account && !account.passwordHash && account.accounts.length > 0) return fail("authFlow.googleOnly");
 
   try {
     await signIn("credentials", { ...parsed.data, redirect: false });
   } catch (error) {
-    if (error instanceof AuthError) {
-      return fail("Email-i ose fjalëkalimi s'përputhen. Provo prapë.");
-    }
+    if (error instanceof AuthError) return fail("auth.errorCredentials");
     throw error;
   }
 
-  return succeed();
+  // Ridrejtimi behet ne server, jo me një efekt te klientit. Efekti e linte
+  // studentin te faqja e hyrjes me fushat e zbrazura dhe pa asnje shpjegim.
+  redirect("/feed");
+}
+
+/** Hyrje me një klikim si llogari demo. Punon vetëm kur DEMO_MODE është i ndezur. */
+export async function demoSignIn(userId: string) {
+  if (!isDemoMode) redirect("/hyr");
+
+  const user = await db.user.findFirst({
+    where: { id: userId, demoLabel: { not: null } },
+    select: { onboardedAt: true },
+  });
+  if (!user) redirect("/demo");
+
+  await signIn("demo", { userId, redirect: false });
+  redirect(user.onboardedAt ? "/feed" : "/regjistrohu");
 }
 
 export async function googleSignInAction() {
-  await signIn("google", { redirectTo: "/regjistrohu" });
+  // Pas Google-it studenti vendos password-in e platformës, pastaj vazhdon onboarding-u.
+  await signIn("google", { redirectTo: "/regjistrohu/llogaria" });
 }
 
 export async function signOutAction() {
   await signOut({ redirect: false });
   redirect("/");
 }
-

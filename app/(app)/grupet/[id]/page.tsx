@@ -1,43 +1,66 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FileText, Pin, Users } from "lucide-react";
-import { PageHeader } from "@/components/layout/page-header";
-import { PostCard } from "@/components/feed/post-card";
-import { GroupJoinButton } from "@/components/social/group-join-button";
-import { UserRow } from "@/components/social/user-card";
+import { getLocale, getTranslations } from "next-intl/server";
+import { CalendarClock, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/empty-state";
-import { db, parseList } from "@/lib/db";
+import { GroupCard } from "@/components/campus/group-card";
+import { GroupComposer } from "@/components/campus/group-composer";
+import { PostCard } from "@/components/feed/post-card";
+import { UserIdentityLine } from "@/components/identity/user-identity-line";
+import { db } from "@/lib/db";
+import { toPublicAuthor } from "@/lib/dto";
+import { formatDate } from "@/lib/format";
+import { getPostById } from "@/lib/queries/feed";
 import { requireUser } from "@/lib/session";
-import { toPublicAuthor, type PostDto } from "@/lib/dto";
-import { facultyTheme } from "@/lib/faculties";
-import { MATERIAL_TYPE_LABELS, type MaterialType } from "@/lib/constants";
-import { formatDateShort } from "@/lib/format";
-import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Grupi" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const group = await db.group.findUnique({ where: { id }, select: { name: true } });
+  return { title: group?.name ?? "" };
+}
+
 export const dynamic = "force-dynamic";
 
 export default async function GroupPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const user = await requireUser();
+  const [{ id }, me, locale] = await Promise.all([params, requireUser(), getLocale()]);
+  const english = locale === "en";
 
   const group = await db.group.findUnique({
     where: { id },
     select: {
       id: true,
       name: true,
+      nameEn: true,
       type: true,
       privacy: true,
       description: true,
       facultyKey: true,
       courseId: true,
-      course: { select: { id: true, name: true, code: true, professor: true } },
+      course: {
+        select: {
+          id: true,
+          name: true,
+          nameEn: true,
+          examDates: {
+            where: { date: { gte: new Date() } },
+            orderBy: { date: "asc" },
+            take: 3,
+            select: { id: true, date: true, term: true, room: true },
+          },
+        },
+      },
       members: {
+        take: 24,
+        orderBy: { joinedAt: "asc" },
         select: {
           role: true,
+          userId: true,
           user: {
             select: {
               id: true,
@@ -46,172 +69,69 @@ export default async function GroupPage({ params }: { params: Promise<{ id: stri
               avatar: true,
               isVerified: true,
               year: true,
-              faculty: { select: { name: true, color: true } },
+              proEarnedUntil: true,
+              university: { select: { abbr: true } },
+              faculty: { select: { name: true, nameEn: true, color: true } },
+              subscriptions: {
+                where: { status: "active" },
+                select: { status: true, expiresAt: true },
+              },
             },
           },
         },
-        take: 30,
       },
       _count: { select: { members: true } },
+      posts: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: { id: true },
+      },
     },
   });
-
   if (!group) notFound();
 
-  const isMember = group.members.some((member) => member.user.id === user.id);
-  const theme = facultyTheme(group.facultyKey);
+  const [t, tsch] = await Promise.all([getTranslations("campus"), getTranslations("schedule")]);
 
-  const [posts, pastExams, following] = await Promise.all([
-    db.post.findMany({
-      where: group.courseId
-        ? { OR: [{ groupId: group.id }, { courseId: group.courseId }], isHidden: false }
-        : { groupId: group.id, isHidden: false },
-      orderBy: { createdAt: "desc" },
-      take: 20,
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            username: true,
-            avatar: true,
-            isVerified: true,
-            year: true,
-            faculty: { select: { name: true, color: true } },
-          },
-        },
-        course: {
-          select: {
-            id: true,
-            name: true,
-            code: true,
-            department: { select: { faculty: { select: { color: true } } } },
-          },
-        },
-      },
-    }),
-    group.courseId
-      ? db.material.findMany({
-          where: {
-            courseId: group.courseId,
-            type: { in: ["past_exam", "solved"] },
-            isHidden: false,
-          },
-          orderBy: { academicYear: "desc" },
-          take: 6,
-          select: {
-            id: true,
-            title: true,
-            type: true,
-            academicYear: true,
-            downloads: true,
-            verificationStatus: true,
-          },
-        })
-      : Promise.resolve([]),
-    db.reaction.findMany({
-      where: { userId: user.id },
-      select: { postId: true },
-    }),
-  ]);
+  const myRole = group.members.find((member) => member.userId === me.id)?.role ?? null;
+  const posts = await Promise.all(
+    group.posts.map((post) => getPostById(me.access, post.id, locale)),
+  );
 
-  const likedIds = new Set(following.map((item) => item.postId));
-
-  const dtos: PostDto[] = posts.map((post) => ({
-    id: post.id,
-    type: post.type,
-    text: post.text,
-    media: parseList(post.media),
-    createdAt: post.createdAt.toISOString(),
-    courseId: post.courseId,
-    course: post.course
-      ? {
-          id: post.course.id,
-          name: post.course.name,
-          code: post.course.code,
-          facultyColor: post.course.department.faculty.color,
-        }
-      : null,
-    material: null,
-    event: null,
-    poll: null,
-    author: post.isAnonymous
-      ? { anonymous: true, profile: { pseudonym: post.pseudonym ?? "Studenti anonim" } }
-      : { anonymous: false, profile: toPublicAuthor(post.author) },
-    counts: { likes: post.likeCount, comments: post.commentCount, saves: post.saveCount },
-    viewer: {
-      liked: likedIds.has(post.id),
-      saved: false,
-      isAuthor: post.authorId === user.id,
-    },
-    isHidden: post.isHidden,
-  }));
-
-  const typeLabel =
-    group.type === "course" ? "Kanal lënde" : group.type === "generation" ? "Gjeneratë" : "Grup";
+  const ownFaculty =
+    (english ? me.faculty?.nameEn : me.faculty?.name) ?? me.university?.abbr ?? "";
 
   return (
-    <div className="flex flex-col gap-5">
-      <PageHeader title={group.name} back="/kampusi?tab=grupet" />
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-5">
+      <GroupCard
+        group={{
+          id: group.id,
+          name: english ? group.nameEn : group.name,
+          type: group.type,
+          privacy: group.privacy,
+          description: group.description,
+          facultyCode: group.facultyKey,
+          memberCount: group._count.members,
+          membership: myRole === "pending" ? "pending" : myRole ? "member" : null,
+        }}
+      />
 
-      <Card className="overflow-hidden">
-        <div className={cn("h-16 bg-linear-to-br", theme.gradient)} aria-hidden />
-        <div className="flex flex-col gap-3 p-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge className={cn(theme.bg, theme.text, theme.border)}>{typeLabel}</Badge>
-              <span className="tabular inline-flex items-center gap-1 text-xs text-text-muted">
-                <Users className="size-3" />
-                {group._count.members} anëtarë
-              </span>
-              {group.privacy === "request" ? <Badge variant="warning">Me kërkesë</Badge> : null}
-            </div>
-            <GroupJoinButton groupId={group.id} isMember={isMember} privacy={group.privacy} />
-          </div>
-
-          {group.description ? (
-            <p className="measure text-sm text-text-muted">{group.description}</p>
-          ) : null}
-
-          {group.course ? (
-            <Link
-              href={`/lenda/${group.course.id}`}
-              className="w-fit text-sm font-medium text-brand-500 hover:underline"
-            >
-              Shiko lëndën {group.course.name} ({group.course.code})
-            </Link>
-          ) : null}
-        </div>
-      </Card>
-
-      {pastExams.length > 0 ? (
-        <Card className="p-4">
-          <div className="flex items-center gap-2">
-            <Pin className="size-4 text-brand-500" />
-            <h2 className="text-sm font-semibold text-text">Provimet e kaluara</h2>
-          </div>
-          <p className="mt-1 text-xs text-text-muted">
-            Të fiksuara lart, sepse këtu i kërkon çdo gjeneratë.
+      {group.course && group.course.examDates.length > 0 ? (
+        <Card className="flex flex-col gap-2 p-4">
+          <p className="flex items-center gap-2 text-sm font-semibold text-text">
+            <CalendarClock className="size-4 text-brand-500" />
+            {t("pinnedExams")}
           </p>
-          <ul className="mt-3 flex flex-col divide-y divide-border">
-            {pastExams.map((exam) => (
-              <li key={exam.id}>
-                <Link
-                  href={`/materialet/${exam.id}`}
-                  className="flex items-center gap-3 py-2.5 first:pt-0"
-                >
-                  <FileText className="size-4 shrink-0 text-text-muted" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm text-text">{exam.title}</span>
-                    <span className="block truncate text-xs text-text-muted">
-                      {MATERIAL_TYPE_LABELS[exam.type as MaterialType]} · viti akademik{" "}
-                      {exam.academicYear}
-                    </span>
-                  </span>
-                  {exam.verificationStatus === "verified" ? (
-                    <Badge variant="success">I verifikuar</Badge>
-                  ) : null}
-                </Link>
+          <p className="text-xs text-text-muted">{t("pinnedExamsBody")}</p>
+
+          <ul className="flex flex-col gap-1.5">
+            {group.course.examDates.map((exam) => (
+              <li key={exam.id} className="flex items-center gap-3 text-sm">
+                <span className="tabular w-28 shrink-0 text-text-muted">
+                  {formatDate(exam.date, locale)}
+                </span>
+                <Badge variant="warning">{tsch("exam")}</Badge>
+                <span className="text-xs text-text-muted">{exam.term}</span>
+                {exam.room ? <span className="text-text-muted">{exam.room}</span> : null}
               </li>
             ))}
           </ul>
@@ -219,55 +139,42 @@ export default async function GroupPage({ params }: { params: Promise<{ id: stri
       ) : null}
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-text">Biseda</h2>
-        {dtos.length === 0 ? (
-          <EmptyState
-            illustration="feed"
-            title="Këtu s'ka nisur ende biseda"
-            description="Nis ti me një pyetje ose me shënimet e ligjëratës së fundit."
-          />
-        ) : (
-          dtos.map((post) => <PostCard key={post.id} post={post} />)
-        )}
-      </section>
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-text">
+          <Users className="size-4 text-brand-500" />
+          {t("members", { count: group._count.members })}
+        </h2>
 
-      <Card className="p-4">
-        <h2 className="text-sm font-semibold text-text">Anëtarët</h2>
-        <div className="mt-3 flex flex-col gap-3">
+        <div className="grid gap-2 sm:grid-cols-2">
           {group.members.slice(0, 12).map((member) => (
-            <UserRow
-              key={member.user.id}
-              person={{
-                id: member.user.id,
-                name: member.user.name,
-                username: member.user.username,
-                avatar: member.user.avatar,
-                isVerified: member.user.isVerified,
-                facultyName: member.user.faculty?.name ?? null,
-                facultyColor: member.user.faculty?.color ?? null,
-                year: member.user.year,
-              }}
-              action={
-                member.role !== "member" ? (
-                  <Badge variant="brand">
-                    {member.role === "owner" ? "Krijues" : "Moderator"}
-                  </Badge>
-                ) : undefined
-              }
+            <UserIdentityLine
+              key={member.userId}
+              user={toPublicAuthor(member.user, locale)}
+              size="sm"
             />
           ))}
         </div>
-        {group._count.members > 12 ? (
-          <p className="mt-3 text-xs text-text-muted">
-            Edhe {group._count.members - 12} anëtarë të tjerë.
-          </p>
-        ) : null}
-      </Card>
+      </section>
 
-      <p className="text-xs text-text-muted">
-        Grupi u krijua për vitin akademik aktual. Materialet e fiksuara ruhen edhe pas{" "}
-        {formatDateShort(new Date())}.
-      </p>
+      <section className="flex flex-col gap-3">
+        <h2 className="text-sm font-semibold text-text">{t("discussion")}</h2>
+
+        {/* Shkruan vetëm anëtari: te një grup me kërkesë, pritja do të thotë pritje. */}
+        {myRole === "member" || myRole === "owner" ? (
+          <GroupComposer groupId={group.id} me={{ name: me.name, avatar: me.avatar }} />
+        ) : null}
+
+        {posts.filter(Boolean).length === 0 ? (
+          <EmptyState illustration="feed" compact title={t("noDiscussion")} />
+        ) : (
+          <div className="flex flex-col gap-4">
+            {posts.map((post) =>
+              post ? (
+                <PostCard key={post.id} post={post} ownFaculty={ownFaculty} isPro={me.pro} />
+              ) : null,
+            )}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

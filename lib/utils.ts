@@ -5,12 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Nis fjalinë me shkronjë të madhe pa e prekur pjesën tjetër. */
-export function capitalize(value: string) {
-  return value.charAt(0).toLocaleUpperCase("sq") + value.slice(1);
-}
-
-/** "Arian Krasniqi" -> "AK". Përdoret nga avatari fallback. */
+/** "Erza Krasniqi" -> "EK". Përdoret nga avatari fallback. */
 export function initialsOf(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
@@ -24,16 +19,11 @@ export function initialsOf(name: string) {
  */
 export function stableHash(value: string) {
   let hash = 0;
-  for (let i = 0; i < value.length; i += 1) {
-    hash = (hash << 5) - hash + value.charCodeAt(i);
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash << 5) - hash + value.charCodeAt(index);
     hash |= 0;
   }
   return Math.abs(hash);
-}
-
-/** Numra të mëdhenj në formë të shkurtër: 12480 -> "12.480". */
-export function formatNumber(value: number) {
-  return new Intl.NumberFormat("sq-AL").format(value);
 }
 
 /** 2048576 -> "2 MB" */
@@ -47,4 +37,8 @@ export function formatBytes(bytes: number) {
     unit += 1;
   }
   return `${size.toFixed(size >= 10 || unit === 0 ? 0 : 1)} ${units[unit]}`;
+}
+
+export function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
 }

@@ -3,15 +3,11 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { BadgeCheck, Search } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Lock, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { VerifiedMark } from "@/components/identity/verified-mark";
 import { cn } from "@/lib/utils";
 
 type SearchItem = {
@@ -19,15 +15,16 @@ type SearchItem = {
   title: string;
   subtitle: string;
   href: string;
-  color: string | null;
   verified?: boolean;
+  locked?: boolean;
 };
+type SearchGroup = { key: string; items: SearchItem[] };
 
-type SearchGroup = { key: string; label: string; items: SearchItem[] };
-
+/** Një shirit i vetëm që kërkon njëkohësisht në gjashtë burime. */
 export function GlobalSearch({ className }: { className?: string }) {
   const router = useRouter();
   const t = useTranslations("search");
+  const tp = useTranslations("pro");
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [groups, setGroups] = React.useState<SearchGroup[] | null>(null);
@@ -72,12 +69,6 @@ export function GlobalSearch({ className }: { className?: string }) {
     };
   }, [query]);
 
-  function goTo(href: string) {
-    setOpen(false);
-    setQuery("");
-    router.push(href);
-  }
-
   const flat = groups?.flatMap((group) => group.items) ?? [];
 
   return (
@@ -86,32 +77,36 @@ export function GlobalSearch({ className }: { className?: string }) {
         type="button"
         onClick={() => setOpen(true)}
         className={cn(
-          "flex h-10 w-full items-center gap-2.5 rounded-full border border-border bg-surface px-4 text-left",
-          "text-sm text-text-muted transition-colors duration-150 ease-brand",
-          "hover:border-text-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500",
+          "group flex h-10 w-full items-center gap-2.5 rounded-control border border-border bg-surface-2 pl-4 pr-2.5 text-left lg:h-11",
+          "text-sm text-text-dim transition-all duration-150 ease-brand",
+          "hover:border-border-strong hover:text-text-muted",
+          "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-500",
           className,
         )}
       >
-        <Search className="size-4 shrink-0" />
-        <span className="truncate">{t("placeholder")}</span>
-        <kbd className="ml-auto hidden shrink-0 rounded-sm border border-border px-1.5 py-0.5 font-mono text-[10px] text-text-muted lg:inline">
-          Ctrl K
-        </kbd>
+        <Search className="size-[18px] shrink-0 text-text-muted transition-colors group-hover:text-brand-500" />
+        <span className="min-w-0 flex-1 truncate">{t("placeholder")}</span>
+        <span className="hidden items-center gap-1.5 md:flex">
+          <span className="rounded-lg border border-border px-2 py-[3px] font-mono text-[11px] font-medium text-text-muted">
+            Ctrl K
+          </span>
+        </span>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="top-[12%] max-w-xl translate-y-0 p-0" hideClose>
+        <DialogContent className="top-[10%] max-w-xl translate-y-0 overflow-hidden rounded-card border-border p-0 shadow-lifted" hideClose>
           <DialogTitle className="sr-only">{t("label")}</DialogTitle>
           <DialogDescription className="sr-only">{t("hint")}</DialogDescription>
 
-          <div className="border-b border-border p-3">
+          <div className="border-b border-border bg-surface p-3 sm:p-3.5">
             <Input
               autoFocus
-              icon={<Search />}
+              icon={<Search className="text-brand-500" />}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t("placeholder")}
               aria-label={t("label")}
+              className="border-border/80 bg-surface-2/50 text-sm focus:bg-surface"
             />
           </div>
 
@@ -143,22 +138,28 @@ export function GlobalSearch({ className }: { className?: string }) {
                       <button
                         key={`${group.key}-${item.id}`}
                         type="button"
-                        onClick={() => goTo(item.href)}
+                        onClick={() => {
+                          setOpen(false);
+                          setQuery("");
+                          router.push(item.href);
+                        }}
                         className="flex items-center gap-3 rounded-sm px-3 py-2 text-left transition-colors duration-150 hover:bg-surface-2"
                       >
                         <span className="flex min-w-0 flex-1 flex-col">
                           <span className="flex items-center gap-1.5">
                             <span className="truncate text-sm text-text">{item.title}</span>
-                            {item.verified ? (
-                              <BadgeCheck className="size-3.5 shrink-0 text-brand-500" />
-                            ) : null}
+                            {item.verified ? <VerifiedMark size="sm" withTooltip={false} /> : null}
                           </span>
                           {item.subtitle ? (
-                            <span className="truncate text-xs text-text-muted">
-                              {item.subtitle}
-                            </span>
+                            <span className="truncate text-xs text-text-muted">{item.subtitle}</span>
                           ) : null}
                         </span>
+                        {item.locked ? (
+                          <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wide text-text-muted">
+                            <Lock className="size-3" />
+                            {tp("withPro")}
+                          </span>
+                        ) : null}
                       </button>
                     ))}
                   </div>
